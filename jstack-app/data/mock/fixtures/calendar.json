@@ -1,0 +1,76 @@
+[
+  {
+    "id": "ev1",
+    "title": "Andy · V2 kickoff",
+    "startsAt": "{{NOW;09:00}}",
+    "endsAt": "{{NOW;09:45}}",
+    "source": "work",
+    "prep": "Prep: re-read the memory-layer answer",
+    "labels": { "silo": "work", "types": ["jstack"], "setBy": "source" },
+    "setAt": "{{TODAY-2}}",
+    "focus": "work"
+  },
+  {
+    "id": "ev2",
+    "title": "Lunch · Joce",
+    "startsAt": "{{NOW;12:30}}",
+    "endsAt": "{{NOW;13:30}}",
+    "source": "family",
+    "labels": { "silo": "family1", "types": ["open"], "setBy": "source" },
+    "setAt": "{{TODAY-2}}",
+    "focus": "family"
+  },
+  {
+    "id": "ev3",
+    "title": "School pickup",
+    "startsAt": "{{SCHOOLDAY;15:00}}",
+    "endsAt": "{{SCHOOLDAY;16:00}}",
+    "source": "family",
+    "protectedByEa": true,
+    "labels": { "silo": "family1", "types": ["kids"], "setBy": "source" },
+    "setAt": "{{TODAY-2}}",
+    "focus": "family"
+  },
+  {
+    "id": "ev4",
+    "title": "Deep work · Bundaberg memo",
+    "startsAt": "{{NOW+1;09:00}}",
+    "endsAt": "{{NOW+1;12:00}}",
+    "source": "work",
+    "prep": "held by the EA",
+    "protectedByEa": true,
+    "labels": { "silo": "work", "types": ["deals"], "setBy": "content" },
+    "setAt": "{{TODAY-1}}",
+    "focus": "work"
+  },
+  {
+    "id": "ev5",
+    "title": "Moz · contract re-map",
+    "startsAt": "{{NOW+1;13:00}}",
+    "endsAt": "{{NOW+1;14:00}}",
+    "source": "work",
+    "labels": { "silo": "work", "types": ["jstack"], "setBy": "source" },
+    "setAt": "{{TODAY-1}}",
+    "focus": "work"
+  },
+  {
+    "id": "ev6",
+    "title": "Gym",
+    "startsAt": "{{NOW+2;10:00}}",
+    "endsAt": "{{NOW+2;11:00}}",
+    "source": "personal",
+    "labels": { "silo": "personal:josh", "types": ["health"], "setBy": "source" },
+    "setAt": "{{TODAY-1}}",
+    "focus": "personal"
+  },
+  {
+    "id": "ev7",
+    "title": "Swim squad",
+    "startsAt": "{{NOW+2;14:30}}",
+    "endsAt": "{{NOW+2;15:30}}",
+    "source": "family",
+    "labels": { "silo": "family1", "types": ["kids"], "setBy": "source" },
+    "setAt": "{{TODAY-1}}",
+    "focus": "family"
+  }
+]

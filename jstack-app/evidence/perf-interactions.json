@@ -1,0 +1,397 @@
+{
+  "measuredAt": "2026-09-10T04:58:32.265Z",
+  "source": "46f4d766ef53",
+  "runs": 3,
+  "widths": {
+    "393": {
+      "tab: today→tasks": {
+        "wall": 105,
+        "long": 54,
+        "samples": [
+          105,
+          95,
+          140
+        ]
+      },
+      "tab: tasks→brain": {
+        "wall": 103,
+        "long": 0,
+        "samples": [
+          103,
+          89,
+          122
+        ]
+      },
+      "capture: focus → expanded editor": {
+        "wall": 9,
+        "long": 0,
+        "samples": [
+          11,
+          9,
+          8
+        ]
+      },
+      "capture: first keystroke": {
+        "wall": 19,
+        "long": 0,
+        "samples": [
+          29,
+          15,
+          19
+        ]
+      },
+      "find: open": {
+        "wall": 52,
+        "long": 0,
+        "samples": [
+          56,
+          51,
+          52
+        ]
+      },
+      "find: Enter → first group": {
+        "wall": 39,
+        "long": 0,
+        "samples": [
+          39,
+          39,
+          70
+        ]
+      },
+      "talk: open": {
+        "wall": 49,
+        "long": 0,
+        "samples": [
+          53,
+          45,
+          49
+        ]
+      },
+      "tab: brain→life": {
+        "wall": 141,
+        "long": 92,
+        "samples": [
+          121,
+          151,
+          141
+        ]
+      },
+      "detail: goal open": {
+        "wall": 55,
+        "long": 0,
+        "samples": [
+          49,
+          81,
+          55
+        ]
+      },
+      "collapse: habits": {
+        "wall": 55,
+        "long": 0,
+        "samples": [
+          55,
+          60,
+          53
+        ]
+      },
+      "tab: life→agents": {
+        "wall": 94,
+        "long": 0,
+        "samples": [
+          94,
+          89,
+          94
+        ]
+      },
+      "tab: agents→today": {
+        "wall": 89,
+        "long": 0,
+        "samples": [
+          81,
+          89,
+          99
+        ]
+      },
+      "collapse: glance": {
+        "wall": 41,
+        "long": 0,
+        "samples": [
+          40,
+          41,
+          59
+        ]
+      },
+      "task card: open": {
+        "wall": 54,
+        "long": 0,
+        "samples": [
+          54,
+          52,
+          54
+        ]
+      },
+      "task card: close": {
+        "wall": 68,
+        "long": 0,
+        "samples": [
+          68,
+          61,
+          69
+        ]
+      },
+      "task: tick (no subtasks)": {
+        "wall": 51,
+        "long": 0,
+        "samples": [
+          51,
+          56,
+          50
+        ]
+      },
+      "filter: open dialog": {
+        "wall": 63,
+        "long": 0,
+        "samples": [
+          64,
+          55,
+          63
+        ]
+      },
+      "filter: apply → list": {
+        "wall": 58,
+        "long": 0,
+        "samples": [
+          82,
+          55,
+          58
+        ]
+      },
+      "scroll: tasks list (frames)": {
+        "p50": 16.8,
+        "p95": 19.6
+      },
+      "view: list→board": {
+        "wall": 83,
+        "long": 0,
+        "samples": [
+          83,
+          77,
+          85
+        ]
+      },
+      "view: board→gantt": {
+        "wall": 112,
+        "long": 0,
+        "samples": [
+          112,
+          94,
+          114
+        ]
+      },
+      "settings: open sheet": {
+        "wall": 120,
+        "long": 72,
+        "samples": [
+          134,
+          120,
+          98
+        ]
+      }
+    },
+    "1366": {
+      "tab: today→tasks": {
+        "wall": 110,
+        "long": 60,
+        "samples": [
+          109,
+          170,
+          110
+        ]
+      },
+      "tab: tasks→brain": {
+        "wall": 99,
+        "long": 50,
+        "samples": [
+          99,
+          112,
+          88
+        ]
+      },
+      "capture: first keystroke": {
+        "wall": 12,
+        "long": 0,
+        "samples": [
+          7,
+          23,
+          12
+        ]
+      },
+      "find: open": {
+        "wall": 69,
+        "long": 0,
+        "samples": [
+          112,
+          69,
+          52
+        ]
+      },
+      "find: Enter → first group": {
+        "wall": 26,
+        "long": 0,
+        "samples": [
+          26,
+          33,
+          21
+        ]
+      },
+      "talk: open": {
+        "wall": 168,
+        "long": 0,
+        "samples": [
+          168,
+          218,
+          163
+        ]
+      },
+      "tab: brain→life": {
+        "wall": 107,
+        "long": 59,
+        "samples": [
+          103,
+          150,
+          107
+        ]
+      },
+      "detail: goal open": {
+        "wall": 72,
+        "long": 0,
+        "samples": [
+          63,
+          84,
+          72
+        ]
+      },
+      "collapse: habits": {
+        "wall": 105,
+        "long": 0,
+        "samples": [
+          111,
+          81,
+          105
+        ]
+      },
+      "tab: life→agents": {
+        "wall": 99,
+        "long": 0,
+        "samples": [
+          76,
+          99,
+          99
+        ]
+      },
+      "tab: agents→today": {
+        "wall": 95,
+        "long": 0,
+        "samples": [
+          95,
+          102,
+          87
+        ]
+      },
+      "collapse: glance": {
+        "wall": 57,
+        "long": 0,
+        "samples": [
+          70,
+          57,
+          41
+        ]
+      },
+      "task card: open": {
+        "wall": 83,
+        "long": 0,
+        "samples": [
+          68,
+          117,
+          83
+        ]
+      },
+      "task card: close": {
+        "wall": 134,
+        "long": 0,
+        "samples": [
+          119,
+          175,
+          134
+        ]
+      },
+      "task: tick (no subtasks)": {
+        "wall": 138,
+        "long": 0,
+        "samples": [
+          138,
+          135,
+          181
+        ]
+      },
+      "filter: open dialog": {
+        "wall": 67,
+        "long": 0,
+        "samples": [
+          64,
+          67,
+          75
+        ]
+      },
+      "filter: apply → list": {
+        "wall": 129,
+        "long": 0,
+        "samples": [
+          129,
+          229,
+          126
+        ]
+      },
+      "scroll: tasks list (frames)": {
+        "p50": 19.6,
+        "p95": 24.2
+      },
+      "view: list→board": {
+        "wall": 82,
+        "long": 0,
+        "samples": [
+          82,
+          76,
+          86
+        ]
+      },
+      "view: board→gantt": {
+        "wall": 85,
+        "long": 0,
+        "samples": [
+          75,
+          85,
+          92
+        ]
+      },
+      "gantt: drag 2 days → undo toast": {
+        "wall": 109,
+        "long": 0,
+        "samples": [
+          109,
+          101,
+          114
+        ]
+      },
+      "settings: open sheet": {
+        "wall": 169,
+        "long": 112,
+        "samples": [
+          222,
+          112,
+          169
+        ]
+      }
+    }
+  }
+}

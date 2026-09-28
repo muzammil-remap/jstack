@@ -1,0 +1,9 @@
+[
+  { "id": "chk1", "name": "Watchdog heartbeat", "status": "every 5 min", "ok": true, "lastRun": "{{NOW;09:41}}" },
+  { "id": "chk2", "name": "Blocked-action tests", "status": "no send, pay, book, revoke · passed", "ok": true, "lastRun": "{{NOW-7;09:41}}" },
+  { "id": "chk3", "name": "Injection tests", "status": "7 days stale", "ok": false, "lastRun": "{{NOW-7;09:41}}", "issueId": "e2" },
+  { "id": "chk4", "name": "Canaries", "status": "6 planted · none tripped", "ok": true, "lastRun": "{{NOW-1;06:00}}" },
+  { "id": "chk5", "name": "Secrets scan", "status": "clean", "ok": true, "lastRun": "{{NOW-2;03:00}}" },
+  { "id": "chk6", "name": "Backup and restore drill", "status": "Singapore · restored in 14 min", "ok": true, "lastRun": "{{NOW-5;02:00}}" },
+  { "id": "chk7", "name": "Sessions and tokens", "status": "3 devices · all short-lived · vault brokered", "ok": true, "lastRun": "{{NOW;08:00}}" }
+]

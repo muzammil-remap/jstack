@@ -1,0 +1,182 @@
+[
+  {
+    "id": "people",
+    "tab": "life",
+    "title": "People",
+    "column": 2,
+    "configure": true,
+    "source": {
+      "endpoint": "/people"
+    },
+    "blocks": [
+      {
+        "type": "rows",
+        "idPrefix": "person",
+        "bind": "people.rows"
+      }
+    ],
+    "version": 1,
+    "state": "active",
+    "managedBy": "ea",
+    "reason": "The four people with something outstanding, and the one thing each is waiting on.",
+    "changedAt": "2026-09-01T09:00:00.000Z"
+  },
+  {
+    "id": "money",
+    "tab": "life",
+    "title": "Money",
+    "column": 2,
+    "configure": true,
+    "source": {
+      "endpoint": "/money"
+    },
+    "blocks": [
+      {
+        "type": "bars",
+        "idPrefix": "money",
+        "bind": "money.bars"
+      },
+      {
+        "type": "text",
+        "idPrefix": "money-due",
+        "bind": "money.due"
+      }
+    ],
+    "version": 1,
+    "state": "active",
+    "managedBy": "ea",
+    "reason": "Four budget tracks and what is due next, with the feed each came from.",
+    "changedAt": "2026-09-01T09:00:00.000Z"
+  },
+  {
+    "id": "learning",
+    "tab": "life",
+    "title": "Learning",
+    "column": 3,
+    "configure": true,
+    "badge": "count",
+    "source": {
+      "endpoint": "/learning"
+    },
+    "blocks": [
+      {
+        "type": "rows",
+        "idPrefix": "learning",
+        "bind": "learning.rows"
+      }
+    ],
+    "version": 1,
+    "state": "active",
+    "managedBy": "ea",
+    "reason": "What you are reading and watching, counted rather than claimed.",
+    "changedAt": "2026-09-01T09:00:00.000Z",
+    "verb": {
+      "label": "all",
+      "action": "open-learning-archive"
+    }
+  },
+  {
+    "id": "usage",
+    "tab": "agents",
+    "title": "Usage",
+    "hint": "This month",
+    "column": 1,
+    "verb": {
+      "label": "Copy as CSV",
+      "action": "copy-csv"
+    },
+    "source": {
+      "endpoint": "/usage"
+    },
+    "blocks": [
+      {
+        "type": "stats",
+        "idPrefix": "usage-total",
+        "bind": "usage.totals"
+      },
+      {
+        "type": "rows",
+        "idPrefix": "usage-task",
+        "bind": "usage.tasks"
+      }
+    ],
+    "version": 1,
+    "state": "active",
+    "managedBy": "ea",
+    "reason": "What the agents spent this month, by agent and by model, and the tasks it went on.",
+    "changedAt": "2026-09-01T09:00:00.000Z"
+  },
+  {
+    "id": "health",
+    "tab": "life",
+    "title": "Health",
+    "column": 3,
+    "configure": true,
+    "feed": "healthFeed",
+    "source": {
+      "endpoint": "/health"
+    },
+    "blocks": [
+      {
+        "type": "ghost",
+        "idPrefix": "health",
+        "text": "Next: skin check, 2 Oct. Appointments, results, scripts and a brief before a visit appear when the health source is gated in."
+      }
+    ],
+    "version": 1,
+    "state": "active",
+    "managedBy": "ea",
+    "reason": "A placeholder that says what will be here, so the empty card is not a mystery.",
+    "changedAt": "2026-09-01T09:00:00.000Z"
+  },
+  {
+    "id": "replies",
+    "tab": "brain",
+    "title": "Replies",
+    "column": 2,
+    "configure": true,
+    "badge": "count",
+    "source": {
+      "endpoint": "/brain/replies"
+    },
+    "blocks": [
+      {
+        "type": "rows",
+        "idPrefix": "reply",
+        "bind": "brain.replies"
+      }
+    ],
+    "version": 1,
+    "state": "active",
+    "managedBy": "ea",
+    "reason": "What the EA has answered, unread first — so a question asked on the way to the car has somewhere to come back to.",
+    "changedAt": "2026-09-09T09:00:00.000Z"
+  },
+  {
+    "id": "files",
+    "tab": "brain",
+    "title": "Files",
+    "column": 3,
+    "badge": "count",
+    "configure": true,
+    "source": {
+      "endpoint": "/files"
+    },
+    "blocks": [
+      {
+        "type": "rows",
+        "idPrefix": "file",
+        "bind": "files.recent"
+      }
+    ],
+    "version": 1,
+    "state": "active",
+    "managedBy": "ea",
+    "reason": "Everything that has arrived — what Josh attached, what the EA produced, what came in from the share sheet — in one list, so a deliverable is not something you have to remember which task it was on.",
+    "changedAt": "2026-09-09T09:00:00.000Z",
+    "verb": {
+      "label": "all",
+      "action": "open-files-archive"
+    }
+  }
+]

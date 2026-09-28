@@ -1,0 +1,18 @@
+{
+  "since": "Since 9pm: 2 things landed while you slept.",
+  "health": { "ok": true, "spend": "$61 of $200 this month" },
+  "endLine": "That's everything worth your attention today.",
+  "journalPrompt": "How did today actually go?",
+  "insight": {
+    "id": "ins1",
+    "text": "{{WEEKDAY+3}}'s dev call still overlaps school pickup — nothing's changed since {{WEEKDAY-3}}.",
+    "why": "Same clash Needs you already raised; you haven't answered it yet.",
+    "sources": [{ "label": "calendar", "ref": "cal:andy-kickoff", "ts": "{{NOW-1;07:02}}" }],
+    "primary": { "label": "Block it", "action": "block" },
+    "secondary": { "label": "Leave it", "action": "leave" },
+    "state": "open",
+    "labels": { "silo": "family1", "types": ["kids"], "setBy": "content" },
+    "setAt": "{{NOW-1;07:02}}",
+    "focus": "family"
+  }
+}

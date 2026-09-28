@@ -1,0 +1,37 @@
+{
+  "habits": [
+    { "id": "h1", "name": "Exercise", "sort": 1 },
+    { "id": "h2", "name": "Burn", "sort": 2 },
+    { "id": "h3", "name": "Meditate", "sort": 3 },
+    { "id": "h4", "name": "Audiobook", "sort": 4 },
+    { "id": "h5", "name": "Solo time", "sort": 5 },
+    { "id": "h6", "name": "J&J", "sort": 6 },
+    { "id": "h7", "name": "Learning", "sort": 7 },
+    { "id": "h8", "name": "Nap", "sort": 8 },
+    { "id": "h9", "name": "Build", "sort": 9 }
+  ],
+  "people": [
+    { "id": "pe1", "name": "Dave B", "item": "birthday {{WEEKDAY+2}}", "meta": "EO forum · last spoke {{DATESHORT-69}}", "verb": { "label": "Draft a note", "action": "draft" }, "focus": "personal" },
+    { "id": "pe2", "name": "Steve", "item": "owed the deposit answer", "meta": "promised {{WEEKDAYSHORT-2}}", "verb": { "label": "Draft", "action": "draft" }, "focus": "family" },
+    { "id": "pe3", "name": "Mum", "item": "call this week", "meta": "reminder · Sundays", "verb": { "label": "Done", "action": "done" }, "focus": "family" },
+    { "id": "pe4", "name": "Andy", "item": "owes you the dev allocation", "meta": "4 days", "verb": { "label": "Nudge", "action": "nudge" }, "focus": "work" }
+  ],
+  "money": [
+    { "id": "m1", "category": "Home", "spent": 2480, "budget": 4000, "pct": 62, "over": false },
+    { "id": "m2", "category": "Family", "spent": 1910, "budget": 1800, "pct": 100, "over": true },
+    { "id": "m3", "category": "Bali", "spent": 6200, "budget": 9000, "pct": 69, "over": false },
+    { "id": "m4", "category": "Subs", "spent": 412, "budget": 515, "pct": 80, "over": false }
+  ],
+  "moneyDue": [
+    { "text": "RACQ home insurance · $1,184.20", "date": "{{TODAY+14}}", "feed": "Redbark, V2.1" }
+  ],
+  "learning": [
+    { "id": "le1", "title": "Multi-agent orchestration patterns", "meta": "summary ready · resurfaces in the review", "focus": "work" },
+    { "id": "le2", "title": "Garry Tan · new rules for founders", "meta": "podcast · half listened, queued for the drive", "focus": "personal", "kind": "listen", "url": "https://example.com/garry-tan-new-rules" }
+  ],
+  "sectionConfigs": {
+    "people": { "id": "people", "categories": ["family", "work", "personal"], "showWithin": 14, "managedByEa": true },
+    "money": { "id": "money", "categories": ["Home", "Family", "Bali", "Subs"], "thresholds": { "Home": 4000, "Family": 1800, "Bali": 9000, "Subs": 515 }, "managedByEa": true },
+    "health": { "id": "health", "managedByEa": false }
+  }
+}

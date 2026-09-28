@@ -1,0 +1,9 @@
+[
+  { "id": "sc1", "name": "Heartbeat", "meta": "watchdog, independent host", "cadence": "5 min", "paused": false, "kind": "routine" },
+  { "id": "sc2", "name": "Morning brief", "meta": "EA", "cadence": "6:30 daily", "paused": false, "kind": "routine" },
+  { "id": "sc3", "name": "Librarian pass", "meta": "memory", "cadence": "2:00 nightly", "paused": false, "kind": "routine" },
+  { "id": "sc4", "name": "Insights", "meta": "EA", "cadence": "6:00 daily", "paused": false, "kind": "routine" },
+  { "id": "sc5", "name": "Waiting-on digest", "meta": "EA recurring task", "cadence": "Mon 8:00", "paused": false, "kind": "ea_task" },
+  { "id": "sc6", "name": "Security suites", "meta": "paused until V3", "cadence": "weekly", "paused": true, "kind": "routine" },
+  { "id": "sc7", "name": "Spend report", "meta": "Telegram", "cadence": "Sun 18:00", "paused": false, "kind": "routine" }
+]

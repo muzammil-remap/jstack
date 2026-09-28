@@ -1,0 +1,7 @@
+[
+  { "id": "week", "name": "This week", "predicate": { "kind": "dueWithin", "days": 7 }, "fixed": true },
+  { "id": "waiting", "name": "Waiting", "predicate": { "kind": "status", "status": "waiting" } },
+  { "id": "delegated", "name": "Delegated", "predicate": { "kind": "delegated" }, "fixed": true },
+  { "id": "agent", "name": "Agent", "predicate": { "kind": "owner", "owner": "ea" } },
+  { "id": "recurring", "name": "Recurring", "predicate": { "kind": "repeat" } }
+]

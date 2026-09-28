@@ -1,0 +1,47 @@
+[
+  {
+    "id": "col-now",
+    "name": "Now",
+    "statuses": [
+      "open"
+    ],
+    "order": 1,
+    "source": "twenty"
+  },
+  {
+    "id": "col-next",
+    "name": "Next",
+    "statuses": [
+      "open"
+    ],
+    "order": 2,
+    "source": "twenty"
+  },
+  {
+    "id": "col-in-progress",
+    "name": "In progress",
+    "statuses": [
+      "in_progress"
+    ],
+    "order": 3,
+    "source": "twenty"
+  },
+  {
+    "id": "col-waiting",
+    "name": "Waiting",
+    "statuses": [
+      "waiting"
+    ],
+    "order": 4,
+    "source": "twenty"
+  },
+  {
+    "id": "col-done",
+    "name": "Done",
+    "statuses": [
+      "done"
+    ],
+    "order": 5,
+    "source": "twenty"
+  }
+]

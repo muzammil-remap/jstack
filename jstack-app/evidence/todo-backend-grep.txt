@@ -1,0 +1,142 @@
+components/chrome/Gate.tsx:43:// TODO(BACKEND: §4.1) device-bound keys + fresh biometric assertion on approval endpoints
+data/ApiAdapter.ts:184:getAuthNonce() { return this.req<{ nonce: string; expiresAt: string }>("getAuthNonce"); } // TODO(BACKEND: §4.1) GET /auth/nonce
+data/ApiAdapter.ts:185:registerDevice(input: { name: string; publicKey: string }) { return this.req<{ deviceId: string; token: string }>("registerDevice", [], { body: input }); } // TODO(BACKEND: §4.1) POST /auth/register-device
+data/ApiAdapter.ts:186:refreshAuth() { return this.req<{ token: string }>("refreshAuth"); } // TODO(BACKEND: §4.1) POST /auth/refresh
+data/ApiAdapter.ts:187:webauthnCeremony(step: WebauthnStep, payload?: WebauthnBody) { return this.req<WebauthnResult>("webauthnCeremony", [step], { body: payload }); } // TODO(BACKEND: §4.1) POST /auth/webauthn/{step}
+data/ApiAdapter.ts:188:getSession() { return this.req<Session>("getSession"); } // TODO(BACKEND: §4.1) GET /session
+data/ApiAdapter.ts:189:revokeDevice(id: string, opts: HighRiskOpts) { return this.req<void>("revokeDevice", [id], { body: opts }); } // TODO(BACKEND: §4.1) POST /devices/{id}/revoke — high-risk
+data/ApiAdapter.ts:190:postLock(opts: HighRiskOpts) { return this.req<{ locked: true; at: string }>("postLock", [], { body: opts }); } // TODO(BACKEND: §4.1) POST /lock — high-risk
+data/ApiAdapter.ts:191:postRecover(input: { recoveryKey: string } & HighRiskOpts) { return this.req<{ restored: true; agentsResuming: string[] }>("postRecover", [], { body: input }); } // TODO(BACKEND: §4.1) POST /recover
+data/ApiAdapter.ts:192:postPushSubscribe(input: PushSubscribeBody) { return this.req<void>("postPushSubscribe", [], { body: input }); } // TODO(BACKEND: §4.13) POST /push/subscribe
+data/ApiAdapter.ts:193:deletePushSubscription(device: string) { return this.req<void>("deletePushSubscription", [device]); } // TODO(BACKEND: §4.13) DELETE /push/subscribe/{device}
+data/ApiAdapter.ts:196:getToday(focus?: string, since?: string) { return this.req<TodayComposite>("getToday", [], { query: { focus, since } }); } // TODO(BACKEND: §4.2) GET /today?focus=&since=
+data/ApiAdapter.ts:197:getReview(anchor?: string) { return this.req<ReviewComposite>("getReview", [], { query: { anchor } }); } // TODO(BACKEND: §4.2) GET /review?anchor=
+data/ApiAdapter.ts:198:postJournal(input: { text: string; source: "voice" | "typed" }) { return this.req<BrainItem>("postJournal", [], { body: input }); } // TODO(BACKEND: §4.2) POST /journal
+data/ApiAdapter.ts:201:getActions(state: "open" | "history", opts?: { focus?: string; q?: string }) { return this.req<ActionItem[]>("getActions", [], { query: { state, ...opts } }); } // TODO(BACKEND: §4.3) GET /actions?state=&focus=&q=
+data/ApiAdapter.ts:202:getAction(id: string) { return this.req<ActionItem>("getAction", [id]); } // TODO(BACKEND: §4.3) GET /actions/{id}
+data/ApiAdapter.ts:203:postActionVerb(id: string, body: PostActionBody) { return this.req<PostActionResult>("postActionVerb", [id], { body }); } // TODO(BACKEND: §4.3) POST /actions/{id}
+data/ApiAdapter.ts:204:postActionUndo(id: string) { return this.req<ActionItem>("postActionUndo", [id]); } // TODO(BACKEND: §4.3) POST /actions/{id}/undo — 409 after the 10s window
+data/ApiAdapter.ts:205:postActionReopen(id: string) { return this.req<ActionItem>("postActionReopen", [id]); } // TODO(BACKEND: §4.3, A-31) POST /actions/{id}/reopen — not in CONTRACT_v2.md
+data/ApiAdapter.ts:206:putActionDraft(id: string, draft: { subject?: string; body: string }) { return this.req<ActionItem>("putActionDraft", [id], { body: draft }); } // TODO(BACKEND: §4.3) PUT /actions/{id}/draft
+data/ApiAdapter.ts:207:postInsightAction(id: string, action: "block" | "leave") { return this.req<Insight>("postInsightAction", [id], { body: { action } }); } // TODO(BACKEND: §4.3) POST /insights/{id}
+data/ApiAdapter.ts:210:getCalendar(view: CalendarView, anchor: string, focus?: string) { return this.req<{ events: CalEvent[]; gaps: FreeGap[] }>("getCalendar", [], { query: { view, anchor, focus } }); } // TODO(BACKEND: §4.4) GET /calendar?view=&anchor=&focus=
+data/ApiAdapter.ts:211:getEvent(id: string) { return this.req<CalEvent>("getEvent", [id]); } // TODO(BACKEND: §4.4) GET /events/{id}
+data/ApiAdapter.ts:212:patchEvent(id: string, patch: Partial<CalEvent>) { return this.req<CalEvent>("patchEvent", [id], { body: patch }); } // TODO(BACKEND: §4.4) PATCH /events/{id}
+data/ApiAdapter.ts:213:deleteEvent(id: string) { return this.req<void>("deleteEvent", [id]); } // TODO(BACKEND: §4.4) DELETE /events/{id}
+data/ApiAdapter.ts:214:postCalendarPropose(input: { gapStart: string; title: string; attendee?: string }) { return this.req<{ status: "drafted-not-sent" }>("postCalendarPropose", [], { body: input }); } // TODO(BACKEND: §4.4) POST /calendar/propose — never sends
+data/ApiAdapter.ts:217:getTasks(query: TaskFilterQuery, since?: string) { return this.req<Task[]>("getTasks", [], { query: { ...query, since } }); } // TODO(BACKEND: §4.5) GET /tasks?focus=&slice=&view=&q=&filters=&since=
+data/ApiAdapter.ts:218:getTask(id: string) { return this.req<Task>("getTask", [id]); } // TODO(BACKEND: §4.5) GET /tasks/{id}
+data/ApiAdapter.ts:219:postTask(input: Omit<Task, "id" | "activity" | "subtasks">) { return this.req<Task>("postTask", [], { body: input }); } // TODO(BACKEND: §4.5) POST /tasks
+data/ApiAdapter.ts:220:patchTask(id: string, patch: Partial<Task>) { return this.req<Task>("patchTask", [id], { body: patch }); } // TODO(BACKEND: §4.5) PATCH /tasks/{id} — records an undo token
+data/ApiAdapter.ts:221:putTask(id: string, full: Task) { return this.req<Task>("putTask", [id], { body: full }); } // TODO(BACKEND: §4.5) PUT /tasks/{id} — save-on-close, appends activity
+data/ApiAdapter.ts:222:patchSubtask(taskId: string, subtaskId: string, patch: SubtaskPatch) { return this.req<Task>("patchSubtask", [taskId, subtaskId], { body: patch }); } // TODO(BACKEND: §4.15) PATCH /tasks/{id}/subtasks/{sid}
+data/ApiAdapter.ts:223:deleteSubtask(taskId: string, subtaskId: string) { return this.req<Task>("deleteSubtask", [taskId, subtaskId]); } // TODO(BACKEND: §4.15) DELETE /tasks/{id}/subtasks/{sid} — a tombstone is kept for the undo window
+data/ApiAdapter.ts:224:postSubtask(taskId: string, input: SubtaskBody) { return this.req<Task>("postSubtask", [taskId], { body: input }); } // TODO(BACKEND: §4.5) POST /tasks/{id}/subtasks
+data/ApiAdapter.ts:225:postTaskDelegate(id: string, to?: TaskOwner, scope?: string) { return this.req<Task>("postTaskDelegate", [id], { body: { to, scope } }); } // TODO(BACKEND: §4.5) POST /tasks/{id}/delegate — sets owner, delegatedAt, delegated and work
+data/ApiAdapter.ts:226:postTaskReport(id: string, verb: "accept" | "revise" | "teach", note?: string) { return this.req<TaskReport>("postTaskReport", [id], { body: { verb, note } }); } // TODO(BACKEND: §4.5) POST /tasks/{id}/report
+data/ApiAdapter.ts:227:postTaskComplete(id: string, includeSubtasks: boolean) { return this.req<Task>("postTaskComplete", [id], { body: { includeSubtasks } }); } // TODO(BACKEND: §4.15) POST /tasks/{id}/complete — cascades to open subtasks when asked
+data/ApiAdapter.ts:228:postTaskAccept(id: string) { return this.req<Task>("postTaskAccept", [id]); } // TODO(BACKEND: §4.5) POST /tasks/{id}/accept
+data/ApiAdapter.ts:229:getTasksWaiting(focus?: string) { return this.req<{ who: string; what: string; days: number; note?: string; taskId: string }[]>("getTasksWaiting", [], { query: { focus } }); } // TODO(BACKEND: §4.5) GET /tasks/waiting?focus=
+data/ApiAdapter.ts:230:getColumns() { return this.req<Column[]>("getColumns"); } // TODO(BACKEND: §4.15) GET /tasks/columns — Twenty's kanban field
+data/ApiAdapter.ts:231:getSlicers() { return this.req<Slicer[]>("getSlicers"); } // TODO(BACKEND: §4.15) GET /slicers
+data/ApiAdapter.ts:232:putSlicers(next: Slicer[]) { return this.req<Slicer[]>("putSlicers", [], { body: next }); } // TODO(BACKEND: §4.15) PUT /slicers — the whole set at once
+data/ApiAdapter.ts:233:postTaskNudge(id: string) { return this.req<{ draftRef: string }>("postTaskNudge", [id]); } // TODO(BACKEND: §4.5) POST /tasks/{id}/nudge — never sends
+data/ApiAdapter.ts:234:postUndo() { return this.req<{ undone: string | null }>("postUndo"); } // TODO(BACKEND: §4.5) POST /undo
+data/ApiAdapter.ts:235:putLabels(noun: LabelNoun, id: string, labels: { silo: Silo; types: LabelType[] }, reason?: string) { return this.req<void>("putLabels", [noun, id], { body: { ...labels, reason } }); } // TODO(BACKEND: §4.5) PUT /{noun}/{id}/labels — v1.2 §12.1 kept
+data/ApiAdapter.ts:238:postBrainDump(input: BrainDumpBody) { return this.req<DumpResult>("postBrainDump", [], { body: input }); } // TODO(BACKEND: §4.6) POST /brain/dump — idempotent on offlineId
+data/ApiAdapter.ts:239:getBrainLatest(focus?: string, since?: string) { return this.req<BrainItem[]>("getBrainLatest", [], { query: { focus, since } }); } // TODO(BACKEND: §4.6) GET /brain/latest?focus=&since=
+data/ApiAdapter.ts:240:putBrainItem(id: string, patch: Partial<BrainItem>) { return this.req<BrainItem>("putBrainItem", [id], { body: patch }); } // TODO(BACKEND: §4.6) PUT /brain/items/{id}
+data/ApiAdapter.ts:241:getBrainItem(id: string) { return this.req<BrainItem>("getBrainItem", [id]); } // TODO(BACKEND: §4.18) GET /brain/items/{id}
+data/ApiAdapter.ts:242:getBrainItemVersions(id: string) { return this.req<BrainItemVersion[]>("getBrainItemVersions", [id]); } // TODO(BACKEND: §4.6) GET /brain/items/{id}/versions
+data/ApiAdapter.ts:243:getBrainSearch(q: string) { return this.req<{ answer: FindAnswer; results: FindResult[] }>("getBrainSearch", [], { query: { q } }); } // TODO(BACKEND: §4.6) GET /brain/search?q=
+data/ApiAdapter.ts:244:getSearch(query: { q: string; focus?: string; sensitivity?: string }) { return this.req<SearchResponse>("getSearch", [], { query }); } // TODO(BACKEND: §4.19) GET /search?q=&focus=&sensitivity=
+data/ApiAdapter.ts:245:getChatThread() { return this.req<ChatThread>("getChatThread", []); } // TODO(BACKEND: §4.18) GET /chat/thread
+data/ApiAdapter.ts:246:postChat(text: string) { return this.req<{ reply: string; sources: string[] }>("postChat", [], { body: { text } }); } // TODO(BACKEND: §4.6) POST /chat
+data/ApiAdapter.ts:247:getMemoryProposals(focus?: string) { return this.req<MemoryProposal[]>("getMemoryProposals", [], { query: { focus } }); } // TODO(BACKEND: §4.6) GET /memory/proposals?focus=
+data/ApiAdapter.ts:248:getMemoryHistory() { return this.req<MemoryHistoryEntry[]>("getMemoryHistory"); } // TODO(BACKEND: §4.18) GET /memory/history
+data/ApiAdapter.ts:249:getReplies() { return this.req<Reply[]>("getReplies"); } // TODO(BACKEND: §4.18) GET /brain/replies
+data/ApiAdapter.ts:250:patchReply(id: string, read: boolean) { return this.req<Reply>("patchReply", [id], { body: { read } }); } // TODO(BACKEND: §4.18) PATCH /brain/replies/{id}
+data/ApiAdapter.ts:251:postMemoryProposal(id: string, verb: "ok" | "edit", text?: string) { return this.req<MemoryProposal>("postMemoryProposal", [id], { body: { verb, text } }); } // TODO(BACKEND: §4.6) POST /memory/proposals/{id}
+data/ApiAdapter.ts:252:undoMemoryProposal(id: string) { return this.req<MemoryProposal>("undoMemoryProposal", [id]); } // TODO(BACKEND: §4.6, A-26) POST /memory/proposals/{id}/undo — not in CONTRACT_v2.md; mirrors /actions/{id}/undo so BR-06's accept is undoable
+data/ApiAdapter.ts:253:getMemoryHitRate() { return this.req<MemoryHitRate>("getMemoryHitRate"); } // TODO(BACKEND: §4.6) GET /memory/hitrate — V2.1 feed, mock returns the fixture
+data/ApiAdapter.ts:256:getLife(focus?: string) { return this.req<{ goals: Goal[]; habits: Habit[]; habitLogs: HabitLog[]; people: Person[]; money: MoneyRow[]; moneyDue: MoneyDue[]; learning: LearningItem[] }>("getLife", [], { query: { focus } }); } // TODO(BACKEND: §4.7) GET /life?focus=
+data/ApiAdapter.ts:257:getGoals(focus?: string) { return this.req<Goal[]>("getGoals", [], { query: { focus } }); } // TODO(BACKEND: §4.20) GET /goals?focus=
+data/ApiAdapter.ts:258:putGoals(goals: Goal[]) { return this.req<Goal[]>("putGoals", [], { body: { goals } }); } // TODO(BACKEND: §4.20) PUT /goals — the whole set at once
+data/ApiAdapter.ts:259:getGoalsHistory(focus?: string) { return this.req<Goal[]>("getGoalsHistory", [], { query: { focus } }); } // TODO(BACKEND: §4.20) GET /goals/history
+data/ApiAdapter.ts:260:getGoal(id: string) { return this.req<GoalComposite>("getGoal", [id]); } // TODO(BACKEND: §4.20) GET /goals/{id} — with its tasks and deliverables
+data/ApiAdapter.ts:261:getHabits(includeArchived?: boolean) { return this.req<Habit[]>("getHabits", [], { query: { includeArchived: includeArchived === true ? "true" : undefined } }); } // TODO(BACKEND: §4.7) GET /habits?includeArchived=
+data/ApiAdapter.ts:262:putHabits(habits: Habit[]) { return this.req<Habit[]>("putHabits", [], { body: { habits } }); } // TODO(BACKEND: §4.20) PUT /habits — the whole set at once
+data/ApiAdapter.ts:263:postHabitLog(habitId: string, date: string, done: boolean) { return this.req<HabitLog>("postHabitLog", [habitId], { body: { date, done } }); } // TODO(BACKEND: §4.7) POST /habits/{id}/log
+data/ApiAdapter.ts:264:getHabitStats(period: HabitStats["period"], anchor?: string) { return this.req<HabitStats>("getHabitStats", [], { query: { period, anchor } }); } // TODO(BACKEND: §4.7) GET /habits/stats?period=&anchor=
+data/ApiAdapter.ts:265:getPeople(focus?: string) { return this.req<Person[]>("getPeople", [], { query: { focus } }); } // TODO(BACKEND: §4.7) GET /people?focus=
+data/ApiAdapter.ts:266:postPersonAct(id: string, action: "draft" | "nudge" | "done") { return this.req<Person>("postPersonAct", [id], { body: { action } }); } // TODO(BACKEND: §4.7) POST /people/{id}/act — draft/nudge never send
+data/ApiAdapter.ts:267:getMoney() { return this.req<{ rows: MoneyRow[]; due: MoneyDue[]; feedNote: string }>("getMoney"); } // TODO(BACKEND: §4.7) GET /money
+data/ApiAdapter.ts:268:getHealth() { return this.req<unknown>("getHealth"); } // TODO(BACKEND: §4.7) GET /health — ghost until capabilities.healthFeed
+data/ApiAdapter.ts:269:getLearning(focus?: string) { return this.req<LearningItem[]>("getLearning", [], { query: { focus } }); } // TODO(BACKEND: §4.7) GET /learning?focus=
+data/ApiAdapter.ts:270:getLearningItem(id: string) { return this.req<LearningItem>("getLearningItem", [id]); } // TODO(BACKEND: §4.20) GET /learning/{id}
+data/ApiAdapter.ts:271:getLifeSectionConfig(id: string) { return this.req<LifeSectionConfig>("getLifeSectionConfig", [id]); } // TODO(BACKEND: §4.7) GET /life/sections/{id}/config
+data/ApiAdapter.ts:272:putLifeSectionConfig(id: string, config: Partial<LifeSectionConfig>) { return this.req<LifeSectionConfig>("putLifeSectionConfig", [id], { body: config }); } // TODO(BACKEND: §4.7) PUT /life/sections/{id}/config
+data/ApiAdapter.ts:273:revertLifeSectionConfig(id: string) { return this.req<LifeSectionConfig>("revertLifeSectionConfig", [id]); } // TODO(BACKEND: §4.7) POST /life/sections/{id}/config/revert
+data/ApiAdapter.ts:275:getSectionCatalogue() { return this.req<SectionCatalogue>("getSectionCatalogue", []); } // TODO(BACKEND: §4.10) GET /sections/catalogue
+data/ApiAdapter.ts:276:getSections(tab?: string) { return this.req<SectionConfig[]>("getSections", [], { query: { tab } }); } // TODO(BACKEND: §4.10) GET /sections?tab=
+data/ApiAdapter.ts:277:getSection(id: string) { return this.req<SectionConfig>("getSection", [id]); } // TODO(BACKEND: §4.10) GET /sections/{id}
+data/ApiAdapter.ts:278:putSection(id: string, config: Partial<SectionConfig>) { return this.req<SectionConfig>("putSection", [id], { body: config }); } // TODO(BACKEND: §4.10) PUT /sections/{id}
+data/ApiAdapter.ts:279:revertSection(id: string) { return this.req<SectionConfig>("revertSection", [id]); } // TODO(BACKEND: §4.10) POST /sections/{id}/revert
+data/ApiAdapter.ts:280:deleteSection(id: string) { return this.req<SectionConfig>("deleteSection", [id]); } // TODO(BACKEND: §4.10) DELETE /sections/{id}
+data/ApiAdapter.ts:281:proposeSection(config: SectionConfig, reason: string) { return this.req<ActionItem>("proposeSection", [], { body: { config, reason } }); } // TODO(BACKEND: §4.10) POST /sections/propose — EA only
+data/ApiAdapter.ts:284:getAgents() { return this.req<AgentRoster>("getAgents"); } // TODO(BACKEND: §4.15) GET /agents — the delegatee roster
+data/ApiAdapter.ts:285:getAgentSummary() { return this.req<AgentSummary>("getAgentSummary"); } // TODO(BACKEND: §4.8) GET /agents/summary
+data/ApiAdapter.ts:286:getAgentSpend() { return this.req<Spend>("getAgentSpend"); } // TODO(BACKEND: §4.8) GET /agents/spend
+data/ApiAdapter.ts:287:putAgentCaps(caps: { agent: string; cap: number }[], opts: HighRiskOpts) { return this.req<Spend>("putAgentCaps", [], { body: { caps, ...opts } }); } // TODO(BACKEND: §4.8) PUT /agents/caps — high-risk
+data/ApiAdapter.ts:288:getPortals() { return this.req<Portal[]>("getPortals"); } // TODO(BACKEND: §4.8) GET /portals
+data/ApiAdapter.ts:289:getAgentIssues() { return this.req<AgentIssue[]>("getAgentIssues"); } // TODO(BACKEND: §4.8) GET /agents/issues
+data/ApiAdapter.ts:290:getAgentIssue(id: string) { return this.req<AgentIssue>("getAgentIssue", [id]); } // TODO(BACKEND: §4.21) GET /agents/issues/{id}
+data/ApiAdapter.ts:291:postAgentIssueAction(id: string, action: "renew" | "run" | "open") { return this.req<AgentIssue>("postAgentIssueAction", [id], { body: { action } }); } // TODO(BACKEND: §4.8) POST /agents/issues/{id}
+data/ApiAdapter.ts:292:undoAgentIssueAction(id: string) { return this.req<AgentIssue>("undoAgentIssueAction", [id]); } // TODO(BACKEND: §4.8, A-32) POST /agents/issues/{id}/undo — not in CONTRACT_v2.md
+data/ApiAdapter.ts:293:getAgentFeed(hours = 24, since?: string) { return this.req<FeedEvent[]>("getAgentFeed", [], { query: { hours: String(hours), since } }); } // TODO(BACKEND: §4.8) GET /agents/feed?hours=&since=
+data/ApiAdapter.ts:294:getSecurityChecks() { return this.req<SecurityCheck[]>("getSecurityChecks"); } // TODO(BACKEND: §4.8) GET /security/checks — the fixed set of seven
+data/ApiAdapter.ts:295:postSecurityCheckRun(id: string) { return this.req<SecurityCheck>("postSecurityCheckRun", [id]); } // TODO(BACKEND: §4.8) POST /security/checks/{id}/run
+data/ApiAdapter.ts:296:getAgentRuns(filter?: { agent?: string; day?: string }) { return this.req<AgentRun[]>("getAgentRuns", [], { query: filter }); } // TODO(BACKEND: §4.8) GET /agents/runs?agent=&day= — v1.2 §12.3 kept
+data/ApiAdapter.ts:299:getTaskUsage(id: string) { return this.req<UsageSummary>("getTaskUsage", [id]); } // TODO(BACKEND: §4.15) GET /tasks/{id}/usage
+data/ApiAdapter.ts:300:getUsage(range?: "month" | "all") { return this.req<UsageSummary>("getUsage", [], { query: { range } }); } // TODO(BACKEND: §4.16) GET /usage?range=
+data/ApiAdapter.ts:303:getTaskFiles(id: string) { return this.req<AttachmentList>("getTaskFiles", [id]); } // TODO(BACKEND: §4.15) GET /tasks/{id}/files — the task's and every subtask's
+data/ApiAdapter.ts:304:getFiles(filter?: { q?: string; addedBy?: string; kind?: string; range?: string; taskId?: string }) { return this.req<AttachmentList>("getFiles", [], { query: filter }); } // TODO(BACKEND: §4.17) GET /files?q=&addedBy=&kind=&range=&taskId=
+data/ApiAdapter.ts:305:getFile(id: string) { return this.req<Attachment>("getFile", [id]); } // TODO(BACKEND: §4.17) GET /files/{id} — mints a short-lived signed `url`; never cache it
+data/ApiAdapter.ts:306:postFile(file: MultipartFile, fields?: { taskId?: string; subtaskId?: string; captureId?: string }) { return this.req<Attachment>("postFile", [], { multipart: { file, fields } }); } // TODO(BACKEND: §4.17) POST /files — multipart; > 25 MB → 413
+data/ApiAdapter.ts:309:getNotificationGroups() { return this.req<NotificationGroup[]>("getNotificationGroups"); } // TODO(BACKEND: §4.9) GET /settings/notifications
+data/ApiAdapter.ts:310:putNotificationGroup(id: string, devices: NotificationGroup["devices"]) { return this.req<NotificationGroup>("putNotificationGroup", [id], { body: { devices } }); } // TODO(BACKEND: §4.9) PUT /settings/notifications/{id} — locked group → 423
+data/ApiAdapter.ts:311:getQuietHours() { return this.req<QuietHours>("getQuietHours"); } // TODO(BACKEND: §4.9) GET /settings/quiet-hours
+data/ApiAdapter.ts:312:putQuietHours(q: QuietHours) { return this.req<QuietHours>("putQuietHours", [], { body: q }); } // TODO(BACKEND: §4.9) PUT /settings/quiet-hours
+data/ApiAdapter.ts:313:getSchedules() { return this.req<Schedule[]>("getSchedules"); } // TODO(BACKEND: §4.9) GET /schedules
+data/ApiAdapter.ts:314:postScheduleRun(id: string) { return this.req<Schedule>("postScheduleRun", [id]); } // TODO(BACKEND: §4.9) POST /schedules/{id}/run
+data/ApiAdapter.ts:315:postSchedulePause(id: string) { return this.req<Schedule>("postSchedulePause", [id]); } // TODO(BACKEND: §4.9) POST /schedules/{id}/pause
+data/ApiAdapter.ts:316:postScheduleResume(id: string) { return this.req<Schedule>("postScheduleResume", [id]); } // TODO(BACKEND: §4.9) POST /schedules/{id}/resume
+data/ApiAdapter.ts:317:getAutonomy() { return this.req<AutonomySettings>("getAutonomy"); } // TODO(BACKEND: §4.9) GET /settings/autonomy
+data/ApiAdapter.ts:318:getAutonomyRules() { return this.req<AutonomyRuleList>("getAutonomyRules"); } // TODO(BACKEND: §4.22) GET /settings/autonomy/rules
+data/ApiAdapter.ts:319:putAutonomyRules(rules: AutonomyRule[]) { return this.req<AutonomyRuleList>("putAutonomyRules", [], { body: { rules } }); } // TODO(BACKEND: §4.22) PUT /settings/autonomy/rules — replaces the list
+data/ApiAdapter.ts:320:postAutonomyPropose(text?: string) { return this.req<ActionItem>("postAutonomyPropose", [], { body: { text } }); } // TODO(BACKEND: §4.22) POST /settings/autonomy/propose
+data/ApiAdapter.ts:321:putAutonomy(settings: AutonomySettings) { return this.req<AutonomySettings>("putAutonomy", [], { body: settings }); } // TODO(BACKEND: §4.9) PUT /settings/autonomy — enforced server-side
+data/ApiAdapter.ts:322:getVoiceSettings() { return this.req<VoiceSettings>("getVoiceSettings"); } // TODO(BACKEND: §4.22) GET /settings/voice
+data/ApiAdapter.ts:323:putVoiceSettings(settings: VoiceSettings) { return this.req<VoiceSettings>("putVoiceSettings", [], { body: settings }); } // TODO(BACKEND: §4.9) PUT /settings/voice
+data/ApiAdapter.ts:324:getFocuses() { return this.req<Focus[]>("getFocuses"); } // TODO(BACKEND: §4.9) GET /focuses
+data/ApiAdapter.ts:325:putFocuses(focuses: Focus[]) { return this.req<Focus[]>("putFocuses", [], { body: { focuses } }); } // TODO(BACKEND: §4.9) PUT /focuses — Everything is fixed
+data/ApiAdapter.ts:326:getParameters() { return this.req<Parameter[]>("getParameters"); } // TODO(BACKEND: §4.14) GET /parameters
+data/ApiAdapter.ts:327:putParameter(key: string, value: number | boolean) { return this.req<Parameter>("putParameter", [key], { body: { value } }); } // TODO(BACKEND: §4.14) PUT /parameters/{key} — outside [min, max] is 422 { field: "value" }
+data/ApiAdapter.ts:328:proposeParameter(key: string, value: number | boolean, reason: string) { return this.req<ActionItem>("proposeParameter", [], { body: { key, value, reason } }); } // TODO(BACKEND: §4.14) POST /parameters/propose — EA only; creates a decision card, changes nothing
+data/ApiAdapter.ts:329:getLayout(tab: string) { return this.req<Layout>("getLayout", [tab]); } // TODO(BACKEND: §4.9) GET /layout/{tab}
+data/ApiAdapter.ts:330:putLayout(tab: string, layout: Partial<Layout>) { return this.req<Layout>("putLayout", [tab], { body: layout }); } // TODO(BACKEND: §4.9) PUT /layout/{tab} — pinned sections rejected on hide (422)
+data/ApiAdapter.ts:331:revertLayout(tab: string) { return this.req<Layout>("revertLayout", [tab]); } // TODO(BACKEND: §4.9) POST /layout/{tab}/revert
+data/ApiAdapter.ts:332:postLayoutEa(tab: string, sections: { order: string[]; hidden: string[] }, reason: string) { return this.req<Layout>("postLayoutEa", [tab], { body: { ...sections, reason } }); } // TODO(BACKEND: §4.9) POST /layout/{tab}/ea — a reason is required (422 without one)
+data/ApiAdapter.ts:333:getAppLayout() { return this.req<AppLayout>("getAppLayout"); } // TODO(BACKEND: §4.9) GET /layout/app
+data/ApiAdapter.ts:334:putAppLayout(layout: Partial<AppLayout>) { return this.req<AppLayout>("putAppLayout", [], { body: layout }); } // TODO(BACKEND: §4.9) PUT /layout/app
+data/ApiAdapter.ts:335:getSyncStatus() { return this.req<SyncStatus>("getSyncStatus"); } // TODO(BACKEND: §4.12) GET /sync/status
+data/ApiAdapter.ts:336:getCapabilities() { return this.req<Capabilities>("getCapabilities"); } // TODO(BACKEND: §4.9) GET /capabilities
+data/ApiAdapter.ts:337:postExport() { return this.req<{ jobId: string }>("postExport"); } // TODO(BACKEND: §4.9) POST /export
+data/ApiAdapter.ts:338:getLabelsScheme() { return this.req<unknown>("getLabelsScheme"); } // TODO(BACKEND: §4.9) GET /labels/scheme — v1.2 §12.1 kept
+data/ApiAdapter.ts:339:getLabelAudit(record: string) { return this.req<LabelAuditRow[]>("getLabelAudit", [], { query: { record } }); } // TODO(BACKEND: §4.9) GET /labels/audit?record=
+data/config.ts:11:// TODO(BACKEND: §4.1) short-lived scoped JWT per device; refresh rotation.
+data/config.ts:6:// TODO(BACKEND: §4.1) point at the VPS: e.g. "https://jstack.example.com/api/v1"
+data/pins.ts:13:// TODO(BACKEND: §4.1) e.g. { host: "jstack.example.com", pins: ["sha256/AAAA…", "sha256/BBBB…"] }
+lib/authTokens.ts:7:* // TODO(BACKEND: §4.1) POST /auth/refresh rotation wiring at go-live
+lib/highRisk.ts:44:const { nonce } = await getAdapter().getAuthNonce(); // TODO(BACKEND: §4.1) server verifies freshness + single use
+lib/webauthnGate.ts:7:* // TODO(BACKEND: §4.1) GET /auth/nonce challenge + POST /auth/webauthn/assert

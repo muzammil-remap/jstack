@@ -1,0 +1,168 @@
+# KNOWN_GAPS.md — what JSTACK V2.3 does not do, and whose it is
+
+One line per gap: what, the file, why it is open, and whose it is. **REMAP** is the server side, or a code task you inherit. **Josh** is a product or design decision. **A-6**, this build's last fixing row, has run — every row it owned is fixed and gone from this file, or re-filed below under REMAP or Josh, so no row here says A-6 any more. A row here is disclosed, not passed. This file merges `history/v2/CARRIED_DEFECTS_v2.md`, `history/v21/CARRIED_DEFECTS_v21.md` and `CARRIED_DEFECTS_v22.md` (the measurements and full reasoning stay there), `history/v2/NEEDS_JOSH.md`, the decision files' deferred lists, and `CONTRACT.md` §8's open questions. Security-class and data-loss defects are never carried — the release is blocked on them (`AUDIT_v22.md`, ADR-60). A row v2.3 fixed is gone from here, marked CLOSED at v2.3 in `CARRIED_DEFECTS_v22.md` beside its `BUGLOG_v23.md` row.
+
+## 1. Still open in the app
+
+### From the v2.3 code review and QA (Review n is the review's finding n)
+
+| ID | What | File | Why open | Whose |
+|---|---|---|---|---|
+| Review 4 | A `401` neither relocks nor refreshes: the only `401` handled is a refresh answered as reuse; the access token's lifetime (`tokenTtlSeconds`) is stored but used nowhere, the refresh assumes 900 s, and nothing makes it single-flight — and the obvious fix, refreshing on a `401` from parallel loads or two tabs, presents one rotated refresh token twice, which reuse detection turns into the emergency state | `jstack-app/data/ApiAdapter.ts`, `jstack-app/lib/authTokens.ts`, `jstack-app/stores/session.ts` | Fifteen minutes after sign-in every call answers `401`: the app stays unlocked on stale data, writes fail through each store's own convention, replay holds the queue with no unlock prompt, and the naive refresh trips reuse detection into an emergency state only the recovery key clears. It needs the real token flow; LK-05 specifies the relock (`02_ACCEPTANCE_TESTS_v22.md`) | REMAP |
+| Review 7 | Server events come only from the mock: `jstack-app/lib/serverEvents.ts` listens to the mock's in-process bus whatever transport is live, and `jstack-app/data/provider.ts` imports the mock statically, so a production web bundle carries `jstack-app/data/mock/`, its fixtures and its test routes | `jstack-app/lib/serverEvents.ts`, `jstack-app/data/provider.ts` | With a server connected, nothing that changes server-side reaches the screen, the remote sign-out included; the event source (§4.13) is the server's to add behind `jstack-app/data/provider.ts`, and a build with a base URL set should leave the mock out | REMAP |
+| Review 13 | `PATCH /tasks/{id}` merges the body as it arrives, and `TaskPatch` is `Partial<Task>`, so `id`, `labels`, `completedAt`, `activity` and `subtasks` are patchable where `CONTRACT.md` lists eight fields | `jstack-app/data/mock/handlers/tasks.ts`, `jstack-app/data/types.ts` | A server copied from the mock would let a PATCH move a task into another silo or give it another task's id; the server accepts the eight fields only | REMAP |
+| Review 14 | The stores have no single error convention: loads record their failure now (A-2), but writes throw, return a refusal, return a boolean or record `lastError`; about 140 `void action()` calls have no `unhandledrejection` handler behind them; only the search store drops an answer that arrives out of order, and Done's search does not; and `jstack-app/data/provider.ts` and `jstack-app/stores/session.ts` import each other | `jstack-app/stores/settings.ts`, `jstack-app/stores/search.ts`, `jstack-app/components/tasks/DoneSearch.tsx`, `jstack-app/data/provider.ts` | Over HTTP a write that throws fails silently at most call sites; the fix is one error convention, a request token on racing loads, and the provider reading `online` through a registered source | REMAP |
+| Review 15 | One slot, two views: the Agents card and its history search share one `history` list, the Habits card and Trends share `habitStats`, and `session.modal` holds one name, so a nested dialog (Open in Dropbox from a file) replaces its opener | `jstack-app/components/agents/HistoryDialog.tsx`, `jstack-app/components/life/TrendsDialog.tsx`, `jstack-app/stores/session.ts`, `jstack-app/layout/dialogs.tsx` | Reachable on the mock today; each dialog's results in a slot of its own, and a stack for nested dialogs | REMAP |
+| Review 17 | The conformance verdict has limits: `authenticate()` registers a placeholder key a real server refuses, and there is no `--token`; an `{id}` route that 404s for every id is a skip, and a run with nothing failed exits 0; the runner parses the body before it checks the status; the schema validator accepts unknown keys and ignores `nullable` beside a `$ref` | `jstack-app/tools/conformance.mjs`, `jstack-app/tools/schema-validate.mjs` | It can pass a half-built server and fail a secured one; a `--token` option, a floor on passes and strict keys close it | REMAP |
+| Review 20 | On a phone the idle lock never re-arms on a touch: `installAutoLock` listens only to `AppState` there, so the lock comes down `lock.afterMinutes` after the last parameters load whatever Josh is doing, and the relock stops the microphone mid-dictation. Unchecked on a device as well: whether `crypto.getRandomValues` exists on the native runtime, and a landscape iPad at 1180 px counts as a desktop | `jstack-app/lib/autoLock.ts`, `jstack-app/lib/encryptedStore.ts` | Found by reading, not on a device; the device check watches for all three, and the iPad threshold is Josh's call (ADR-41). For `crypto.getRandomValues` the app now guards itself (WPI-2), and `HANDOVER.md` §7, "Native crypto — what to add", says what to add | REMAP |
+| WPI-2 (rest) | On a phone with no secure store, the unconfirmed emergency lock holds while the app is open but is not restored at the next launch: the unconfirmed flag (`jstack-app/lib/emergencyLock.ts`, the write at row 66) writes and reads through the same encrypted store WPI-2 already guards, so a store that cannot keep anything cannot keep this either | `jstack-app/lib/emergencyLock.ts` | The in-memory lock still holds for the running session; only the flag that survives a reload is lost, and only on the runtime WPI-2 found with no secure random source | REMAP |
+| WPJ-3 (rest) | On an iPhone with `lock.lockOnHideTouch` on, the first dictation's microphone-permission prompt reports `AppState` `"inactive"`; the auto-lock treats any non-`"active"` state as a hide and relocks, so JSTACK may lock and end the very session it just asked permission for — the microphone's own session-end listener already carves out `"inactive"` for exactly this reason (WPJ-3), the auto-lock does not yet | `jstack-app/lib/autoLock.ts`, `jstack-app/lib/mic.ts` | Device-only, unproven on a device: REMAP's phone check watches for it (Josh, 15 Sep: that is technical, ask REMAP); if it reproduces, the fix (ignoring "inactive" the way the microphone listener does) is REMAP's | REMAP |
+| A4R11-01 (flake) | Its e2e case can go red at w1366 when the second keydown reaches the handler after the 800 ms settle window — 1 run in 31 tonight, 30 repeats green at three commits | `jstack-app/e2e/core/decisions.spec.ts` | A timing window in the test's settle wait, not in the app; carried by the audit (`AUDIT_v23.md` round 2) | REMAP |
+| GS-02 (rest) | Find restores no focus on close: the dialog's `opener` stays unset when a child already holds focus, so closing Find leaves focus where the child left it | `jstack-app/lib/dialogFocus.ts` | GS-02's own row fixed the field's autofocus and WPC-3c the single-handle restore; the restore on close is the remainder, carried by the audit (`AUDIT_v23.md` round 2) | REMAP |
+| WPR-4 (phone) | What only a real phone proves of WPR-4: on iOS Safari and Brave, no zoom when Brain's field or Find takes focus, the tab bar and the orb riding above the keyboard, and nothing left zoomed or cropped after Enter — Playwright's WebKit has no soft keyboard and never zooms on focus | `jstack-app/lib/keyboard.ts`, `jstack-app/theme/ui/fields.tsx` | Josh's device check (`DEVICE_RUNBOOK.md` §2); a failure there is REMAP's to fix | Josh |
+| C-3b (rest) | On native, a dialog carries no modal semantics for VoiceOver: React Native has no dialog role, and `accessibilityViewIsModal` on each dialog hides a second open overlay, which this app allows | `jstack-app/app/_layout.tsx`, `jstack-app/lib/dialogFocus.ts` | The flag belongs once, on the open-overlay region beside its `inert` call; about an hour | REMAP |
+| WPB-11 (rest) | On iOS a recognition that takes longer than 1.5 s (`NATIVE_END_WAIT_MS`) to finish still loses the next start: it fails safe — ends off, released, never claiming a live microphone — but the microphone asked for does not arrive | `jstack-app/lib/mic.ts` | Seen only on a device: Josh's device check watches for it, and the fix is REMAP's | Josh |
+
+### From the V2.2 audit (`CARRIED_DEFECTS_v22.md` §4–§11, measured in `AUDIT_v22.md`)
+
+| ID | What | File | Why open | Whose |
+|---|---|---|---|---|
+| A4R5-08 | A write reloads its tab without the active focus, so the list shows everything while the chip says Work | `jstack-app/stores/life.ts`, `jstack-app/stores/today.ts`, `jstack-app/stores/brain.ts`, `jstack-app/lib/serverEvents.ts`, `jstack-app/stores/sync.ts` | Not a wrong write; five stores' reloads, carried past the audit cap | REMAP |
+| A4R5-09 | Brain's saved layout names the retired `rules` section, so Arrange cannot move three rows | `jstack-app/data/mock/fixtures/layouts.json`, `jstack-app/components/chrome/ArrangeDialog.tsx` | Fails closed (the route refuses) | REMAP |
+| A4R5-12 | Find prints raw enum values (`in_progress`, `all · ask`) | `jstack-app/data/mock/search.ts` | Copy on one surface | REMAP |
+| A4R6-07 | After a completion's Undo the task's activity reads "Saved" above "Completed" | `jstack-app/data/mock/handlers/tasks.ts` | The fields revert exactly; the log's wording does not | REMAP |
+| A4R5-10, A4R5-11, A4R5-14, A4R6-09, A4R7-10 | Guards that check less than their headers say, and fix halves no test covers | `jstack-app/tests/unit/qaReport22.test.ts`, `jstack-app/tests/unit/contract.test.ts`, `jstack-app/tests/unit/search.test.ts` | The code is right today; the guard would not notice if it stopped being | REMAP |
+| A4R5-13 | Two prose claims that `/goals` has no caller | `QA_REPORT_v22.md` §2, `jstack-app/evidence/wiring-orphans.json` | Prose residue | REMAP |
+| A4R8-04 | An EA proposal for a live section hides it at once, and Never retires it | `jstack-app/data/mock/handlers/sections.ts` | Only the test rig reaches the EA's route here; the contract needs one sentence | REMAP |
+| A4R8-06 | Undoing a habit tick on a day never logged writes a miss | `jstack-app/stores/life.ts` | The contract has no way to remove a log | REMAP |
+| A4R8-08, A4R8-10 | Three fix halves no test guards; a refused capture with no text is listed as raw JSON | `jstack-app/components/brain/Entry.tsx`, `jstack-app/data/transport/outbox.ts` | Each holds or is harmless on this build | REMAP |
+| A4R9-06 | Completing a task another device already completed offers an Undo that reopens their completion | `jstack-app/stores/taskCard.ts` | Needs two devices; the server's answer does not say the completion was not this one | REMAP |
+| A4R9-08 | After a second answer to a rule card whose rule Josh rewrote, the toast says "Rule added" though nothing was added | `jstack-app/stores/today.ts` | Only the test rig reaches a second answer to a rule card here | REMAP |
+| A4R11-04 | A reload while a share is still on its way re-reads the fragment and posts it again over HTTP (expo-router's boot sync puts the fragment back 7 ms after the route clears it) | `jstack-app/app/capture.tsx` | On the mock a reload reseeds the db, so no duplicate survives. Since v2.3 A-8 the second post carries the same `offlineId`, read off the share's words and link (`jstack-app/lib/shareDraft.ts`), so a server that dedupes files it once; the dedupe is the row in §3 | REMAP |
+| A4R11-05 | Seven halves of round 10's fixes that no test guards | `jstack-app/tests/unit/writePaths.test.ts`, `jstack-app/tests/native/screens.test.tsx`, `jstack-app/tests/unit/mic.test.ts` | Each holds in the app; the gap is the guard | REMAP |
+| A4R6-10 | Over HTTP, undoing an edit to a field that had no value sends nothing (JSON drops `undefined`) | `jstack-app/lib/optimistic.ts`, `jstack-app/data/transport/http.ts` | The contract has no way to clear a field in a `PATCH` yet (an explicit `null` is the obvious one) | REMAP |
+| A4R7-09 | A card answered from Telegram changes the card and applies no effect | `jstack-app/data/mock/handlers/mirror.ts` | The mirror is a demo of a second channel; the backend's must run the same effect as the app's verb | REMAP |
+| A4R7-13 | A habit archived on another device comes back when this device saves an unrelated edit | `jstack-app/stores/lifeEdits.ts` | Needs two devices | REMAP |
+| A4R2-07 | Thirty ids marked `control` in `history/v22/CONTROLS_v22.md` are not documented in `history/v2/CONTROLS_v2.md` | `history/v22/CONTROLS_v22.md` | Documentation completeness, no behaviour | REMAP |
+| A4R7-06 (rest) | Ticking a task whose completion is still queued queues a second completion | `jstack-app/stores/taskCard.ts` | The server writes one completion however often it arrives (`BUGLOG_v23.md` WPA-9) | REMAP |
+
+### From the V2.2 ux review (`CARRIED_DEFECTS_v22.md` §1–§3, measured in `jstack-app/evidence/ux-review.md`)
+
+| ID | What | File | Why open | Whose |
+|---|---|---|---|---|
+| S6-08, UX-G | Only config-record sections carry `configure`; Goals and Habits carry `edit` | `jstack-app/layout/SectionRenderer.tsx` | One word for both changes what a tap does | Josh |
+| S6-32 | Two expiry grammars in one Needs-you stack | `jstack-app/lib/time.ts` | The pack has no beyond-a-week form | Josh |
+| S6-27(b) | Money's footer reads `feed: Redbark, V2.1` | `jstack-app/data/mock/fixtures/life.json` | LF-06 pins the wording | Josh |
+| S6-26 | Most dialogs are 900 px wide whatever they hold | `jstack-app/layout/dialogKit.tsx` | RL-06 records 66vw, max 900 | Josh |
+| S6-33 | "what this is based on" is a lower-case label | `jstack-app/components/detail/ReplyDetail.tsx` | Copy under the pin budget | Josh |
+| S6-24 | The compact Gantt's end dates use the 9 px grid kind | `jstack-app/components/tasks/GanttMini.tsx` | A token decision for the pack | Josh |
+| Focus ring | The field's ring is Accent ink where the pack names Accent | `jstack-app/theme/ui/fields.tsx` | One token either way | Josh |
+| S6-53, S6-60 | The filtered Tasks empty states say what is absent, twice | `jstack-app/components/tasks/TaskViews.tsx` | A copy and surface decision | Josh |
+| S6-56 | Calendar's view links carry two colours in one run | `jstack-app/components/today/CalendarList.tsx` | A dress decision | Josh |
+| A62-01 | With a conversation live, the rail's line wraps and its middle dot is stranded — trailing, or leading if bound to the phrase | `jstack-app/components/chrome/HealthLine.tsx` | The 200 px rail cannot hold the sentence; the two answers contradict each other's acceptance rows (S6-18 pins the words, S6-59 proposed dropping the spend) | Josh |
+| S6-58 | Trends is half empty on Week and All time | `jstack-app/components/life/TrendsDialog.tsx` | A fixed body height was the earlier ask | Josh |
+| S6-61 | Rule fixtures are punctuated two ways | `jstack-app/data/mock/fixtures/autonomy-rules.json` | Fixture copy: sentences a person typed on different days, and the four with full stops are pinned verbatim by the ST-1 migration test | Josh |
+| S6-62 | The capture field's control row moves 311 px when it expands | `jstack-app/theme/ui/fields.tsx` | S-2b's decision | Josh |
+| S6-63 | The disclosure chevron's anti-aliased stroke measures 2.02:1 | `jstack-app/theme/ui/label.tsx` | An icon change on every heading | Josh |
+| N1-02, ST1-08 | Brain's widest column is its emptiest; at 1920 content ends 405 px above the fold | `jstack-app/layout/registry.tsx` | The approved Brain layout (`history/v2/BRAIN_PROPOSAL.md`) | Josh |
+| N1-06 | The dump field's ground is the card's own fill | `jstack-app/components/brain/Entry.tsx` | The pack's rule for a field on a card | Josh |
+| N1-08 | Replies print each answer in full | `jstack-app/layout/sourcesBrain.ts` | The proposal's one-line row is Josh's | Josh |
+| D16 | A same-day custom range leaves the Gantt's only week caption clipped at 23 px of the 31 it wants | `jstack-app/lib/ganttAxis.ts` | One band, no neighbour to absorb it. The caption CLIPS on one line rather than wrapping out of its band, so the now-rule is never crossed; every alternative trades it for a worse one on a degenerate window | REMAP |
+| D-1 | No ux round has signed off on the exact pass that ships — each round that found something worth fixing moved the source under itself | `jstack-app/evidence/ux-review.md`, `history/v22/demo/v22` | Rounds 3 and 4 both read shipping frames and both ended `DEFECTS FOUND`; everything they named is fixed or carried here with an owner. What is open is the loop's shape, not an unexamined frame: fixing the last round's finding re-takes the pass it judged. The next build's ux round opens on a pass nothing has changed under it | REMAP |
+| D-5 | SP-04's MARGIN clause is unmet on ten files — every HARD cap holds and `jstack-app/tests/unit/sizes.test.ts` is green | `jstack-app/layout/sources.ts`, `jstack-app/layout/dialogs.tsx`, `jstack-app/stores/session.ts` and seven more | The honest answer is a split, not a trim, and each split is its own change with its own tests — D-6 forced exactly that on `stores/voice.ts` (187 now, its mic lifecycle in `lib/talkMic.ts` and, since v2.3 B-3, its session half in `lib/talkSession.ts`) | REMAP |
+| A63-02 | The compact Needs-you row truncates the bill's amount mid-number (`$1,1…` at 1024) | `jstack-app/components/today/WaitingRow.tsx`, `jstack-app/data/mock/fixtures/actions.json` | The amount and due date are baked into `title` — S6-22's class. The fix is `amount`/`dueAt` as fields, a fixture-schema change with a contract regeneration behind it; the title needs 257 px and the row gives 175 | REMAP |
+| A64-02 | A Needs-you card's why-line ends a line on a stranded middle dot at 393 and 1024 | `jstack-app/components/today/DecisionCard.tsx` | The line must wrap and the pack forbids the LEADING middle dot by name, so the trailing form is what is left — A62-01's question on another surface. Closing it means saying less on a line whose words S6-18 and DC-09 pin | Josh |
+| A64-03 | Habits' Year tab draws 18 week-columns under a `2026` selector and full-year denominators | `jstack-app/components/life/TrendsDialog.tsx` | The grid draws the weeks the fixture has logs for while the denominators count the year; which of the two should move is what a Year tab is for, with S6-58 on the same surface | REMAP |
+| A64-04 | `tasks-filtered` says `Nothing here for this focus.` under a count the focus did not empty | `jstack-app/components/tasks/TaskViews.tsx` | The count is the focus's and the empty state is the slicers'; both sentences are true about different filters. Copy, beside S6-53 and S6-60 on the same surface | Josh |
+| N1-11 | Section labels sit mid-gap (20/20) where the pack wants 16/8 | `jstack-app/theme/ui/section.tsx` | One token pair on every tab | Josh |
+| N1-13 | At 1920 the mic orb floats 142 px outside the content | `jstack-app/components/chrome/Orb.tsx` | The pack's fixed corner | Josh |
+| ST1-07 | The notification matrix's label column is wide and its switch columns narrow | `jstack-app/components/settings/Notifications.tsx` | C-5's content-sized column | Josh |
+| B2-05 | Task titles are Instrument Sans where card titles are Source Serif | `jstack-app/components/tasks/BoardCard.tsx` | The reviewer was unsure it is a defect | Josh |
+
+Declined with a decision on record, listed so none is on no list: S6-09 (Talk's state line), S6-28 (the board's clip), S6-15 (`sensitive` in Alert, RP-06), S6-21 (the feed's Renew, AG-05), S6-06 (the word "Sync", A-113), the "Slicers" hint (a control, A-118) — `CARRIED_DEFECTS_v22.md` §1–§2.
+
+### Acceptance and wiring gaps (`QA_REPORT_v22.md`)
+
+| What | File | Why open | Whose |
+|---|---|---|---|
+| CD-06, CD-07, CD-08 and CD-15 are PARTIAL; LV-02 and LV-08 are PARTIAL in §2 with the reason in the cell; LV-07 is a DEVIATION | `QA_REPORT_v22.md` §1–§2, `jstack-app/tools/qa-rows.mjs` | Each cell says what is missing | REMAP |
+| Eighteen routes have no caller, all older than tag `v2.1` | `jstack-app/evidence/wiring-orphans.json` | Several are surfaces the app has not grown into; each is named there | REMAP |
+| The e2e swap mode (the suite against a real server) has not run since tag `v1.2` — tried again at D-10 against `pnpm serve:mock --test` (v2.3): `e2e/helpers.ts` and `lib/testHook.ts` call `POST /__test__/reset`, `POST /__test__/clock` and `GET /__test__/db` at the server's ROOT (`new URL(API_BASE_URL).origin`, outside `/api/v1`) — none of the three exist anywhere in `data/mock/`. They are not missing routes in the sense the other rig routes (`/__test__/work`, `/__test__/user`, …) are real and just unwired for HTTP: these three were never implemented at all, in-process or over HTTP: `data/mock/db.ts`'s own `reset()` and `setClockOffsetMs()` are called directly by Jest, never through a route, and nothing anywhere serves a raw db snapshot. Building them is a new, root-level (not `/api/v1`) debug surface, which is past what D-10 scoped as "repair only what is small" | `jstack-app/e2e/helpers.ts`, `jstack-app/lib/testHook.ts`, `jstack-app/tools/build-web.mjs`, `jstack-app/tools/serve-mock.mjs` | The reference server it ran against was retired; the conformance runner is the proven check | REMAP |
+| Native dictation is wired (`BUGLOG_v23.md` WPB-4) and transcribes on the device only (WPF-14), but is not yet heard on a phone: `expo-speech-recognition` backs the one microphone owner on iOS and Android, proven in the native Jest lane with the module mocked. Whether a phone hears a sentence — and how often iOS hands Talk a final result — is the device check (`DEVICE_RUNBOOK.md` §3) | `jstack-app/lib/mic.ts`, `jstack-app/lib/talkMic.ts`, `jstack-app/app.json` | A mocked module is not a microphone; the check is Josh's, on his own development build | Josh |
+| Sharing a FILE into the installed PWA (Android, ChromeOS) is not offered: the share target takes the title, text and link only | `jstack-app/tools/build-web.mjs`, `jstack-app/public/sw.js` | Nothing received the files it used to accept (A4R9-03); a file comes in through the attach control or the Dropbox inbox | Josh |
+
+### From V2.1 and V2, still standing (`history/v21/CARRIED_DEFECTS_v21.md`, `history/v2/CARRIED_DEFECTS_v2.md`)
+
+The five V2.1 rows that stand by decision (CD-10 in `02_ACCEPTANCE_TESTS_v22.md`), each with the lever that would change it:
+
+| ID | What | File | Why it stands | Whose |
+|---|---|---|---|---|
+| UX-A | The board's lane shells stretch to the strip's height | `jstack-app/components/tasks/Board.tsx` | Matches mock v11's grid (lever: `alignItems: "flex-start"` on the strip) | Josh |
+| UX-C | At 393 dialogs are full-bleed while the Settings sheet insets 12 px | `jstack-app/components/chrome/Dialog.tsx` | RL-06 specifies full-screen phone dialogs (lever: the same inset on the phone branch) | Josh |
+| UX-E | Dialog titles are 20 px against the page title's 32 | `jstack-app/theme/ui/textKinds.ts` | `jstack-app/design/DISCREPANCIES.md` row 15, a scale decision (lever: the `heading` kind's size) | Josh |
+| UX-G | A frame tells a config record from a component by its right-slot word | `jstack-app/layout/SectionRenderer.tsx` | Josh's product call, as S6-08 above (lever: one verb for both) | Josh |
+| UX-K | On a phone the demo watermark's chip floats over content mid-scroll | `jstack-app/components/chrome/DemoWatermark.tsx` | Demo-only chrome; at rest the page padding clears it (lever: a translucent chip) | Josh |
+
+Every other V2.1 carried row is closed by a V2.2 row (`02_ACCEPTANCE_TESTS_v22.md` §3, CD-01..CD-15): PF-A (C-1), OF-A (C-2), FX-A (C-3), UX-D (C-4), UX-H (C-5), VO-A and UX-J (V-2), UX-I (B-1), UX-B and UX-F (A-2), PW-A and GL-A (C-6), CB-A (L-1), MP-A (T2-1), and the qa round's A-2..A-9 (R-37..R-41). Of V2's, CD-06 (the history dialog's container) and CD-14 (a synthetic `click()` behind the auto-lock still dispatches; `inert` blocks hit-testing, and the server enforces the lock) stand — `history/v2/CARRIED_DEFECTS_v2.md` §4.
+
+## 2. Deferred to V3
+
+| What | Why | Whose |
+|---|---|---|
+| Memory curation: a V3 agent (working name "librarian") reading Teach's conflicts, gaps and improvements | Josh, 15 Sep (P-7/Q2): "Teach to form part of JStack V3 multi agent as memory refinement will be an agent task. Teach feeds that agent better info from me based on what it finds as conflicts/gaps/improvements." Not the rule Teach already writes today (§4.22); the new part is who reads what Teach finds | REMAP |
+| A second Google calendar, with a combined view over both | Josh, 15 Sep (Q1): "adding a second calendar to see combined view in V3." One calendar's write-back is V2 stage 2 (§3) | REMAP |
+| A real second user and the family tenant | Identity is the backend's; every record carries `silo`, and the mock filters by it only where a handler calls its gate (§3) | REMAP |
+| The native iOS share extension | The Shortcut stands in until then, and the extension will reuse the `/capture` route (`CONTRACT.md` Q22); the store build is Josh's own, on his account (`NATIVE_RUNBOOK.md`) | Josh, then REMAP |
+| Following a cursor on the growing lists | The app reads each list whole (`CONTRACT.md` Q20) | REMAP |
+| Token binding (a per-device signature on each request) | Only worth shipping if the server verifies it (Q11) | REMAP |
+| A user-chosen time zone; task dependencies on the Gantt; board mode on a docked iPad; the code-brick scaffold | Not asked for, or V3 by decision (`DECISIONS.md`) | Josh |
+| Bundle splitting (`web.output: "static"`) | A deployment decision once the host is chosen (`DEPLOY.md`) | REMAP |
+| Replaying the queue with the app closed | Replay needs the app in the foreground; iOS wakes it on open. Captures queue offline and replay only while the app is open — on reconnect, focus, unlock and the 30-second retry — because nothing wakes it in the background on either platform: `jstack-app/public/sw.js` has no `sync` listener and there is no `expo-background-fetch`. A capture made on a plane reaches the server when the app is next opened after landing, not when the phone finds a signal (v2.3 A-11) | Josh / REMAP |
+
+### Deferred to V5
+
+| What | Why | Whose |
+|---|---|---|
+| Money: budget vs spend, bills, subscriptions, feed | Josh, 15 Sep (P-9): "Money & health move to JStack V5 stage." | Josh, then REMAP |
+| Health | Josh, 15 Sep (P-9): "Money & health move to JStack V5 stage." | Josh, then REMAP |
+
+## 3. REMAP's to plumb (the server side; the app's half is built)
+
+| What | The app's side today | Contract |
+|---|---|---|
+| Calendar write-back and gap proposals: one Google calendar | Read-only today; `getEvent`, `patchEvent`, `deleteEvent` and `postCalendarPropose` exist with no caller (`evidence/wiring-orphans.json`) — Josh, 15 Sep (Q1): "Part of V2. Will have 1 gmail calendar in V2." A second calendar and the combined view are V3 (§2) | §4.4, Q1 |
+| Native dictation approach — confirm in planning | Today's choice: `expo-speech-recognition` on-device, `requiresOnDeviceRecognition: true` (`jstack-app/lib/mic.ts`, WPB-4) — Josh, 15 Sep (P-2): "I'm unsure, add this to Remap task to confirm in their planning." Weigh accuracy, languages, offline behaviour and privacy before committing past the device check | — |
+| Unreachable-lock threat model — check the logic still makes sense | The app locks locally and wipes nothing when it cannot reach the server (`SECURITY.md` "What the emergency lock does to this device") — Josh, 15 Sep (Q3): "No. Flag for Remap dev to check logic of this — e.g. still make sense in different security and attack scenarios?" Scenarios to check: a network cut used to block a wipe; a stolen, unlocked device taken offline; a lock the server refuses; recovery afterwards | §4.1 |
+| Identity and auth: the passkey verified server-side on every open, a refresh cookie with reuse detection, `GET /session` with user and silos, the access token returned to `AUTH.getToken()` | The ceremony runs and is checked on the device; `jstack-app/data/config.ts` returns no token | `CONTRACT.md` §4.1, Q9, Q12, Q20 |
+| Silo and clearance on every read and write; `t1` never served; absence on a whole-set write judged only within what the caller may read | The mock's silo gate (`inFocus`, `jstack-app/data/mock/util.ts`) runs only where a handler calls it: replies, a brain item and brain search skip it, and a typed or spoken dump is stored under Josh's own silo (`personal:josh`) whoever made it (`jstack-app/data/mock/handlers/brain.ts`) | §1.3, §1.8, §4.20 |
+| Ranking, the five-card budget, expiry with then-what, the ten-second undo that reverts exactly what its verb wrote, versioning without deletion | The mock does all but one (`jstack-app/data/mock/handlers/`): a rules write replaces the set, so a removed rule keeps no history where §1.5 says nothing is overwritten (`jstack-app/tests/unit/rules.test.ts` pins the removal) — **answered (Josh, 15 Sep, Q4): "Append only." A removal is a new entry; the mock's replace-the-set write is the gap, not the rule** | §1.4, §1.5, §7 |
+| `offlineId` idempotency for every capture, uploads included, and `409` on a changed record — **R11-REMAP-1: `POST /brain/dump` must dedupe by that key, and a share carries one read off its words and link since v2.3 A-8** (A4R11-04, `jstack-app/lib/shareDraft.ts`); the lock gate (`401`, entries kept, replayed on unlock) | The client queues and replays (`jstack-app/data/transport/outbox.ts`) | §1.12, §4.12, §7 |
+| Server events by push, and the push service (Web Push with VAPID) | The client refetches on an event, but its only event source is the mock's in-process bus (`jstack-app/lib/serverEvents.ts`; Review 7 in §1); the HTTP source is yours, behind `jstack-app/data/provider.ts` | §1.14, §4.13, Q5 |
+| `WS /voice` with the pause and presence rules; the streaming provider; speech-to-text and text-to-speech | A scripted mock socket (`jstack-app/data/mock/voice.ts`) | §4.11, Q4, Q6, Q19 |
+| The default agent's triage and replies, and the screening of shared content | The mock's keyword triage and screened extract (`jstack-app/data/mock/ingest.ts`) | §1.19, §1.20, Q21, Q24, `SECURITY.md` |
+| Files in Dropbox under `/JSTACK/`, with a Postgres index; `413` over the limit | The mock keeps bytes in memory | §4.17, Q16, Q23 |
+| Search from an index, scoped by silo, focus and clearance | The mock's tokenised index (`jstack-app/data/mock/search.ts`) | §4.19 |
+| Usage rows priced server-side; board columns mirrored from Twenty | Seeded in the mock | §4.15, §4.16, Q17, Q18 |
+| Rate limits, request validation, session lifetime, an audit log of high-risk actions, the host's headers | Assumed | Q8, Q10, Q12, Q13, Q14 |
+| The exit pack; focus labels on calendar events; the recovery ceremony and its runbook | Marked in `jstack-app/data/ApiAdapter.ts` | Q1–Q3 |
+
+## 4. Open questions
+
+Every question in `CONTRACT.md` §8 carries the answer the app assumes. These still wait on someone:
+
+| # | Question | The app assumes | Whose |
+|---|---|---|---|
+| Q2 | Does the fixed core include an exit pack? | Yes | REMAP |
+| Q3 | Who owns the recovery-key ceremony and runbook? | REMAP; confirm the shape | REMAP |
+| Q4, Q6 | Which streaming voice provider; `speak` audio by reference or streamed? | Either | REMAP |
+| Q5 | Web Push with VAPID, or APNs only at the phone build? | Web Push | REMAP |
+| Q7 | Section proposals as `SectionConfig`, or a brief the backend converts? | Only the config | REMAP |
+| Q8–Q14 | Rate limits, refresh custody, validation, token binding, session lifetime, audit log, host headers | As stated in §8 | REMAP |
+| Q16 | Dropbox as the file record (closed by Josh on 7 Sep; Andy may object on cost or latency) | Dropbox | Josh with REMAP |
+| Q20 | Auth end to end, the error taxonomy, pagination, latency | As stated in `HANDOVER.md` §4 | REMAP |
+| Q22 | The share extension on the native track | The Shortcut until then | Josh |
+| Q24 | How shared content is screened before any agent with tools sees it | A tool-less extract-and-sanitise step | REMAP with Josh |
+| — | When the server cannot be reached to confirm an emergency lock, should the device wipe itself anyway? | It locks at once and wipes only once the server confirms (`BUGLOG_v23.md` WPF-4) | Josh |
+| — | Rules: append-only history, as `CONTRACT.md` §1.5 says, or a removal that really removes, as the mock does? | A removal really removes | Josh |
+
+Settled: Q1 (focus labels, assumed yes), Q15 (the device's zone), Q17–Q19, Q21 and Q23 as assumed. Branch protection on `main` is not needed (Josh, 7 Sep; `history/v2/NEEDS_JOSH.md` RR-05): the pre-push hook is the gate.

@@ -1,0 +1,41 @@
+{
+  "measuredAt": "2026-09-09",
+  "url": "http://localhost:4174",
+  "viewport": "393x830",
+  "entry": {
+    "file": "entry-7d2d7f258346a57987e07e98d937e6b6.js",
+    "bytes": 2816590,
+    "gzipped": 692067,
+    "gzippedKb": 676
+  },
+  "load": {
+    "loadMs": 264,
+    "firstContentfulPaintMs": 448,
+    "paints": [
+      {
+        "name": "first-paint",
+        "ms": 448
+      },
+      {
+        "name": "first-contentful-paint",
+        "ms": 448
+      }
+    ]
+  },
+  "longTasks": {
+    "count": 3,
+    "totalMs": 329,
+    "worstMs": 161
+  },
+  "scroll": {
+    "frames": 40,
+    "medianMs": 16.6,
+    "p95Ms": 18.7,
+    "worstMs": 20.7
+  },
+  "runtime": {
+    "jsHeapUsedMb": 12.5,
+    "domNodes": 579,
+    "layoutCount": 8
+  }
+}

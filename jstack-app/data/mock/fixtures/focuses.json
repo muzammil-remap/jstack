@@ -1,0 +1,6 @@
+[
+  { "id": "all", "name": "Everything", "fixed": true, "filter": {} },
+  { "id": "personal", "name": "Personal", "filter": { "silos": ["personal:josh", "personal:joce"] } },
+  { "id": "family", "name": "Family", "filter": { "silos": ["family1", "family2"] } },
+  { "id": "work", "name": "Work", "filter": { "silos": ["work"] } }
+]

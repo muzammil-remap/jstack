@@ -1,0 +1,58 @@
+{
+  "expo": {
+    "name": "JSTACK",
+    "slug": "jstack",
+    "version": "1.1.0",
+    "scheme": "jstack",
+    "orientation": "default",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.josh.jstack",
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "JSTACK locks with Face ID on every open.",
+        "NSSpeechRecognitionUsageDescription": "JSTACK transcribes your voice on this device. Nothing leaves your phone.",
+        "NSMicrophoneUsageDescription": "JSTACK uses the microphone to capture what you say — transcription happens on this device."
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "name": "JSTACK",
+      "shortName": "JSTACK",
+      "display": "standalone",
+      "startUrl": "/",
+      "scope": "/",
+      "themeColor": "#EDEBE5",
+      "backgroundColor": "#EDEBE5",
+      "themeColorDark": "#191815",
+      "description": "Josh's executive assistant — decisions, tasks, capture."
+    },
+    "plugins": [
+      "expo-router",
+      "expo-local-authentication",
+      "expo-font",
+      "expo-splash-screen",
+      "expo-secure-store",
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "JSTACK uses the microphone to capture what you say — transcription happens on this device.",
+          "speechRecognitionPermission": "JSTACK transcribes your voice on this device. Nothing leaves your phone."
+        }
+      ]
+    ],
+    "extra": {
+      "router": {}
+    },
+    "owner": "joshua.old",
+    "android": {
+      "permissions": [
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT",
+        "android.permission.RECORD_AUDIO"
+      ]
+    }
+  }
+}

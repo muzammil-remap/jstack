@@ -1,0 +1,66 @@
+[
+  {
+    "_comment": "W-1 then ST-1. The first three came with W-1's wire; ar4..ar7 are V2.1's own `rules.json` — the four rules Brain's Rules section showed — restated here with a scope and a mode when ST-1 retired that list. Nothing Josh had taught was dropped in the move, which is the whole point of doing it as a migration rather than a deletion.",
+    "id": "ar1",
+    "text": "File anything from a supplier under Work · money and tell me at the daily wrap rather than at the time",
+    "scope": "triage",
+    "mode": "auto",
+    "on": true,
+    "addedBy": "josh",
+    "addedAt": "{{NOW-9;09:20}}"
+  },
+  {
+    "id": "ar2",
+    "text": "Never send anything on my behalf without showing me the words first",
+    "scope": "all",
+    "mode": "ask",
+    "on": true,
+    "addedBy": "josh",
+    "addedAt": "{{NOW-14;16:05}}"
+  },
+  {
+    "id": "ar3",
+    "text": "Anything naming a child goes to the family silo and stays sensitive",
+    "scope": "triage",
+    "mode": "auto",
+    "on": true,
+    "addedBy": "josh",
+    "addedAt": "{{NOW-21;07:48}}"
+  },
+  {
+    "id": "ar4",
+    "text": "School pickup days are fixed; move the meeting or ask Joce first.",
+    "scope": "all",
+    "mode": "ask",
+    "on": true,
+    "addedBy": "josh",
+    "addedAt": "{{NOW-40;08:10}}"
+  },
+  {
+    "id": "ar5",
+    "text": "Never book anything before 7:30am.",
+    "scope": "all",
+    "mode": "auto",
+    "on": true,
+    "addedBy": "josh",
+    "addedAt": "{{NOW-38;19:02}}"
+  },
+  {
+    "id": "ar6",
+    "text": "Deal documents never appear in a \"summarise my week\" answer.",
+    "scope": "all",
+    "mode": "auto",
+    "on": true,
+    "addedBy": "josh",
+    "addedAt": "{{NOW-33;11:47}}"
+  },
+  {
+    "id": "ar7",
+    "text": "Replies to Andy: short, first names, no bullet points.",
+    "scope": "all",
+    "mode": "auto",
+    "on": true,
+    "addedBy": "josh",
+    "addedAt": "{{NOW-27;15:31}}"
+  }
+]

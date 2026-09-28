@@ -1,0 +1,290 @@
+{
+  "ranAt": "2026-08-31T00:29:27.431Z",
+  "source": {
+    "habitCount": 6,
+    "completionRows": 302,
+    "uniqueCompletions": 296,
+    "duplicateRowsDropped": 3,
+    "invalidRowsDropped": [
+      {
+        "row": {
+          "habitId": "ghost99",
+          "date": "2026-04-01"
+        },
+        "reason": "unknown habit id \"ghost99\""
+      },
+      {
+        "row": {
+          "habitId": "oldmd03",
+          "date": "01/05/2026"
+        },
+        "reason": "invalid date \"01/05/2026\""
+      },
+      {
+        "row": {
+          "habitId": "oldab04"
+        },
+        "reason": "malformed row"
+      }
+    ]
+  },
+  "habitMapping": [
+    {
+      "oldName": "Exercise",
+      "mappedTo": "Exercise",
+      "how": "name-match"
+    },
+    {
+      "oldName": "Burn Calorie",
+      "mappedTo": "Burn calorie",
+      "how": "name-match"
+    },
+    {
+      "oldName": "Meditation",
+      "mappedTo": "Meditation",
+      "how": "name-match"
+    },
+    {
+      "oldName": "Audiobook",
+      "mappedTo": "Audiobook",
+      "how": "name-match"
+    },
+    {
+      "oldName": "Solo",
+      "mappedTo": "Solo",
+      "how": "name-match"
+    },
+    {
+      "oldName": "J&J",
+      "mappedTo": "J&J",
+      "how": "name-match"
+    }
+  ],
+  "perHabitPerMonth": [
+    {
+      "habit": "Exercise",
+      "month": "2026-03",
+      "sourceCount": 21,
+      "importedCount": 21,
+      "match": true
+    },
+    {
+      "habit": "Exercise",
+      "month": "2026-04",
+      "sourceCount": 18,
+      "importedCount": 18,
+      "match": true
+    },
+    {
+      "habit": "Exercise",
+      "month": "2026-05",
+      "sourceCount": 21,
+      "importedCount": 21,
+      "match": true
+    },
+    {
+      "habit": "Exercise",
+      "month": "2026-06",
+      "sourceCount": 20,
+      "importedCount": 20,
+      "match": true
+    },
+    {
+      "habit": "Burn calorie",
+      "month": "2026-03",
+      "sourceCount": 29,
+      "importedCount": 29,
+      "match": true
+    },
+    {
+      "habit": "Burn calorie",
+      "month": "2026-04",
+      "sourceCount": 27,
+      "importedCount": 27,
+      "match": true
+    },
+    {
+      "habit": "Burn calorie",
+      "month": "2026-05",
+      "sourceCount": 28,
+      "importedCount": 28,
+      "match": true
+    },
+    {
+      "habit": "Burn calorie",
+      "month": "2026-06",
+      "sourceCount": 25,
+      "importedCount": 25,
+      "match": true
+    },
+    {
+      "habit": "Meditation",
+      "month": "2026-03",
+      "sourceCount": 8,
+      "importedCount": 8,
+      "match": true
+    },
+    {
+      "habit": "Meditation",
+      "month": "2026-04",
+      "sourceCount": 8,
+      "importedCount": 8,
+      "match": true
+    },
+    {
+      "habit": "Meditation",
+      "month": "2026-05",
+      "sourceCount": 8,
+      "importedCount": 8,
+      "match": true
+    },
+    {
+      "habit": "Meditation",
+      "month": "2026-06",
+      "sourceCount": 7,
+      "importedCount": 7,
+      "match": true
+    },
+    {
+      "habit": "Audiobook",
+      "month": "2026-03",
+      "sourceCount": 7,
+      "importedCount": 7,
+      "match": true
+    },
+    {
+      "habit": "Audiobook",
+      "month": "2026-04",
+      "sourceCount": 8,
+      "importedCount": 8,
+      "match": true
+    },
+    {
+      "habit": "Audiobook",
+      "month": "2026-05",
+      "sourceCount": 9,
+      "importedCount": 9,
+      "match": true
+    },
+    {
+      "habit": "Audiobook",
+      "month": "2026-06",
+      "sourceCount": 6,
+      "importedCount": 6,
+      "match": true
+    },
+    {
+      "habit": "Solo",
+      "month": "2026-03",
+      "sourceCount": 9,
+      "importedCount": 9,
+      "match": true
+    },
+    {
+      "habit": "Solo",
+      "month": "2026-04",
+      "sourceCount": 7,
+      "importedCount": 7,
+      "match": true
+    },
+    {
+      "habit": "Solo",
+      "month": "2026-05",
+      "sourceCount": 8,
+      "importedCount": 8,
+      "match": true
+    },
+    {
+      "habit": "Solo",
+      "month": "2026-06",
+      "sourceCount": 7,
+      "importedCount": 7,
+      "match": true
+    },
+    {
+      "habit": "J&J",
+      "month": "2026-03",
+      "sourceCount": 4,
+      "importedCount": 4,
+      "match": true
+    },
+    {
+      "habit": "J&J",
+      "month": "2026-04",
+      "sourceCount": 3,
+      "importedCount": 3,
+      "match": true
+    },
+    {
+      "habit": "J&J",
+      "month": "2026-05",
+      "sourceCount": 5,
+      "importedCount": 5,
+      "match": true
+    },
+    {
+      "habit": "J&J",
+      "month": "2026-06",
+      "sourceCount": 3,
+      "importedCount": 3,
+      "match": true
+    }
+  ],
+  "totals": {
+    "sourceUnique": 296,
+    "importedFromSource": 295,
+    "preExistingJstackLogs": 3,
+    "match": true
+  },
+  "discrepancies": [],
+  "streakParity": [
+    {
+      "habit": "Exercise",
+      "oldAlgoCurrent": 7,
+      "jstackCurrent": 7,
+      "oldAlgoLongest": 7,
+      "jstackLongest": 7,
+      "match": true
+    },
+    {
+      "habit": "Burn calorie",
+      "oldAlgoCurrent": 0,
+      "jstackCurrent": 0,
+      "oldAlgoLongest": 10,
+      "jstackLongest": 10,
+      "match": true
+    },
+    {
+      "habit": "Meditation",
+      "oldAlgoCurrent": 0,
+      "jstackCurrent": 0,
+      "oldAlgoLongest": 1,
+      "jstackLongest": 1,
+      "match": true
+    },
+    {
+      "habit": "Audiobook",
+      "oldAlgoCurrent": 0,
+      "jstackCurrent": 0,
+      "oldAlgoLongest": 1,
+      "jstackLongest": 1,
+      "match": true
+    },
+    {
+      "habit": "Solo",
+      "oldAlgoCurrent": 1,
+      "jstackCurrent": 1,
+      "oldAlgoLongest": 2,
+      "jstackLongest": 2,
+      "match": true
+    },
+    {
+      "habit": "J&J",
+      "oldAlgoCurrent": 0,
+      "jstackCurrent": 0,
+      "oldAlgoLongest": 1,
+      "jstackLongest": 1,
+      "match": true
+    }
+  ]
+}

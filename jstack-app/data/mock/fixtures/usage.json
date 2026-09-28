@@ -1,0 +1,46 @@
+[
+  {
+    "id": "u1",
+    "taskId": "t2",
+    "agentId": "ea",
+    "runId": "run1",
+    "model": "claude-sonnet-5",
+    "inputTokens": 12400,
+    "outputTokens": 3100,
+    "cacheReadTokens": 8200,
+    "costAud": 0.38,
+    "at": "{{NOW;02:41}}",
+    "labels": { "silo": "work", "types": ["jstack", "confidential"], "setBy": "source" },
+    "setAt": "{{TODAY}}",
+    "focus": "work"
+  },
+  {
+    "id": "u2",
+    "taskId": "t2",
+    "agentId": "ea",
+    "runId": "run5",
+    "model": "claude-haiku-4-5",
+    "inputTokens": 4200,
+    "outputTokens": 900,
+    "costAud": 0.02,
+    "at": "{{NOW;07:12}}",
+    "labels": { "silo": "work", "types": ["jstack", "confidential"], "setBy": "source" },
+    "setAt": "{{TODAY}}",
+    "focus": "work"
+  },
+  {
+    "id": "u3",
+    "taskId": "t9",
+    "agentId": "ea",
+    "runId": "run6",
+    "model": "claude-sonnet-5",
+    "inputTokens": 9800,
+    "outputTokens": 2400,
+    "cacheReadTokens": 5100,
+    "costAud": 0.03,
+    "at": "{{NOW-1;02:14}}",
+    "labels": { "silo": "work", "types": ["jstack"], "setBy": "source" },
+    "setAt": "{{TODAY-1}}",
+    "focus": "work"
+  }
+]

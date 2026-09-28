@@ -1,0 +1,22 @@
+{
+  "_comment": "C-1 / SH-07. Advisories this build has looked at and accepted, with who decided and why. Anything at `minimumSeverity` or above that is NOT here fails the board; an entry here that no longer matches a real advisory ALSO fails, because a list of exemptions nobody prunes becomes permission for everything. T-1 note: the check reads `pnpm audit --prod --json`, and until T-1 it parsed pnpm's pretty-printed output line by line \u2014 so it never saw an advisory and printed `0 advisory(ies)` over three real ones (BUGLOG_v21.md B-37). If this file is ever empty again, check that the number in the tool's own output is not zero before believing it.",
+  "minimumSeverity": "high",
+  "accepted": [
+    {
+      "id": "1138808",
+      "module": "image-size",
+      "severity": "high",
+      "why": "A denial of service in image-size's ICNS parser, reached through expo > @expo/metro > metro. Metro is the BUNDLER: this code runs on a developer's machine and in CI while building, and is not in the shipped bundle \u2014 the attack it describes is a malicious image file in the source tree, which is a repository we control, not user input. There is no fixed version to move to (the advisory's `patched_versions` is `<0.0.0`), so the alternatives are pinning a fork of Metro's dependency or accepting it, and forking a bundler over a build-time DoS is the worse trade. Re-check when Expo ships a Metro that has moved off it.",
+      "decidedBy": "V2.1 build, row T-1",
+      "decidedOn": "2026-09-07"
+    },
+    {
+      "id": "1138809",
+      "module": "image-size",
+      "severity": "high",
+      "why": "The same package and the same reasoning as 1138808 \u2014 the JXL and HEIF parsers rather than ICNS. Build-time only, through Metro, with no patched version available.",
+      "decidedBy": "V2.1 build, row T-1",
+      "decidedOn": "2026-09-07"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+ "main": {
+  "total": 1058,
+  "passed": 971,
+  "failed": 0,
+  "flaky": 0,
+  "skipped": 87
+ },
+ "combined": {
+  "total": 1058,
+  "passed": 971,
+  "failed": 0,
+  "flaky": 0,
+  "skipped": 87
+ },
+ "projects": {
+  "core": {
+   "total": 850,
+   "passed": 793,
+   "failed": 0,
+   "flaky": 0,
+   "skipped": 57
+  },
+  "matrix": {
+   "total": 208,
+   "passed": 178,
+   "failed": 0,
+   "flaky": 0,
+   "skipped": 30,
+   "projectCount": 8
+  }
+ },
+ "generatedAt": "2026-09-16T04:16:25.752Z"
+}

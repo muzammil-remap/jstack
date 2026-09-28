@@ -1,0 +1,62 @@
+/* JSTACK layout tokens · spacing, radius, depth, motion, breakpoints */
+:root {
+  --js-space-1: 2px;
+  --js-space-2: 6px;    /* between chips, verbs */
+  --js-space-3: 8px;    /* between cards in a column; label to card */
+  --js-space-4: 9px;    /* row vertical padding; verb button padding */
+  --js-space-5: 10px;   /* row horizontal padding; stat card vertical */
+  --js-space-6: 12px;   /* card padding; header block gap */
+  --js-space-7: 16px;   /* phone page side padding */
+  --js-space-8: 18px;   /* column gap */
+  --js-space-9: 24px;   /* desktop page top padding */
+  --js-space-10: 32px;  /* desktop page side padding */
+
+  --js-page-pad-desktop: 24px 32px 80px;
+  --js-page-pad-phone: 16px 16px 120px;
+  --js-content-max: 1500px;
+  --js-rail-width: 200px;
+  --js-rail-pad: 22px 12px;
+  --js-bar-inset: 14px;
+  --js-bar-height: 60px;
+
+  --js-radius-card: 10px;
+  --js-radius-control: 8px;
+  --js-radius-tag: 5px;
+  --js-radius-seg: 9px;
+  --js-radius-round: 50%;
+
+  --js-blur-card: blur(20px);
+  --js-blur-bar: blur(24px);
+
+  --js-size-iconbtn: 32px;
+  --js-size-iconbtn-card: 36px;
+  --js-size-mic: 44px;
+  --js-size-mic-live: 42px;
+  --js-size-habit: 36px;
+  --js-size-habit-compact: 34px;
+  --js-size-checkbox: 15px;
+  --js-size-dot: 6px;
+  --js-size-dot-feed: 7px;
+  --js-size-badge-h: 16px;
+  --js-size-label-col: 48px;   /* fixed type-label width in waiting rows */
+  --js-size-ring: 56px;
+  --js-size-bar-track: 8px;
+
+  --js-grid-3: 1.3fr 1fr .95fr;
+  --js-grid-2: 1.3fr 1fr;
+  --js-grid-1: 1fr;
+
+  --js-motion-fast: 80ms;
+  --js-motion-base: 160ms;
+  --js-motion-open: 200ms;
+  --js-ease: cubic-bezier(.2,.7,.2,1);
+  --js-pulse-duration: 1.4s;
+  --js-undo-seconds: 10;
+
+  --js-bp-tablet: 768px;   /* rail + two columns from here */
+  --js-bp-desktop: 1180px; /* three columns from here */
+
+  --js-hover-lift: .08;    /* add to card alpha on hover */
+  --js-pressed-opacity: .85;
+  --js-disabled-opacity: .45;
+}

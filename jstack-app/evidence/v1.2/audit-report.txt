@@ -1,0 +1,58 @@
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ high                │ image-size: ICNS parser allows denial of service       │
+│                     │ through an infinite loop                               │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ image-size                                             │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ <=2.0.2                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ <0.0.0                                                 │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ .>expo>@expo/metro>metro>image-size                    │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-w3rx-r6r6-pgpr      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ high                │ image-size: JXL and HEIF parsers allow denial of       │
+│                     │ service through infinite loops                         │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ image-size                                             │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ <=2.0.2                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ <0.0.0                                                 │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ .>expo>@expo/metro>metro>image-size                    │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-5p2g-fcmc-qvqq      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ moderate            │ uuid: Missing buffer bounds check in v3/v5/v6 when buf │
+│                     │ is provided                                            │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ uuid                                                   │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ <11.1.1                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=11.1.1                                               │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ .>expo>@expo/config-plugins>xcode>uuid                 │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-w5hq-g745-h8pq      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+3 vulnerabilities found
+Severity: 1 moderate | 2 high
+
+--- SEC-13 disposition (v1.1, updated 1 Sep 2026 after audit round 2) ---
+8 findings across the v1.1 window -> 5 resolved via pnpm overrides:
+  postcss@<8.5.23 -> >=8.5.23 (4 advisories, build toolchain)
+  decode-uri-component@<0.5.0 -> >=0.5.0 (1 moderate — RUNTIME-reachable via
+    expo-router deep-link parsing; caught by audit round 2's observation that
+    the "build-toolchain-only" disposition no longer covered everything)
+Remaining 3 are BUILD-TOOLCHAIN transitive deps only; none reachable from the
+shipped app bundle (they run at export time on the dev machine):
+  1-2. image-size (via expo>@expo/metro>metro) - upstream lists no patched
+       version; waiting on metro. Local asset files only; no untrusted input.
+  3.   uuid (via expo>@expo/config-plugins>xcode) - only executes during
+       `expo prebuild` (never run here); uuid@11 breaks xcode's v3 API.
+Runtime dependency tree: clean. Full inventory: sbom.cdx.json.

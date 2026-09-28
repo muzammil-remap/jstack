@@ -1,0 +1,1154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JSTACK · WIRING</title>
+<style>
+:root { color-scheme: light dark; --ink:#16181d; --muted:#5c6270; --line:#d7dae1; --bg:#fbfbfd; --panel:#fff;
+        --c0:#e8effb; --c0s:#7d9ad4; --c1:#eaf5ec; --c1s:#79ac86; --c2:#faf0e6; --c2s:#c79c66; }
+@media (prefers-color-scheme: dark) {
+  :root { --ink:#e9ecf2; --muted:#9aa1b1; --line:#333844; --bg:#14161b; --panel:#1a1d24;
+          --c0:#1e2a3f; --c0s:#5d7cb5; --c1:#1d2a21; --c1s:#5c8e6a; --c2:#2e2519; --c2s:#a17f4c; }
+}
+* { box-sizing: border-box; }
+body { margin:0; padding:24px; background:var(--bg); color:var(--ink);
+       font:14px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+h1 { font-size:20px; margin:0 0 4px; }
+h2 { font-size:16px; margin:0 0 8px; text-transform:capitalize; }
+p.note { color:var(--muted); margin:0 0 20px; max-width:62ch; }
+section { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin:0 0 16px; }
+.meta { color:var(--muted); font-size:12px; margin:0 0 10px; }
+svg { display:block; overflow:visible; }
+text { font:12px ui-monospace, "SF Mono", Menlo, Consolas, monospace; fill:var(--ink); }
+text.head { font-size:11px; fill:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
+.edge { fill:none; stroke:var(--line); stroke-width:1.2; }
+.node { stroke-width:1; }
+.node.c0 { fill:var(--c0); stroke:var(--c0s); }
+.node.c1 { fill:var(--c1); stroke:var(--c1s); }
+.node.c2 { fill:var(--c2); stroke:var(--c2s); }
+details { margin-top:10px; }
+summary { cursor:pointer; color:var(--muted); font-size:12px; }
+pre { overflow-x:auto; background:var(--bg); border:1px solid var(--line); border-radius:6px;
+      padding:10px; font:12px/1.45 ui-monospace, Menlo, Consolas, monospace; }
+ul.orphans { margin:6px 0 0; padding-left:18px; color:var(--muted); font-size:12px; }
+</style>
+</head>
+<body>
+<h1>JSTACK wiring map</h1>
+<p class="note">One diagram per contract section: which endpoint feeds which store action, and which component reads it. Generated from <code>wiring.json</code> by <code>tools/gen-wiring-html.mjs</code> — do not hand-edit. Every diagram is inline SVG and this page loads nothing from the network, so it opens from disk on a machine with no connection.</p>
+<section id="agents">
+<h2>agents</h2>
+<p class="meta">14 endpoints · 7 store action(s) · 3 component(s)</p>
+<svg viewBox="0 0 822 466" width="100%" role="img" aria-label="agents wiring">
+<title>agents: endpoint to store action to component</title>
+<text class="head" x="16" y="20">endpoint</text>
+<text class="head" x="346" y="20">store action</text>
+<text class="head" x="596" y="20">component</text>
+<path class="edge" d="M266,45 C306,45 306,195 346,195" />
+<path class="edge" d="M266,105 C306,105 306,75 346,75" />
+<path class="edge" d="M266,105 C306,105 306,105 346,105" />
+<path class="edge" d="M266,135 C306,135 306,75 346,75" />
+<path class="edge" d="M266,285 C306,285 306,75 346,75" />
+<path class="edge" d="M266,315 C306,315 306,75 346,75" />
+<path class="edge" d="M266,315 C306,315 306,105 346,105" />
+<path class="edge" d="M266,345 C306,345 306,75 346,75" />
+<path class="edge" d="M266,375 C306,375 306,75 346,75" />
+<path class="edge" d="M266,375 C306,375 306,105 346,105" />
+<path class="edge" d="M266,435 C306,435 306,225 346,225" />
+<path class="edge" d="M266,195 C306,195 306,45 346,45" />
+<path class="edge" d="M266,225 C306,225 306,45 346,45" />
+<path class="edge" d="M266,405 C306,405 306,165 346,165" />
+<path class="edge" d="M266,75 C306,75 306,135 346,135" />
+<path class="edge" d="M556,45 C576,45 576,75 596,75" />
+<path class="edge" d="M556,45 C576,45 576,105 596,105" />
+<path class="edge" d="M556,135 C576,135 576,45 596,45" />
+<rect class="node c0" x="16" y="34" width="250" height="22" rx="5" />
+<text class="label" x="24" y="49">GET /agents</text>
+<rect class="node c0" x="16" y="64" width="250" height="22" rx="5" />
+<text class="label" x="24" y="79">PUT /agents/caps</text>
+<rect class="node c0" x="16" y="94" width="250" height="22" rx="5" />
+<text class="label" x="24" y="109">GET /agents/feed</text>
+<rect class="node c0" x="16" y="124" width="250" height="22" rx="5" />
+<text class="label" x="24" y="139">GET /agents/issues</text>
+<rect class="node c0" x="16" y="154" width="250" height="22" rx="5" />
+<text class="label" x="24" y="169">GET /agents/issues/{id}</text>
+<rect class="node c0" x="16" y="184" width="250" height="22" rx="5" />
+<text class="label" x="24" y="199">POST /agents/issues/{id}</text>
+<rect class="node c0" x="16" y="214" width="250" height="22" rx="5" />
+<text class="label" x="24" y="229">POST /agents/issues/{id}/undo</text>
+<rect class="node c0" x="16" y="244" width="250" height="22" rx="5" />
+<text class="label" x="24" y="259">GET /agents/runs</text>
+<rect class="node c0" x="16" y="274" width="250" height="22" rx="5" />
+<text class="label" x="24" y="289">GET /agents/spend</text>
+<rect class="node c0" x="16" y="304" width="250" height="22" rx="5" />
+<text class="label" x="24" y="319">GET /agents/summary</text>
+<rect class="node c0" x="16" y="334" width="250" height="22" rx="5" />
+<text class="label" x="24" y="349">GET /portals</text>
+<rect class="node c0" x="16" y="364" width="250" height="22" rx="5" />
+<text class="label" x="24" y="379">GET /security/checks</text>
+<rect class="node c0" x="16" y="394" width="250" height="22" rx="5" />
+<text class="label" x="24" y="409">POST /security/checks/{id}/run</text>
+<rect class="node c0" x="16" y="424" width="250" height="22" rx="5" />
+<text class="label" x="24" y="439">GET /usage</text>
+<rect class="node c1" x="346" y="34" width="210" height="22" rx="5" />
+<text class="label" x="354" y="49">agents.actIssue</text>
+<rect class="node c1" x="346" y="64" width="210" height="22" rx="5" />
+<text class="label" x="354" y="79">agents.load</text>
+<rect class="node c1" x="346" y="94" width="210" height="22" rx="5" />
+<text class="label" x="354" y="109">agents.loadDerived</text>
+<rect class="node c1" x="346" y="124" width="210" height="22" rx="5" />
+<text class="label" x="354" y="139">agents.putCaps</text>
+<rect class="node c1" x="346" y="154" width="210" height="22" rx="5" />
+<text class="label" x="354" y="169">agents.runCheck</text>
+<rect class="node c1" x="346" y="184" width="210" height="22" rx="5" />
+<text class="label" x="354" y="199">tasks.loadRoster</text>
+<rect class="node c1" x="346" y="214" width="210" height="22" rx="5" />
+<text class="label" x="354" y="229">usage.load</text>
+<rect class="node c2" x="596" y="34" width="210" height="22" rx="5" />
+<text class="label" x="604" y="49">EmergencyLock</text>
+<rect class="node c2" x="596" y="64" width="210" height="22" rx="5" />
+<text class="label" x="604" y="79">Feed</text>
+<rect class="node c2" x="596" y="94" width="210" height="22" rx="5" />
+<text class="label" x="604" y="109">Issues</text>
+</svg>
+<ul class="orphans"><li>GET /agents/issues/{id} — no client caller traced</li><li>GET /agents/runs — no client caller traced</li></ul>
+<details><summary>Mermaid source for this section</summary><pre>flowchart LR
+  n303a47455420[&quot;GET /agents&quot;]
+  n313a7461736b[&quot;tasks.loadRoster&quot;]
+  n303a50555420[&quot;PUT /agents/caps&quot;]
+  n313a6167656e[&quot;agents.putCaps&quot;]
+  n323a456d6572[&quot;EmergencyLock&quot;]
+  n303a47455420[&quot;GET /agents/feed&quot;]
+  n313a6167656e[&quot;agents.load&quot;]
+  n313a6167656e[&quot;agents.loadDerived&quot;]
+  n303a47455420[&quot;GET /agents/issues&quot;]
+  n303a47455420[&quot;GET /agents/issues/{id}&quot;]
+  n303a504f5354[&quot;POST /agents/issues/{id}&quot;]
+  n313a6167656e[&quot;agents.actIssue&quot;]
+  n323a49737375[&quot;Issues&quot;]
+  n323a46656564[&quot;Feed&quot;]
+  n303a504f5354[&quot;POST /agents/issues/{id}/undo&quot;]
+  n303a47455420[&quot;GET /agents/runs&quot;]
+  n303a47455420[&quot;GET /agents/spend&quot;]
+  n303a47455420[&quot;GET /agents/summary&quot;]
+  n303a47455420[&quot;GET /portals&quot;]
+  n303a47455420[&quot;GET /security/checks&quot;]
+  n303a504f5354[&quot;POST /security/checks/{id}/run&quot;]
+  n313a6167656e[&quot;agents.runCheck&quot;]
+  n303a47455420[&quot;GET /usage&quot;]
+  n313a75736167[&quot;usage.load&quot;]
+  n303a47455420 --&gt; n313a6167656e
+  n303a47455420 --&gt; n313a7461736b
+  n303a47455420 --&gt; n313a75736167
+  n303a504f5354 --&gt; n313a6167656e
+  n303a50555420 --&gt; n313a6167656e
+  n313a6167656e --&gt; n323a456d6572
+  n313a6167656e --&gt; n323a46656564
+  n313a6167656e --&gt; n323a49737375</pre></details>
+</section>
+<section id="brain">
+<h2>brain</h2>
+<p class="meta">15 endpoints · 10 store action(s) · 4 component(s)</p>
+<svg viewBox="0 0 822 496" width="100%" role="img" aria-label="brain wiring">
+<title>brain: endpoint to store action to component</title>
+<text class="head" x="16" y="20">endpoint</text>
+<text class="head" x="346" y="20">store action</text>
+<text class="head" x="596" y="20">component</text>
+<path class="edge" d="M266,135 C306,135 306,135 346,135" />
+<path class="edge" d="M266,165 C306,165 306,105 346,105" />
+<path class="edge" d="M266,195 C306,195 306,285 346,285" />
+<path class="edge" d="M266,255 C306,255 306,75 346,75" />
+<path class="edge" d="M266,315 C306,315 306,225 346,225" />
+<path class="edge" d="M266,375 C306,375 306,105 346,105" />
+<path class="edge" d="M266,405 C306,405 306,105 346,105" />
+<path class="edge" d="M266,225 C306,225 306,315 346,315" />
+<path class="edge" d="M266,45 C306,45 306,45 346,45" />
+<path class="edge" d="M266,285 C306,285 306,255 346,255" />
+<path class="edge" d="M266,435 C306,435 306,165 346,165" />
+<path class="edge" d="M266,465 C306,465 306,165 346,165" />
+<path class="edge" d="M266,105 C306,105 306,195 346,195" />
+<path class="edge" d="M556,45 C576,45 576,45 596,45" />
+<path class="edge" d="M556,75 C576,75 576,75 596,75" />
+<path class="edge" d="M556,165 C576,165 576,135 596,135" />
+<path class="edge" d="M556,315 C576,315 576,105 596,105" />
+<rect class="node c0" x="16" y="34" width="250" height="22" rx="5" />
+<text class="label" x="24" y="49">POST /brain/dump</text>
+<rect class="node c0" x="16" y="64" width="250" height="22" rx="5" />
+<text class="label" x="24" y="79">GET /brain/items/{id}</text>
+<rect class="node c0" x="16" y="94" width="250" height="22" rx="5" />
+<text class="label" x="24" y="109">PUT /brain/items/{id}</text>
+<rect class="node c0" x="16" y="124" width="250" height="22" rx="5" />
+<text class="label" x="24" y="139">GET /brain/items/{id}/versions</text>
+<rect class="node c0" x="16" y="154" width="250" height="22" rx="5" />
+<text class="label" x="24" y="169">GET /brain/latest</text>
+<rect class="node c0" x="16" y="184" width="250" height="22" rx="5" />
+<text class="label" x="24" y="199">GET /brain/replies</text>
+<rect class="node c0" x="16" y="214" width="250" height="22" rx="5" />
+<text class="label" x="24" y="229">PATCH /brain/replies/{id}</text>
+<rect class="node c0" x="16" y="244" width="250" height="22" rx="5" />
+<text class="label" x="24" y="259">GET /brain/search</text>
+<rect class="node c0" x="16" y="274" width="250" height="22" rx="5" />
+<text class="label" x="24" y="289">POST /chat</text>
+<rect class="node c0" x="16" y="304" width="250" height="22" rx="5" />
+<text class="label" x="24" y="319">GET /chat/thread</text>
+<rect class="node c0" x="16" y="334" width="250" height="22" rx="5" />
+<text class="label" x="24" y="349">GET /memory/history</text>
+<rect class="node c0" x="16" y="364" width="250" height="22" rx="5" />
+<text class="label" x="24" y="379">GET /memory/hitrate</text>
+<rect class="node c0" x="16" y="394" width="250" height="22" rx="5" />
+<text class="label" x="24" y="409">GET /memory/proposals</text>
+<rect class="node c0" x="16" y="424" width="250" height="22" rx="5" />
+<text class="label" x="24" y="439">POST /memory/proposals/{id}</text>
+<rect class="node c0" x="16" y="454" width="250" height="22" rx="5" />
+<text class="label" x="24" y="469">POST /memory/proposals/{id}/undo</text>
+<rect class="node c1" x="346" y="34" width="210" height="22" rx="5" />
+<text class="label" x="354" y="49">brain.dump</text>
+<rect class="node c1" x="346" y="64" width="210" height="22" rx="5" />
+<text class="label" x="354" y="79">brain.find</text>
+<rect class="node c1" x="346" y="94" width="210" height="22" rx="5" />
+<text class="label" x="354" y="109">brain.load</text>
+<rect class="node c1" x="346" y="124" width="210" height="22" rx="5" />
+<text class="label" x="354" y="139">brain.openItemEditor</text>
+<rect class="node c1" x="346" y="154" width="210" height="22" rx="5" />
+<text class="label" x="354" y="169">brain.resolveProposal</text>
+<rect class="node c1" x="346" y="184" width="210" height="22" rx="5" />
+<text class="label" x="354" y="199">brain.saveItemEdit</text>
+<rect class="node c1" x="346" y="214" width="210" height="22" rx="5" />
+<text class="label" x="354" y="229">dictate.loadChatThread</text>
+<rect class="node c1" x="346" y="244" width="210" height="22" rx="5" />
+<text class="label" x="354" y="259">dictate.sendChat</text>
+<rect class="node c1" x="346" y="274" width="210" height="22" rx="5" />
+<text class="label" x="354" y="289">replies.load</text>
+<rect class="node c1" x="346" y="304" width="210" height="22" rx="5" />
+<text class="label" x="354" y="319">replies.markRead</text>
+<rect class="node c2" x="596" y="34" width="210" height="22" rx="5" />
+<text class="label" x="604" y="49">Entry</text>
+<rect class="node c2" x="596" y="64" width="210" height="22" rx="5" />
+<text class="label" x="604" y="79">Find</text>
+<rect class="node c2" x="596" y="94" width="210" height="22" rx="5" />
+<text class="label" x="604" y="109">Insight</text>
+<rect class="node c2" x="596" y="124" width="210" height="22" rx="5" />
+<text class="label" x="604" y="139">Memory</text>
+</svg>
+<ul class="orphans"><li>GET /brain/items/{id} — no client caller traced</li><li>GET /memory/history — no client caller traced</li></ul>
+<details><summary>Mermaid source for this section</summary><pre>flowchart LR
+  n303a504f5354[&quot;POST /brain/dump&quot;]
+  n313a62726169[&quot;brain.dump&quot;]
+  n323a456e7472[&quot;Entry&quot;]
+  n303a47455420[&quot;GET /brain/items/{id}&quot;]
+  n303a50555420[&quot;PUT /brain/items/{id}&quot;]
+  n313a62726169[&quot;brain.saveItemEdit&quot;]
+  n303a47455420[&quot;GET /brain/items/{id}/versions&quot;]
+  n313a62726169[&quot;brain.openItemEditor&quot;]
+  n303a47455420[&quot;GET /brain/latest&quot;]
+  n313a62726169[&quot;brain.load&quot;]
+  n303a47455420[&quot;GET /brain/replies&quot;]
+  n313a7265706c[&quot;replies.load&quot;]
+  n303a50415443[&quot;PATCH /brain/replies/{id}&quot;]
+  n313a7265706c[&quot;replies.markRead&quot;]
+  n323a496e7369[&quot;Insight&quot;]
+  n303a47455420[&quot;GET /brain/search&quot;]
+  n313a62726169[&quot;brain.find&quot;]
+  n323a46696e64[&quot;Find&quot;]
+  n303a504f5354[&quot;POST /chat&quot;]
+  n313a64696374[&quot;dictate.sendChat&quot;]
+  n303a47455420[&quot;GET /chat/thread&quot;]
+  n313a64696374[&quot;dictate.loadChatThread&quot;]
+  n303a47455420[&quot;GET /memory/history&quot;]
+  n303a47455420[&quot;GET /memory/hitrate&quot;]
+  n303a47455420[&quot;GET /memory/proposals&quot;]
+  n303a504f5354[&quot;POST /memory/proposals/{id}&quot;]
+  n313a62726169[&quot;brain.resolveProposal&quot;]
+  n323a4d656d6f[&quot;Memory&quot;]
+  n303a504f5354[&quot;POST /memory/proposals/{id}/undo&quot;]
+  n303a47455420 --&gt; n313a62726169
+  n303a47455420 --&gt; n313a64696374
+  n303a47455420 --&gt; n313a7265706c
+  n303a50415443 --&gt; n313a7265706c
+  n303a504f5354 --&gt; n313a62726169
+  n303a504f5354 --&gt; n313a64696374
+  n303a50555420 --&gt; n313a62726169
+  n313a62726169 --&gt; n323a456e7472
+  n313a62726169 --&gt; n323a46696e64
+  n313a62726169 --&gt; n323a4d656d6f
+  n313a7265706c --&gt; n323a496e7369</pre></details>
+</section>
+<section id="calendar">
+<h2>calendar</h2>
+<p class="meta">5 endpoints · 2 store action(s) · 2 component(s)</p>
+<svg viewBox="0 0 822 196" width="100%" role="img" aria-label="calendar wiring">
+<title>calendar: endpoint to store action to component</title>
+<text class="head" x="16" y="20">endpoint</text>
+<text class="head" x="346" y="20">store action</text>
+<text class="head" x="596" y="20">component</text>
+<path class="edge" d="M266,45 C306,45 306,45 346,45" />
+<path class="edge" d="M266,45 C306,45 306,75 346,75" />
+<path class="edge" d="M556,45 C576,45 576,45 596,45" />
+<path class="edge" d="M556,45 C576,45 576,75 596,75" />
+<path class="edge" d="M556,75 C576,75 576,45 596,45" />
+<path class="edge" d="M556,75 C576,75 576,75 596,75" />
+<rect class="node c0" x="16" y="34" width="250" height="22" rx="5" />
+<text class="label" x="24" y="49">GET /calendar</text>
+<rect class="node c0" x="16" y="64" width="250" height="22" rx="5" />
+<text class="label" x="24" y="79">POST /calendar/propose</text>
+<rect class="node c0" x="16" y="94" width="250" height="22" rx="5" />
+<text class="label" x="24" y="109">DELETE /events/{id}</text>
+<rect class="node c0" x="16" y="124" width="250" height="22" rx="5" />
+<text class="label" x="24" y="139">GET /events/{id}</text>
+<rect class="node c0" x="16" y="154" width="250" height="22" rx="5" />
+<text class="label" x="24" y="169">PATCH /events/{id}</text>
+<rect class="node c1" x="346" y="34" width="210" height="22" rx="5" />
+<text class="label" x="354" y="49">today.loadCalendar</text>
+<rect class="node c1" x="346" y="64" width="210" height="22" rx="5" />
+<text class="label" x="354" y="79">today.loadThreeDay</text>
+<rect class="node c2" x="596" y="34" width="210" height="22" rx="5" />
+<text class="label" x="604" y="49">CalendarGrid</text>
+<rect class="node c2" x="596" y="64" width="210" height="22" rx="5" />
+<text class="label" x="604" y="79">CalendarList</text>
+</svg>
+<ul class="orphans"><li>POST /calendar/propose — no client caller traced</li><li>DELETE /events/{id} — no client caller traced</li><li>GET /events/{id} — no client caller traced</li><li>PATCH /events/{id} — no client caller traced</li></ul>
+<details><summary>Mermaid source for this section</summary><pre>flowchart LR
+  n303a47455420[&quot;GET /calendar&quot;]
+  n313a746f6461[&quot;today.loadCalendar&quot;]
+  n313a746f6461[&quot;today.loadThreeDay&quot;]
+  n323a43616c65[&quot;CalendarGrid&quot;]
+  n323a43616c65[&quot;CalendarList&quot;]
+  n303a504f5354[&quot;POST /calendar/propose&quot;]
+  n303a44454c45[&quot;DELETE /events/{id}&quot;]
+  n303a47455420[&quot;GET /events/{id}&quot;]
+  n303a50415443[&quot;PATCH /events/{id}&quot;]
+  n303a47455420 --&gt; n313a746f6461
+  n313a746f6461 --&gt; n323a43616c65</pre></details>
+</section>
+<section id="decisions">
+<h2>decisions</h2>
+<p class="meta">7 endpoints · 6 store action(s) · 3 component(s)</p>
+<svg viewBox="0 0 822 256" width="100%" role="img" aria-label="decisions wiring">
+<title>decisions: endpoint to store action to component</title>
+<text class="head" x="16" y="20">endpoint</text>
+<text class="head" x="346" y="20">store action</text>
+<text class="head" x="596" y="20">component</text>
+<path class="edge" d="M266,45 C306,45 306,45 346,45" />
+<path class="edge" d="M266,45 C306,45 306,165 346,165" />
+<path class="edge" d="M266,105 C306,105 306,105 346,105" />
+<path class="edge" d="M266,165 C306,165 306,75 346,75" />
+<path class="edge" d="M266,195 C306,195 306,105 346,105" />
+<path class="edge" d="M266,225 C306,225 306,135 346,135" />
+<path class="edge" d="M266,135 C306,135 306,195 346,195" />
+<path class="edge" d="M556,45 C576,45 576,45 596,45" />
+<path class="edge" d="M556,105 C576,105 576,105 596,105" />
+<path class="edge" d="M556,135 C576,135 576,75 596,75" />
+<path class="edge" d="M556,165 C576,165 576,45 596,45" />
+<rect class="node c0" x="16" y="34" width="250" height="22" rx="5" />
+<text class="label" x="24" y="49">GET /actions</text>
+<rect class="node c0" x="16" y="64" width="250" height="22" rx="5" />
+<text class="label" x="24" y="79">GET /actions/{id}</text>
+<rect class="node c0" x="16" y="94" width="250" height="22" rx="5" />
+<text class="label" x="24" y="109">POST /actions/{id}</text>
+<rect class="node c0" x="16" y="124" width="250" height="22" rx="5" />
+<text class="label" x="24" y="139">PUT /actions/{id}/draft</text>
+<rect class="node c0" x="16" y="154" width="250" height="22" rx="5" />
+<text class="label" x="24" y="169">POST /actions/{id}/reopen</text>
+<rect class="node c0" x="16" y="184" width="250" height="22" rx="5" />
+<text class="label" x="24" y="199">POST /actions/{id}/undo</text>
+<rect class="node c0" x="16" y="214" width="250" height="22" rx="5" />
+<text class="label" x="24" y="229">POST /insights/{id}</text>
+<rect class="node c1" x="346" y="34" width="210" height="22" rx="5" />
+<text class="label" x="354" y="49">agents.loadHistory</text>
+<rect class="node c1" x="346" y="64" width="210" height="22" rx="5" />
+<text class="label" x="354" y="79">agents.reopenAction</text>
+<rect class="node c1" x="346" y="94" width="210" height="22" rx="5" />
+<text class="label" x="354" y="109">today.answer</text>
+<rect class="node c1" x="346" y="124" width="210" height="22" rx="5" />
+<text class="label" x="354" y="139">today.answerInsight</text>
+<rect class="node c1" x="346" y="154" width="210" height="22" rx="5" />
+<text class="label" x="354" y="169">today.loadHistory</text>
+<rect class="node c1" x="346" y="184" width="210" height="22" rx="5" />
+<text class="label" x="354" y="199">today.saveDraft</text>
+<rect class="node c2" x="596" y="34" width="210" height="22" rx="5" />
+<text class="label" x="604" y="49">History</text>
+<rect class="node c2" x="596" y="64" width="210" height="22" rx="5" />
+<text class="label" x="604" y="79">Insight</text>
+<rect class="node c2" x="596" y="94" width="210" height="22" rx="5" />
+<text class="label" x="604" y="109">NeedsYou</text>
+</svg>
+<ul class="orphans"><li>GET /actions/{id} — no client caller traced</li></ul>
+<details><summary>Mermaid source for this section</summary><pre>flowchart LR
+  n303a47455420[&quot;GET /actions&quot;]
+  n313a6167656e[&quot;agents.loadHistory&quot;]
+  n313a746f6461[&quot;today.loadHistory&quot;]
+  n323a48697374[&quot;History&quot;]
+  n303a47455420[&quot;GET /actions/{id}&quot;]
+  n303a504f5354[&quot;POST /actions/{id}&quot;]
+  n313a746f6461[&quot;today.answer&quot;]
+  n323a4e656564[&quot;NeedsYou&quot;]
+  n303a50555420[&quot;PUT /actions/{id}/draft&quot;]
+  n313a746f6461[&quot;today.saveDraft&quot;]
+  n303a504f5354[&quot;POST /actions/{id}/reopen&quot;]
+  n313a6167656e[&quot;agents.reopenAction&quot;]
+  n303a504f5354[&quot;POST /actions/{id}/undo&quot;]
+  n303a504f5354[&quot;POST /insights/{id}&quot;]
+  n313a746f6461[&quot;today.answerInsight&quot;]
+  n323a496e7369[&quot;Insight&quot;]
+  n303a47455420 --&gt; n313a6167656e
+  n303a47455420 --&gt; n313a746f6461
+  n303a504f5354 --&gt; n313a6167656e
+  n303a504f5354 --&gt; n313a746f6461
+  n303a50555420 --&gt; n313a746f6461
+  n313a6167656e --&gt; n323a48697374
+  n313a746f6461 --&gt; n323a48697374
+  n313a746f6461 --&gt; n323a496e7369
+  n313a746f6461 --&gt; n323a4e656564</pre></details>
+</section>
+<section id="files">
+<h2>files</h2>
+<p class="meta">3 endpoints · 3 store action(s) · 1 component(s)</p>
+<svg viewBox="0 0 822 136" width="100%" role="img" aria-label="files wiring">
+<title>files: endpoint to store action to component</title>
+<text class="head" x="16" y="20">endpoint</text>
+<text class="head" x="346" y="20">store action</text>
+<text class="head" x="596" y="20">component</text>
+<path class="edge" d="M266,45 C306,45 306,45 346,45" />
+<path class="edge" d="M266,45 C306,45 306,75 346,75" />
+<path class="edge" d="M266,75 C306,75 306,105 346,105" />
+<path class="edge" d="M556,105 C576,105 576,45 596,45" />
+<rect class="node c0" x="16" y="34" width="250" height="22" rx="5" />
+<text class="label" x="24" y="49">GET /files</text>
+<rect class="node c0" x="16" y="64" width="250" height="22" rx="5" />
+<text class="label" x="24" y="79">POST /files</text>
+<rect class="node c0" x="16" y="94" width="250" height="22" rx="5" />
+<text class="label" x="24" y="109">GET /files/{id}</text>
+<rect class="node c1" x="346" y="34" width="210" height="22" rx="5" />
+<text class="label" x="354" y="49">files.loadArchive</text>
+<rect class="node c1" x="346" y="64" width="210" height="22" rx="5" />
+<text class="label" x="354" y="79">files.loadRecent</text>
+<rect class="node c1" x="346" y="94" width="210" height="22" rx="5" />
+<text class="label" x="354" y="109">files.upload</text>
+<rect class="node c2" x="596" y="34" width="210" height="22" rx="5" />
+<text class="label" x="604" y="49">Entry</text>
+</svg>
+<ul class="orphans"><li>GET /files/{id} — no client caller traced</li></ul>
+<details><summary>Mermaid source for this section</summary><pre>flowchart LR
+  n303a47455420[&quot;GET /files&quot;]
+  n313a66696c65[&quot;files.loadArchive&quot;]
+  n313a66696c65[&quot;files.loadRecent&quot;]
+  n303a504f5354[&quot;POST /files&quot;]
+  n313a66696c65[&quot;files.upload&quot;]
+  n323a456e7472[&quot;Entry&quot;]
+  n303a47455420[&quot;GET /files/{id}&quot;]
+  n303a47455420 --&gt; n313a66696c65
+  n303a504f5354 --&gt; n313a66696c65
+  n313a66696c65 --&gt; n323a456e7472</pre></details>
+</section>
+<section id="life">
+<h2>life</h2>
+<p class="meta">18 endpoints · 12 store action(s) · 2 component(s)</p>
+<svg viewBox="0 0 822 586" width="100%" role="img" aria-label="life wiring">
+<title>life: endpoint to store action to component</title>
+<text class="head" x="16" y="20">endpoint</text>
+<text class="head" x="346" y="20">store action</text>
+<text class="head" x="596" y="20">component</text>
+<path class="edge" d="M266,45 C306,45 306,285 346,285" />
+<path class="edge" d="M266,45 C306,45 306,345 346,345" />
+<path class="edge" d="M266,165 C306,165 306,75 346,75" />
+<path class="edge" d="M266,165 C306,165 306,105 346,105" />
+<path class="edge" d="M266,165 C306,165 306,375 346,375" />
+<path class="edge" d="M266,225 C306,225 306,135 346,135" />
+<path class="edge" d="M266,375 C306,375 306,75 346,75" />
+<path class="edge" d="M266,405 C306,405 306,165 346,165" />
+<path class="edge" d="M266,255 C306,255 306,195 346,195" />
+<path class="edge" d="M266,465 C306,465 306,225 346,225" />
+<path class="edge" d="M266,555 C306,555 306,45 346,45" />
+<path class="edge" d="M266,75 C306,75 306,315 346,315" />
+<path class="edge" d="M266,195 C306,195 306,375 346,375" />
+<path class="edge" d="M266,435 C306,435 306,255 346,255" />
+<path class="edge" d="M556,135 C576,135 576,75 596,75" />
+<path class="edge" d="M556,195 C576,195 576,45 596,45" />
+<path class="edge" d="M556,195 C576,195 576,75 596,75" />
+<rect class="node c0" x="16" y="34" width="250" height="22" rx="5" />
+<text class="label" x="24" y="49">GET /goals</text>
+<rect class="node c0" x="16" y="64" width="250" height="22" rx="5" />
+<text class="label" x="24" y="79">PUT /goals</text>
+<rect class="node c0" x="16" y="94" width="250" height="22" rx="5" />
+<text class="label" x="24" y="109">GET /goals/history</text>
+<rect class="node c0" x="16" y="124" width="250" height="22" rx="5" />
+<text class="label" x="24" y="139">GET /goals/{id}</text>
+<rect class="node c0" x="16" y="154" width="250" height="22" rx="5" />
+<text class="label" x="24" y="169">GET /habits</text>
+<rect class="node c0" x="16" y="184" width="250" height="22" rx="5" />
+<text class="label" x="24" y="199">PUT /habits</text>
+<rect class="node c0" x="16" y="214" width="250" height="22" rx="5" />
+<text class="label" x="24" y="229">GET /habits/stats</text>
+<rect class="node c0" x="16" y="244" width="250" height="22" rx="5" />
+<text class="label" x="24" y="259">POST /habits/{id}/log</text>
+<rect class="node c0" x="16" y="274" width="250" height="22" rx="5" />
+<text class="label" x="24" y="289">GET /health</text>
+<rect class="node c0" x="16" y="304" width="250" height="22" rx="5" />
+<text class="label" x="24" y="319">GET /learning</text>
+<rect class="node c0" x="16" y="334" width="250" height="22" rx="5" />
+<text class="label" x="24" y="349">GET /learning/{id}</text>
+<rect class="node c0" x="16" y="364" width="250" height="22" rx="5" />
+<text class="label" x="24" y="379">GET /life</text>
+<rect class="node c0" x="16" y="394" width="250" height="22" rx="5" />
+<text class="label" x="24" y="409">GET /life/sections/{id}/config</text>
+<rect class="node c0" x="16" y="424" width="250" height="22" rx="5" />
+<text class="label" x="24" y="439">PUT /life/sections/{id}/config</text>
+<rect class="node c0" x="16" y="454" width="250" height="22" rx="5" />
+<text class="label" x="24" y="469">POST /life/sections/{id}/config/revert</text>
+<rect class="node c0" x="16" y="484" width="250" height="22" rx="5" />
+<text class="label" x="24" y="499">GET /money</text>
+<rect class="node c0" x="16" y="514" width="250" height="22" rx="5" />
+<text class="label" x="24" y="529">GET /people</text>
+<rect class="node c0" x="16" y="544" width="250" height="22" rx="5" />
+<text class="label" x="24" y="559">POST /people/{id}/act</text>
+<rect class="node c1" x="346" y="34" width="210" height="22" rx="5" />
+<text class="label" x="354" y="49">life.actPerson</text>
+<rect class="node c1" x="346" y="64" width="210" height="22" rx="5" />
+<text class="label" x="354" y="79">life.load</text>
+<rect class="node c1" x="346" y="94" width="210" height="22" rx="5" />
+<text class="label" x="354" y="109">life.loadArchivedHabits</text>
+<rect class="node c1" x="346" y="124" width="210" height="22" rx="5" />
+<text class="label" x="354" y="139">life.loadHabitStats</text>
+<rect class="node c1" x="346" y="154" width="210" height="22" rx="5" />
+<text class="label" x="354" y="169">life.loadSectionConfig</text>
+<rect class="node c1" x="346" y="184" width="210" height="22" rx="5" />
+<text class="label" x="354" y="199">life.logHabit</text>
+<rect class="node c1" x="346" y="214" width="210" height="22" rx="5" />
+<text class="label" x="354" y="229">life.revertSectionConfig</text>
+<rect class="node c1" x="346" y="244" width="210" height="22" rx="5" />
+<text class="label" x="354" y="259">life.saveSectionConfig</text>
+<rect class="node c1" x="346" y="274" width="210" height="22" rx="5" />
+<text class="label" x="354" y="289">lifeEdits.archiveGoal</text>
+<rect class="node c1" x="346" y="304" width="210" height="22" rx="5" />
+<text class="label" x="354" y="319">lifeEdits.putGoals</text>
+<rect class="node c1" x="346" y="334" width="210" height="22" rx="5" />
+<text class="label" x="354" y="349">lifeEdits.saveGoals</text>
+<rect class="node c1" x="346" y="364" width="210" height="22" rx="5" />
+<text class="label" x="354" y="379">lifeEdits.saveHabits</text>
+<rect class="node c2" x="596" y="34" width="210" height="22" rx="5" />
+<text class="label" x="604" y="49">CloseDay</text>
+<rect class="node c2" x="596" y="64" width="210" height="22" rx="5" />
+<text class="label" x="604" y="79">Habits</text>
+</svg>
+<ul class="orphans"><li>GET /goals/history — no client caller traced</li><li>GET /goals/{id} — no client caller traced</li><li>GET /health — no client caller traced</li><li>GET /learning — no client caller traced</li><li>GET /learning/{id} — no client caller traced</li><li>GET /money — no client caller traced</li><li>GET /people — no client caller traced</li></ul>
+<details><summary>Mermaid source for this section</summary><pre>flowchart LR
+  n303a47455420[&quot;GET /goals&quot;]
+  n313a6c696665[&quot;lifeEdits.archiveGoal&quot;]
+  n313a6c696665[&quot;lifeEdits.saveGoals&quot;]
+  n303a50555420[&quot;PUT /goals&quot;]
+  n313a6c696665[&quot;lifeEdits.putGoals&quot;]
+  n303a47455420[&quot;GET /goals/history&quot;]
+  n303a47455420[&quot;GET /goals/{id}&quot;]
+  n303a47455420[&quot;GET /habits&quot;]
+  n313a6c696665[&quot;life.load&quot;]
+  n313a6c696665[&quot;life.loadArchivedHabits&quot;]
+  n313a6c696665[&quot;lifeEdits.saveHabits&quot;]
+  n303a50555420[&quot;PUT /habits&quot;]
+  n303a47455420[&quot;GET /habits/stats&quot;]
+  n313a6c696665[&quot;life.loadHabitStats&quot;]
+  n323a48616269[&quot;Habits&quot;]
+  n303a504f5354[&quot;POST /habits/{id}/log&quot;]
+  n313a6c696665[&quot;life.logHabit&quot;]
+  n323a436c6f73[&quot;CloseDay&quot;]
+  n303a47455420[&quot;GET /health&quot;]
+  n303a47455420[&quot;GET /learning&quot;]
+  n303a47455420[&quot;GET /learning/{id}&quot;]
+  n303a47455420[&quot;GET /life&quot;]
+  n303a47455420[&quot;GET /life/sections/{id}/config&quot;]
+  n313a6c696665[&quot;life.loadSectionConfig&quot;]
+  n303a50555420[&quot;PUT /life/sections/{id}/config&quot;]
+  n313a6c696665[&quot;life.saveSectionConfig&quot;]
+  n303a504f5354[&quot;POST /life/sections/{id}/config/revert&quot;]
+  n313a6c696665[&quot;life.revertSectionConfig&quot;]
+  n303a47455420[&quot;GET /money&quot;]
+  n303a47455420[&quot;GET /people&quot;]
+  n303a504f5354[&quot;POST /people/{id}/act&quot;]
+  n313a6c696665[&quot;life.actPerson&quot;]
+  n303a47455420 --&gt; n313a6c696665
+  n303a504f5354 --&gt; n313a6c696665
+  n303a50555420 --&gt; n313a6c696665
+  n313a6c696665 --&gt; n323a436c6f73
+  n313a6c696665 --&gt; n323a48616269</pre></details>
+</section>
+<section id="search">
+<h2>search</h2>
+<p class="meta">1 endpoint · 1 store action(s) · 1 component(s)</p>
+<svg viewBox="0 0 822 76" width="100%" role="img" aria-label="search wiring">
+<title>search: endpoint to store action to component</title>
+<text class="head" x="16" y="20">endpoint</text>
+<text class="head" x="346" y="20">store action</text>
+<text class="head" x="596" y="20">component</text>
+<path class="edge" d="M266,45 C306,45 306,45 346,45" />
+<path class="edge" d="M556,45 C576,45 576,45 596,45" />
+<rect class="node c0" x="16" y="34" width="250" height="22" rx="5" />
+<text class="label" x="24" y="49">GET /search</text>
+<rect class="node c1" x="346" y="34" width="210" height="22" rx="5" />
+<text class="label" x="354" y="49">search.run</text>
+<rect class="node c2" x="596" y="34" width="210" height="22" rx="5" />
+<text class="label" x="604" y="49">Find</text>
+</svg>
+<details><summary>Mermaid source for this section</summary><pre>flowchart LR
+  n303a47455420[&quot;GET /search&quot;]
+  n313a73656172[&quot;search.run&quot;]
+  n323a46696e64[&quot;Find&quot;]
+  n303a47455420 --&gt; n313a73656172
+  n313a73656172 --&gt; n323a46696e64</pre></details>
+</section>
+<section id="sections">
+<h2>sections</h2>
+<p class="meta">7 endpoints · 4 store action(s) · 0 component(s)</p>
+<svg viewBox="0 0 822 256" width="100%" role="img" aria-label="sections wiring">
+<title>sections: endpoint to store action to component</title>
+<text class="head" x="16" y="20">endpoint</text>
+<text class="head" x="346" y="20">store action</text>
+<text class="head" x="596" y="20">component</text>
+<path class="edge" d="M266,45 C306,45 306,45 346,45" />
+<path class="edge" d="M266,105 C306,105 306,75 346,75" />
+<path class="edge" d="M266,225 C306,225 306,105 346,105" />
+<path class="edge" d="M266,195 C306,195 306,135 346,135" />
+<rect class="node c0" x="16" y="34" width="250" height="22" rx="5" />
+<text class="label" x="24" y="49">GET /sections</text>
+<rect class="node c0" x="16" y="64" width="250" height="22" rx="5" />
+<text class="label" x="24" y="79">GET /sections/catalogue</text>
+<rect class="node c0" x="16" y="94" width="250" height="22" rx="5" />
+<text class="label" x="24" y="109">POST /sections/propose</text>
+<rect class="node c0" x="16" y="124" width="250" height="22" rx="5" />
+<text class="label" x="24" y="139">DELETE /sections/{id}</text>
+<rect class="node c0" x="16" y="154" width="250" height="22" rx="5" />
+<text class="label" x="24" y="169">GET /sections/{id}</text>
+<rect class="node c0" x="16" y="184" width="250" height="22" rx="5" />
+<text class="label" x="24" y="199">PUT /sections/{id}</text>
+<rect class="node c0" x="16" y="214" width="250" height="22" rx="5" />
+<text class="label" x="24" y="229">POST /sections/{id}/revert</text>
+<rect class="node c1" x="346" y="34" width="210" height="22" rx="5" />
+<text class="label" x="354" y="49">sections.load</text>
+<rect class="node c1" x="346" y="64" width="210" height="22" rx="5" />
+<text class="label" x="354" y="79">sections.propose</text>
+<rect class="node c1" x="346" y="94" width="210" height="22" rx="5" />
+<text class="label" x="354" y="109">sections.revert</text>
+<rect class="node c1" x="346" y="124" width="210" height="22" rx="5" />
+<text class="label" x="354" y="139">sections.save</text>
+</svg>
+<ul class="orphans"><li>GET /sections/catalogue — no client caller traced</li><li>DELETE /sections/{id} — no client caller traced</li><li>GET /sections/{id} — no client caller traced</li></ul>
+<details><summary>Mermaid source for this section</summary><pre>flowchart LR
+  n303a47455420[&quot;GET /sections&quot;]
+  n313a73656374[&quot;sections.load&quot;]
+  n303a47455420[&quot;GET /sections/catalogue&quot;]
+  n303a504f5354[&quot;POST /sections/propose&quot;]
+  n313a73656374[&quot;sections.propose&quot;]
+  n303a44454c45[&quot;DELETE /sections/{id}&quot;]
+  n303a47455420[&quot;GET /sections/{id}&quot;]
+  n303a50555420[&quot;PUT /sections/{id}&quot;]
+  n313a73656374[&quot;sections.save&quot;]
+  n303a504f5354[&quot;POST /sections/{id}/revert&quot;]
+  n313a73656374[&quot;sections.revert&quot;]
+  n303a47455420 --&gt; n313a73656374
+  n303a504f5354 --&gt; n313a73656374
+  n303a50555420 --&gt; n313a73656374</pre></details>
+</section>
+<section id="session">
+<h2>session</h2>
+<p class="meta">10 endpoints · 5 store action(s) · 1 component(s)</p>
+<svg viewBox="0 0 822 346" width="100%" role="img" aria-label="session wiring">
+<title>session: endpoint to store action to component</title>
+<text class="head" x="16" y="20">endpoint</text>
+<text class="head" x="346" y="20">store action</text>
+<text class="head" x="596" y="20">component</text>
+<path class="edge" d="M266,255 C306,255 306,165 346,165" />
+<path class="edge" d="M266,315 C306,315 306,45 346,45" />
+<path class="edge" d="M266,315 C306,315 306,135 346,135" />
+<path class="edge" d="M266,165 C306,165 306,165 346,165" />
+<path class="edge" d="M266,195 C306,195 306,75 346,75" />
+<path class="edge" d="M266,285 C306,285 306,105 346,105" />
+<path class="edge" d="M556,75 C576,75 576,45 596,45" />
+<rect class="node c0" x="16" y="34" width="250" height="22" rx="5" />
+<text class="label" x="24" y="49">GET /auth/nonce</text>
+<rect class="node c0" x="16" y="64" width="250" height="22" rx="5" />
+<text class="label" x="24" y="79">POST /auth/refresh</text>
+<rect class="node c0" x="16" y="94" width="250" height="22" rx="5" />
+<text class="label" x="24" y="109">POST /auth/register-device</text>
+<rect class="node c0" x="16" y="124" width="250" height="22" rx="5" />
+<text class="label" x="24" y="139">POST /auth/webauthn/{step}</text>
+<rect class="node c0" x="16" y="154" width="250" height="22" rx="5" />
+<text class="label" x="24" y="169">POST /devices/{id}/revoke</text>
+<rect class="node c0" x="16" y="184" width="250" height="22" rx="5" />
+<text class="label" x="24" y="199">POST /lock</text>
+<rect class="node c0" x="16" y="214" width="250" height="22" rx="5" />
+<text class="label" x="24" y="229">POST /push/subscribe</text>
+<rect class="node c0" x="16" y="244" width="250" height="22" rx="5" />
+<text class="label" x="24" y="259">DELETE /push/subscribe/{device}</text>
+<rect class="node c0" x="16" y="274" width="250" height="22" rx="5" />
+<text class="label" x="24" y="289">POST /recover</text>
+<rect class="node c0" x="16" y="304" width="250" height="22" rx="5" />
+<text class="label" x="24" y="319">GET /session</text>
+<rect class="node c1" x="346" y="34" width="210" height="22" rx="5" />
+<text class="label" x="354" y="49">session.loadSession</text>
+<rect class="node c1" x="346" y="64" width="210" height="22" rx="5" />
+<text class="label" x="354" y="79">session.lock</text>
+<rect class="node c1" x="346" y="94" width="210" height="22" rx="5" />
+<text class="label" x="354" y="109">session.recover</text>
+<rect class="node c1" x="346" y="124" width="210" height="22" rx="5" />
+<text class="label" x="354" y="139">settings.loadDevices</text>
+<rect class="node c1" x="346" y="154" width="210" height="22" rx="5" />
+<text class="label" x="354" y="169">settings.revokeDevice</text>
+<rect class="node c2" x="596" y="34" width="210" height="22" rx="5" />
+<text class="label" x="604" y="49">EmergencyLock</text>
+</svg>
+<ul class="orphans"><li>GET /auth/nonce — no client caller traced</li><li>POST /auth/refresh — no client caller traced</li><li>POST /auth/register-device — no client caller traced</li><li>POST /auth/webauthn/{step} — no client caller traced</li><li>POST /push/subscribe — no client caller traced</li></ul>
+<details><summary>Mermaid source for this section</summary><pre>flowchart LR
+  n303a47455420[&quot;GET /auth/nonce&quot;]
+  n303a504f5354[&quot;POST /auth/refresh&quot;]
+  n303a504f5354[&quot;POST /auth/register-device&quot;]
+  n303a504f5354[&quot;POST /auth/webauthn/{step}&quot;]
+  n303a504f5354[&quot;POST /devices/{id}/revoke&quot;]
+  n313a73657474[&quot;settings.revokeDevice&quot;]
+  n303a504f5354[&quot;POST /lock&quot;]
+  n313a73657373[&quot;session.lock&quot;]
+  n323a456d6572[&quot;EmergencyLock&quot;]
+  n303a504f5354[&quot;POST /push/subscribe&quot;]
+  n303a44454c45[&quot;DELETE /push/subscribe/{device}&quot;]
+  n303a504f5354[&quot;POST /recover&quot;]
+  n313a73657373[&quot;session.recover&quot;]
+  n303a47455420[&quot;GET /session&quot;]
+  n313a73657373[&quot;session.loadSession&quot;]
+  n313a73657474[&quot;settings.loadDevices&quot;]
+  n303a44454c45 --&gt; n313a73657474
+  n303a47455420 --&gt; n313a73657373
+  n303a47455420 --&gt; n313a73657474
+  n303a504f5354 --&gt; n313a73657373
+  n303a504f5354 --&gt; n313a73657474
+  n313a73657373 --&gt; n323a456d6572</pre></details>
+</section>
+<section id="settings">
+<h2>settings</h2>
+<p class="meta">31 endpoints · 22 store action(s) · 0 component(s)</p>
+<svg viewBox="0 0 822 976" width="100%" role="img" aria-label="settings wiring">
+<title>settings: endpoint to store action to component</title>
+<text class="head" x="16" y="20">endpoint</text>
+<text class="head" x="346" y="20">store action</text>
+<text class="head" x="596" y="20">component</text>
+<path class="edge" d="M266,45 C306,45 306,345 346,345" />
+<path class="edge" d="M266,45 C306,45 306,675 346,675" />
+<path class="edge" d="M266,105 C306,105 306,345 346,345" />
+<path class="edge" d="M266,225 C306,225 306,345 346,345" />
+<path class="edge" d="M266,285 C306,285 306,375 346,375" />
+<path class="edge" d="M266,405 C306,405 306,195 346,195" />
+<path class="edge" d="M266,495 C306,495 306,45 346,45" />
+<path class="edge" d="M266,495 C306,495 306,75 346,75" />
+<path class="edge" d="M266,615 C306,615 306,345 346,345" />
+<path class="edge" d="M266,705 C306,705 306,255 346,255" />
+<path class="edge" d="M266,765 C306,765 306,345 346,345" />
+<path class="edge" d="M266,825 C306,825 306,345 346,345" />
+<path class="edge" d="M266,885 C306,885 306,345 346,345" />
+<path class="edge" d="M266,75 C306,75 306,315 346,315" />
+<path class="edge" d="M266,345 C306,345 306,405 346,405" />
+<path class="edge" d="M266,375 C306,375 306,645 346,645" />
+<path class="edge" d="M266,525 C306,525 306,105 346,105" />
+<path class="edge" d="M266,555 C306,555 306,135 346,135" />
+<path class="edge" d="M266,585 C306,585 306,165 346,165" />
+<path class="edge" d="M266,135 C306,135 306,495 346,495" />
+<path class="edge" d="M266,255 C306,255 306,435 346,435" />
+<path class="edge" d="M266,315 C306,315 306,525 346,525" />
+<path class="edge" d="M266,465 C306,465 306,225 346,225" />
+<path class="edge" d="M266,645 C306,645 306,465 346,465" />
+<path class="edge" d="M266,735 C306,735 306,285 346,285" />
+<path class="edge" d="M266,795 C306,795 306,555 346,555" />
+<path class="edge" d="M266,855 C306,855 306,585 346,585" />
+<path class="edge" d="M266,915 C306,915 306,615 346,615" />
+<rect class="node c0" x="16" y="34" width="250" height="22" rx="5" />
+<text class="label" x="24" y="49">GET /capabilities</text>
+<rect class="node c0" x="16" y="64" width="250" height="22" rx="5" />
+<text class="label" x="24" y="79">POST /export</text>
+<rect class="node c0" x="16" y="94" width="250" height="22" rx="5" />
+<text class="label" x="24" y="109">GET /focuses</text>
+<rect class="node c0" x="16" y="124" width="250" height="22" rx="5" />
+<text class="label" x="24" y="139">PUT /focuses</text>
+<rect class="node c0" x="16" y="154" width="250" height="22" rx="5" />
+<text class="label" x="24" y="169">GET /labels/audit</text>
+<rect class="node c0" x="16" y="184" width="250" height="22" rx="5" />
+<text class="label" x="24" y="199">GET /labels/scheme</text>
+<rect class="node c0" x="16" y="214" width="250" height="22" rx="5" />
+<text class="label" x="24" y="229">GET /layout/app</text>
+<rect class="node c0" x="16" y="244" width="250" height="22" rx="5" />
+<text class="label" x="24" y="259">PUT /layout/app</text>
+<rect class="node c0" x="16" y="274" width="250" height="22" rx="5" />
+<text class="label" x="24" y="289">GET /layout/{tab}</text>
+<rect class="node c0" x="16" y="304" width="250" height="22" rx="5" />
+<text class="label" x="24" y="319">PUT /layout/{tab}</text>
+<rect class="node c0" x="16" y="334" width="250" height="22" rx="5" />
+<text class="label" x="24" y="349">POST /layout/{tab}/ea</text>
+<rect class="node c0" x="16" y="364" width="250" height="22" rx="5" />
+<text class="label" x="24" y="379">POST /layout/{tab}/revert</text>
+<rect class="node c0" x="16" y="394" width="250" height="22" rx="5" />
+<text class="label" x="24" y="409">GET /parameters</text>
+<rect class="node c0" x="16" y="424" width="250" height="22" rx="5" />
+<text class="label" x="24" y="439">POST /parameters/propose</text>
+<rect class="node c0" x="16" y="454" width="250" height="22" rx="5" />
+<text class="label" x="24" y="469">PUT /parameters/{key}</text>
+<rect class="node c0" x="16" y="484" width="250" height="22" rx="5" />
+<text class="label" x="24" y="499">GET /schedules</text>
+<rect class="node c0" x="16" y="514" width="250" height="22" rx="5" />
+<text class="label" x="24" y="529">POST /schedules/{id}/pause</text>
+<rect class="node c0" x="16" y="544" width="250" height="22" rx="5" />
+<text class="label" x="24" y="559">POST /schedules/{id}/resume</text>
+<rect class="node c0" x="16" y="574" width="250" height="22" rx="5" />
+<text class="label" x="24" y="589">POST /schedules/{id}/run</text>
+<rect class="node c0" x="16" y="604" width="250" height="22" rx="5" />
+<text class="label" x="24" y="619">GET /settings/autonomy</text>
+<rect class="node c0" x="16" y="634" width="250" height="22" rx="5" />
+<text class="label" x="24" y="649">PUT /settings/autonomy</text>
+<rect class="node c0" x="16" y="664" width="250" height="22" rx="5" />
+<text class="label" x="24" y="679">POST /settings/autonomy/propose</text>
+<rect class="node c0" x="16" y="694" width="250" height="22" rx="5" />
+<text class="label" x="24" y="709">GET /settings/autonomy/rules</text>
+<rect class="node c0" x="16" y="724" width="250" height="22" rx="5" />
+<text class="label" x="24" y="739">PUT /settings/autonomy/rules</text>
+<rect class="node c0" x="16" y="754" width="250" height="22" rx="5" />
+<text class="label" x="24" y="769">GET /settings/notifications</text>
+<rect class="node c0" x="16" y="784" width="250" height="22" rx="5" />
+<text class="label" x="24" y="799">PUT /settings/notifications/{id}</text>
+<rect class="node c0" x="16" y="814" width="250" height="22" rx="5" />
+<text class="label" x="24" y="829">GET /settings/quiet-hours</text>
+<rect class="node c0" x="16" y="844" width="250" height="22" rx="5" />
+<text class="label" x="24" y="859">PUT /settings/quiet-hours</text>
+<rect class="node c0" x="16" y="874" width="250" height="22" rx="5" />
+<text class="label" x="24" y="889">GET /settings/voice</text>
+<rect class="node c0" x="16" y="904" width="250" height="22" rx="5" />
+<text class="label" x="24" y="919">PUT /settings/voice</text>
+<rect class="node c0" x="16" y="934" width="250" height="22" rx="5" />
+<text class="label" x="24" y="949">GET /sync/status</text>
+<rect class="node c1" x="346" y="34" width="210" height="22" rx="5" />
+<text class="label" x="354" y="49">agents.load</text>
+<rect class="node c1" x="346" y="64" width="210" height="22" rx="5" />
+<text class="label" x="354" y="79">agents.loadSchedules</text>
+<rect class="node c1" x="346" y="94" width="210" height="22" rx="5" />
+<text class="label" x="354" y="109">agents.pauseSchedule</text>
+<rect class="node c1" x="346" y="124" width="210" height="22" rx="5" />
+<text class="label" x="354" y="139">agents.resumeSchedule</text>
+<rect class="node c1" x="346" y="154" width="210" height="22" rx="5" />
+<text class="label" x="354" y="169">agents.runSchedule</text>
+<rect class="node c1" x="346" y="184" width="210" height="22" rx="5" />
+<text class="label" x="354" y="199">parameters.load</text>
+<rect class="node c1" x="346" y="214" width="210" height="22" rx="5" />
+<text class="label" x="354" y="229">parameters.setParameter</text>
+<rect class="node c1" x="346" y="244" width="210" height="22" rx="5" />
+<text class="label" x="354" y="259">rules.load</text>
+<rect class="node c1" x="346" y="274" width="210" height="22" rx="5" />
+<text class="label" x="354" y="289">rules.put</text>
+<rect class="node c1" x="346" y="304" width="210" height="22" rx="5" />
+<text class="label" x="354" y="319">settings.exportAll</text>
+<rect class="node c1" x="346" y="334" width="210" height="22" rx="5" />
+<text class="label" x="354" y="349">settings.load</text>
+<rect class="node c1" x="346" y="364" width="210" height="22" rx="5" />
+<text class="label" x="354" y="379">settings.loadLayout</text>
+<rect class="node c1" x="346" y="394" width="210" height="22" rx="5" />
+<text class="label" x="354" y="409">settings.postLayoutEa</text>
+<rect class="node c1" x="346" y="424" width="210" height="22" rx="5" />
+<text class="label" x="354" y="439">settings.putAppLayout</text>
+<rect class="node c1" x="346" y="454" width="210" height="22" rx="5" />
+<text class="label" x="354" y="469">settings.putAutonomy</text>
+<rect class="node c1" x="346" y="484" width="210" height="22" rx="5" />
+<text class="label" x="354" y="499">settings.putFocuses</text>
+<rect class="node c1" x="346" y="514" width="210" height="22" rx="5" />
+<text class="label" x="354" y="529">settings.putLayout</text>
+<rect class="node c1" x="346" y="544" width="210" height="22" rx="5" />
+<text class="label" x="354" y="559">settings.putNotificationGroup</text>
+<rect class="node c1" x="346" y="574" width="210" height="22" rx="5" />
+<text class="label" x="354" y="589">settings.putQuietHours</text>
+<rect class="node c1" x="346" y="604" width="210" height="22" rx="5" />
+<text class="label" x="354" y="619">settings.putVoice</text>
+<rect class="node c1" x="346" y="634" width="210" height="22" rx="5" />
+<text class="label" x="354" y="649">settings.revertLayout</text>
+<rect class="node c1" x="346" y="664" width="210" height="22" rx="5" />
+<text class="label" x="354" y="679">sync.probe</text>
+</svg>
+<ul class="orphans"><li>GET /labels/audit — no client caller traced</li><li>GET /labels/scheme — no client caller traced</li><li>POST /parameters/propose — no client caller traced</li><li>POST /settings/autonomy/propose — no client caller traced</li><li>GET /sync/status — no client caller traced</li></ul>
+<details><summary>Mermaid source for this section</summary><pre>flowchart LR
+  n303a47455420[&quot;GET /capabilities&quot;]
+  n313a73657474[&quot;settings.load&quot;]
+  n313a73796e63[&quot;sync.probe&quot;]
+  n303a504f5354[&quot;POST /export&quot;]
+  n313a73657474[&quot;settings.exportAll&quot;]
+  n303a47455420[&quot;GET /focuses&quot;]
+  n303a50555420[&quot;PUT /focuses&quot;]
+  n313a73657474[&quot;settings.putFocuses&quot;]
+  n303a47455420[&quot;GET /labels/audit&quot;]
+  n303a47455420[&quot;GET /labels/scheme&quot;]
+  n303a47455420[&quot;GET /layout/app&quot;]
+  n303a50555420[&quot;PUT /layout/app&quot;]
+  n313a73657474[&quot;settings.putAppLayout&quot;]
+  n303a47455420[&quot;GET /layout/{tab}&quot;]
+  n313a73657474[&quot;settings.loadLayout&quot;]
+  n303a50555420[&quot;PUT /layout/{tab}&quot;]
+  n313a73657474[&quot;settings.putLayout&quot;]
+  n303a504f5354[&quot;POST /layout/{tab}/ea&quot;]
+  n313a73657474[&quot;settings.postLayoutEa&quot;]
+  n303a504f5354[&quot;POST /layout/{tab}/revert&quot;]
+  n313a73657474[&quot;settings.revertLayout&quot;]
+  n303a47455420[&quot;GET /parameters&quot;]
+  n313a70617261[&quot;parameters.load&quot;]
+  n303a504f5354[&quot;POST /parameters/propose&quot;]
+  n303a50555420[&quot;PUT /parameters/{key}&quot;]
+  n313a70617261[&quot;parameters.setParameter&quot;]
+  n303a47455420[&quot;GET /schedules&quot;]
+  n313a6167656e[&quot;agents.load&quot;]
+  n313a6167656e[&quot;agents.loadSchedules&quot;]
+  n303a504f5354[&quot;POST /schedules/{id}/pause&quot;]
+  n313a6167656e[&quot;agents.pauseSchedule&quot;]
+  n303a504f5354[&quot;POST /schedules/{id}/resume&quot;]
+  n313a6167656e[&quot;agents.resumeSchedule&quot;]
+  n303a504f5354[&quot;POST /schedules/{id}/run&quot;]
+  n313a6167656e[&quot;agents.runSchedule&quot;]
+  n303a47455420[&quot;GET /settings/autonomy&quot;]
+  n303a50555420[&quot;PUT /settings/autonomy&quot;]
+  n313a73657474[&quot;settings.putAutonomy&quot;]
+  n303a504f5354[&quot;POST /settings/autonomy/propose&quot;]
+  n303a47455420[&quot;GET /settings/autonomy/rules&quot;]
+  n313a72756c65[&quot;rules.load&quot;]
+  n303a50555420[&quot;PUT /settings/autonomy/rules&quot;]
+  n313a72756c65[&quot;rules.put&quot;]
+  n303a47455420[&quot;GET /settings/notifications&quot;]
+  n303a50555420[&quot;PUT /settings/notifications/{id}&quot;]
+  n313a73657474[&quot;settings.putNotificationGroup&quot;]
+  n303a47455420[&quot;GET /settings/quiet-hours&quot;]
+  n303a50555420[&quot;PUT /settings/quiet-hours&quot;]
+  n313a73657474[&quot;settings.putQuietHours&quot;]
+  n303a47455420[&quot;GET /settings/voice&quot;]
+  n303a50555420[&quot;PUT /settings/voice&quot;]
+  n313a73657474[&quot;settings.putVoice&quot;]
+  n303a47455420[&quot;GET /sync/status&quot;]
+  n303a47455420 --&gt; n313a6167656e
+  n303a47455420 --&gt; n313a70617261
+  n303a47455420 --&gt; n313a72756c65
+  n303a47455420 --&gt; n313a73657474
+  n303a47455420 --&gt; n313a73796e63
+  n303a504f5354 --&gt; n313a6167656e
+  n303a504f5354 --&gt; n313a73657474
+  n303a50555420 --&gt; n313a70617261
+  n303a50555420 --&gt; n313a72756c65
+  n303a50555420 --&gt; n313a73657474</pre></details>
+</section>
+<section id="tasks">
+<h2>tasks</h2>
+<p class="meta">21 endpoints · 19 store action(s) · 2 component(s)</p>
+<svg viewBox="0 0 822 676" width="100%" role="img" aria-label="tasks wiring">
+<title>tasks: endpoint to store action to component</title>
+<text class="head" x="16" y="20">endpoint</text>
+<text class="head" x="346" y="20">store action</text>
+<text class="head" x="596" y="20">component</text>
+<path class="edge" d="M266,525 C306,525 306,285 346,285" />
+<path class="edge" d="M266,105 C306,105 306,375 346,375" />
+<path class="edge" d="M266,105 C306,105 306,435 346,435" />
+<path class="edge" d="M266,105 C306,105 306,465 346,465" />
+<path class="edge" d="M266,105 C306,105 306,555 346,555" />
+<path class="edge" d="M266,165 C306,165 306,405 346,405" />
+<path class="edge" d="M266,195 C306,195 306,495 346,495" />
+<path class="edge" d="M266,225 C306,225 306,105 346,105" />
+<path class="edge" d="M266,225 C306,225 306,195 346,195" />
+<path class="edge" d="M266,225 C306,225 306,315 346,315" />
+<path class="edge" d="M266,225 C306,225 306,345 346,345" />
+<path class="edge" d="M266,405 C306,405 306,45 346,45" />
+<path class="edge" d="M266,585 C306,585 306,585 346,585" />
+<path class="edge" d="M266,255 C306,255 306,345 346,345" />
+<path class="edge" d="M266,555 C306,555 306,315 346,315" />
+<path class="edge" d="M266,135 C306,135 306,135 346,135" />
+<path class="edge" d="M266,315 C306,315 306,75 346,75" />
+<path class="edge" d="M266,345 C306,345 306,105 346,105" />
+<path class="edge" d="M266,375 C306,375 306,165 346,165" />
+<path class="edge" d="M266,435 C306,435 306,525 346,525" />
+<path class="edge" d="M266,465 C306,465 306,225 346,225" />
+<path class="edge" d="M266,495 C306,495 306,255 346,255" />
+<path class="edge" d="M266,495 C306,495 306,285 346,285" />
+<path class="edge" d="M266,285 C306,285 306,105 346,105" />
+<path class="edge" d="M556,75 C576,75 576,45 596,45" />
+<path class="edge" d="M556,105 C576,105 576,45 596,45" />
+<path class="edge" d="M556,105 C576,105 576,75 596,75" />
+<path class="edge" d="M556,195 C576,195 576,45 596,45" />
+<path class="edge" d="M556,195 C576,195 576,75 596,75" />
+<path class="edge" d="M556,315 C576,315 576,45 596,45" />
+<path class="edge" d="M556,315 C576,315 576,75 596,75" />
+<path class="edge" d="M556,345 C576,345 576,45 596,45" />
+<path class="edge" d="M556,345 C576,345 576,75 596,75" />
+<path class="edge" d="M556,405 C576,405 576,45 596,45" />
+<path class="edge" d="M556,525 C576,525 576,75 596,75" />
+<rect class="node c0" x="16" y="34" width="250" height="22" rx="5" />
+<text class="label" x="24" y="49">GET /slicers</text>
+<rect class="node c0" x="16" y="64" width="250" height="22" rx="5" />
+<text class="label" x="24" y="79">PUT /slicers</text>
+<rect class="node c0" x="16" y="94" width="250" height="22" rx="5" />
+<text class="label" x="24" y="109">GET /tasks</text>
+<rect class="node c0" x="16" y="124" width="250" height="22" rx="5" />
+<text class="label" x="24" y="139">POST /tasks</text>
+<rect class="node c0" x="16" y="154" width="250" height="22" rx="5" />
+<text class="label" x="24" y="169">GET /tasks/columns</text>
+<rect class="node c0" x="16" y="184" width="250" height="22" rx="5" />
+<text class="label" x="24" y="199">GET /tasks/waiting</text>
+<rect class="node c0" x="16" y="214" width="250" height="22" rx="5" />
+<text class="label" x="24" y="229">GET /tasks/{id}</text>
+<rect class="node c0" x="16" y="244" width="250" height="22" rx="5" />
+<text class="label" x="24" y="259">PATCH /tasks/{id}</text>
+<rect class="node c0" x="16" y="274" width="250" height="22" rx="5" />
+<text class="label" x="24" y="289">PUT /tasks/{id}</text>
+<rect class="node c0" x="16" y="304" width="250" height="22" rx="5" />
+<text class="label" x="24" y="319">POST /tasks/{id}/accept</text>
+<rect class="node c0" x="16" y="334" width="250" height="22" rx="5" />
+<text class="label" x="24" y="349">POST /tasks/{id}/complete</text>
+<rect class="node c0" x="16" y="364" width="250" height="22" rx="5" />
+<text class="label" x="24" y="379">POST /tasks/{id}/delegate</text>
+<rect class="node c0" x="16" y="394" width="250" height="22" rx="5" />
+<text class="label" x="24" y="409">GET /tasks/{id}/files</text>
+<rect class="node c0" x="16" y="424" width="250" height="22" rx="5" />
+<text class="label" x="24" y="439">POST /tasks/{id}/nudge</text>
+<rect class="node c0" x="16" y="454" width="250" height="22" rx="5" />
+<text class="label" x="24" y="469">POST /tasks/{id}/report</text>
+<rect class="node c0" x="16" y="484" width="250" height="22" rx="5" />
+<text class="label" x="24" y="499">POST /tasks/{id}/subtasks</text>
+<rect class="node c0" x="16" y="514" width="250" height="22" rx="5" />
+<text class="label" x="24" y="529">DELETE /tasks/{id}/subtasks/{sid}</text>
+<rect class="node c0" x="16" y="544" width="250" height="22" rx="5" />
+<text class="label" x="24" y="559">PATCH /tasks/{id}/subtasks/{sid}</text>
+<rect class="node c0" x="16" y="574" width="250" height="22" rx="5" />
+<text class="label" x="24" y="589">GET /tasks/{id}/usage</text>
+<rect class="node c0" x="16" y="604" width="250" height="22" rx="5" />
+<text class="label" x="24" y="619">POST /undo</text>
+<rect class="node c0" x="16" y="634" width="250" height="22" rx="5" />
+<text class="label" x="24" y="649">PUT /{noun}/{id}/labels</text>
+<rect class="node c1" x="346" y="34" width="210" height="22" rx="5" />
+<text class="label" x="354" y="49">files.loadTaskFiles</text>
+<rect class="node c1" x="346" y="64" width="210" height="22" rx="5" />
+<text class="label" x="354" y="79">taskCard.acceptTask</text>
+<rect class="node c1" x="346" y="94" width="210" height="22" rx="5" />
+<text class="label" x="354" y="109">taskCard.completeTask</text>
+<rect class="node c1" x="346" y="124" width="210" height="22" rx="5" />
+<text class="label" x="354" y="139">taskCard.createTask</text>
+<rect class="node c1" x="346" y="154" width="210" height="22" rx="5" />
+<text class="label" x="354" y="169">taskCard.delegate</text>
+<rect class="node c1" x="346" y="184" width="210" height="22" rx="5" />
+<text class="label" x="354" y="199">taskCard.loadDetailTask</text>
+<rect class="node c1" x="346" y="214" width="210" height="22" rx="5" />
+<text class="label" x="354" y="229">taskCard.submitReport</text>
+<rect class="node c1" x="346" y="244" width="210" height="22" rx="5" />
+<text class="label" x="354" y="259">taskEdits.addSubtask</text>
+<rect class="node c1" x="346" y="274" width="210" height="22" rx="5" />
+<text class="label" x="354" y="289">taskEdits.deleteSubtask</text>
+<rect class="node c1" x="346" y="304" width="210" height="22" rx="5" />
+<text class="label" x="354" y="319">taskEdits.patchSubtask</text>
+<rect class="node c1" x="346" y="334" width="210" height="22" rx="5" />
+<text class="label" x="354" y="349">taskEdits.patchTask</text>
+<rect class="node c1" x="346" y="364" width="210" height="22" rx="5" />
+<text class="label" x="354" y="379">tasks.load</text>
+<rect class="node c1" x="346" y="394" width="210" height="22" rx="5" />
+<text class="label" x="354" y="409">tasks.loadColumns</text>
+<rect class="node c1" x="346" y="424" width="210" height="22" rx="5" />
+<text class="label" x="354" y="439">tasks.loadOpenCount</text>
+<rect class="node c1" x="346" y="454" width="210" height="22" rx="5" />
+<text class="label" x="354" y="469">tasks.loadProjects</text>
+<rect class="node c1" x="346" y="484" width="210" height="22" rx="5" />
+<text class="label" x="354" y="499">tasks.loadWaiting</text>
+<rect class="node c1" x="346" y="514" width="210" height="22" rx="5" />
+<text class="label" x="354" y="529">tasks.nudge</text>
+<rect class="node c1" x="346" y="544" width="210" height="22" rx="5" />
+<text class="label" x="354" y="559">usage.load</text>
+<rect class="node c1" x="346" y="574" width="210" height="22" rx="5" />
+<text class="label" x="354" y="589">usage.loadTask</text>
+<rect class="node c2" x="596" y="34" width="210" height="22" rx="5" />
+<text class="label" x="604" y="49">TaskViews</text>
+<rect class="node c2" x="596" y="64" width="210" height="22" rx="5" />
+<text class="label" x="604" y="79">WaitingOn</text>
+</svg>
+<ul class="orphans"><li>GET /slicers — no client caller traced</li><li>PUT /slicers — no client caller traced</li><li>POST /undo — no client caller traced</li><li>PUT /{noun}/{id}/labels — no client caller traced</li></ul>
+<details><summary>Mermaid source for this section</summary><pre>flowchart LR
+  n303a47455420[&quot;GET /slicers&quot;]
+  n303a50555420[&quot;PUT /slicers&quot;]
+  n303a47455420[&quot;GET /tasks&quot;]
+  n313a7461736b[&quot;tasks.load&quot;]
+  n313a7461736b[&quot;tasks.loadOpenCount&quot;]
+  n313a7461736b[&quot;tasks.loadProjects&quot;]
+  n313a75736167[&quot;usage.load&quot;]
+  n303a504f5354[&quot;POST /tasks&quot;]
+  n313a7461736b[&quot;taskCard.createTask&quot;]
+  n303a47455420[&quot;GET /tasks/columns&quot;]
+  n313a7461736b[&quot;tasks.loadColumns&quot;]
+  n323a5461736b[&quot;TaskViews&quot;]
+  n303a47455420[&quot;GET /tasks/waiting&quot;]
+  n313a7461736b[&quot;tasks.loadWaiting&quot;]
+  n303a47455420[&quot;GET /tasks/{id}&quot;]
+  n313a7461736b[&quot;taskCard.completeTask&quot;]
+  n313a7461736b[&quot;taskCard.loadDetailTask&quot;]
+  n313a7461736b[&quot;taskEdits.patchSubtask&quot;]
+  n313a7461736b[&quot;taskEdits.patchTask&quot;]
+  n323a57616974[&quot;WaitingOn&quot;]
+  n303a50415443[&quot;PATCH /tasks/{id}&quot;]
+  n303a50555420[&quot;PUT /tasks/{id}&quot;]
+  n303a504f5354[&quot;POST /tasks/{id}/accept&quot;]
+  n313a7461736b[&quot;taskCard.acceptTask&quot;]
+  n303a504f5354[&quot;POST /tasks/{id}/complete&quot;]
+  n303a504f5354[&quot;POST /tasks/{id}/delegate&quot;]
+  n313a7461736b[&quot;taskCard.delegate&quot;]
+  n303a47455420[&quot;GET /tasks/{id}/files&quot;]
+  n313a66696c65[&quot;files.loadTaskFiles&quot;]
+  n303a504f5354[&quot;POST /tasks/{id}/nudge&quot;]
+  n313a7461736b[&quot;tasks.nudge&quot;]
+  n303a504f5354[&quot;POST /tasks/{id}/report&quot;]
+  n313a7461736b[&quot;taskCard.submitReport&quot;]
+  n303a504f5354[&quot;POST /tasks/{id}/subtasks&quot;]
+  n313a7461736b[&quot;taskEdits.addSubtask&quot;]
+  n313a7461736b[&quot;taskEdits.deleteSubtask&quot;]
+  n303a44454c45[&quot;DELETE /tasks/{id}/subtasks/{sid}&quot;]
+  n303a50415443[&quot;PATCH /tasks/{id}/subtasks/{sid}&quot;]
+  n303a47455420[&quot;GET /tasks/{id}/usage&quot;]
+  n313a75736167[&quot;usage.loadTask&quot;]
+  n303a504f5354[&quot;POST /undo&quot;]
+  n303a50555420[&quot;PUT /{noun}/{id}/labels&quot;]
+  n303a44454c45 --&gt; n313a7461736b
+  n303a47455420 --&gt; n313a66696c65
+  n303a47455420 --&gt; n313a7461736b
+  n303a47455420 --&gt; n313a75736167
+  n303a50415443 --&gt; n313a7461736b
+  n303a504f5354 --&gt; n313a7461736b
+  n303a50555420 --&gt; n313a7461736b
+  n313a7461736b --&gt; n323a5461736b
+  n313a7461736b --&gt; n323a57616974</pre></details>
+</section>
+<section id="today">
+<h2>today</h2>
+<p class="meta">3 endpoints · 3 store action(s) · 1 component(s)</p>
+<svg viewBox="0 0 822 136" width="100%" role="img" aria-label="today wiring">
+<title>today: endpoint to store action to component</title>
+<text class="head" x="16" y="20">endpoint</text>
+<text class="head" x="346" y="20">store action</text>
+<text class="head" x="596" y="20">component</text>
+<path class="edge" d="M266,75 C306,75 306,75 346,75" />
+<path class="edge" d="M266,105 C306,105 306,45 346,45" />
+<path class="edge" d="M266,45 C306,45 306,105 346,105" />
+<path class="edge" d="M556,105 C576,105 576,45 596,45" />
+<rect class="node c0" x="16" y="34" width="250" height="22" rx="5" />
+<text class="label" x="24" y="49">POST /journal</text>
+<rect class="node c0" x="16" y="64" width="250" height="22" rx="5" />
+<text class="label" x="24" y="79">GET /review</text>
+<rect class="node c0" x="16" y="94" width="250" height="22" rx="5" />
+<text class="label" x="24" y="109">GET /today</text>
+<rect class="node c1" x="346" y="34" width="210" height="22" rx="5" />
+<text class="label" x="354" y="49">today.load</text>
+<rect class="node c1" x="346" y="64" width="210" height="22" rx="5" />
+<text class="label" x="354" y="79">today.loadReview</text>
+<rect class="node c1" x="346" y="94" width="210" height="22" rx="5" />
+<text class="label" x="354" y="109">today.submitJournal</text>
+<rect class="node c2" x="596" y="34" width="210" height="22" rx="5" />
+<text class="label" x="604" y="49">CloseDay</text>
+</svg>
+<details><summary>Mermaid source for this section</summary><pre>flowchart LR
+  n303a504f5354[&quot;POST /journal&quot;]
+  n313a746f6461[&quot;today.submitJournal&quot;]
+  n323a436c6f73[&quot;CloseDay&quot;]
+  n303a47455420[&quot;GET /review&quot;]
+  n313a746f6461[&quot;today.loadReview&quot;]
+  n303a47455420[&quot;GET /today&quot;]
+  n313a746f6461[&quot;today.load&quot;]
+  n303a47455420 --&gt; n313a746f6461
+  n303a504f5354 --&gt; n313a746f6461
+  n313a746f6461 --&gt; n323a436c6f73</pre></details>
+</section>
+</body>
+</html>

@@ -1,0 +1,183 @@
+{
+  "notificationGroups": [
+    {
+      "id": "ng1",
+      "name": "Needs you",
+      "meta": "batched 8am, 4pm",
+      "devices": {
+        "iphone": true,
+        "ipad": true,
+        "pc": true,
+        "telegram": true
+      }
+    },
+    {
+      "id": "ng2",
+      "name": "Meetings",
+      "meta": "10 min before, with prep",
+      "devices": {
+        "iphone": true,
+        "ipad": false,
+        "pc": false,
+        "telegram": false
+      }
+    },
+    {
+      "id": "ng3",
+      "name": "Reminders you set",
+      "meta": "journal 7pm, calls",
+      "devices": {
+        "iphone": true,
+        "ipad": true,
+        "pc": false,
+        "telegram": false
+      }
+    },
+    {
+      "id": "ng4",
+      "name": "Security",
+      "meta": "always, breaks quiet hours",
+      "devices": {
+        "iphone": true,
+        "ipad": false,
+        "pc": true,
+        "telegram": true
+      },
+      "locked": true
+    },
+    {
+      "id": "ng5",
+      "name": "Agent issues",
+      "meta": "after two failures",
+      "devices": {
+        "iphone": true,
+        "ipad": true,
+        "pc": true,
+        "telegram": false
+      }
+    },
+    {
+      "id": "ng6",
+      "name": "Waiting-on overdue",
+      "meta": "weekly",
+      "devices": {
+        "iphone": true,
+        "ipad": false,
+        "pc": false,
+        "telegram": false
+      }
+    },
+    {
+      "id": "ng7",
+      "name": "Memory review ready",
+      "meta": "when queued",
+      "devices": {
+        "iphone": true,
+        "ipad": true,
+        "pc": false,
+        "telegram": false
+      }
+    },
+    {
+      "id": "ng8",
+      "name": "Spend near cap",
+      "meta": "80% of cap",
+      "devices": {
+        "iphone": true,
+        "ipad": false,
+        "pc": false,
+        "telegram": false
+      }
+    },
+    {
+      "id": "ng9",
+      "name": "From Joce",
+      "meta": "family tasks",
+      "devices": {
+        "iphone": true,
+        "ipad": true,
+        "pc": false,
+        "telegram": true
+      }
+    },
+    {
+      "id": "ng10",
+      "name": "Replies from your EA",
+      "meta": "when an answer arrives",
+      "devices": {
+        "iphone": true,
+        "ipad": true,
+        "pc": false,
+        "telegram": false
+      }
+    }
+  ],
+  "quietHours": {
+    "start": "21:30",
+    "end": "07:00",
+    "exceptions": [
+      "Security"
+    ],
+    "needsYou": {
+      "windows": [
+        { "start": "08:00", "end": "09:00" },
+        { "start": "16:00", "end": "17:00" }
+      ],
+      "respectsQuietHours": true,
+      "paused": true
+    }
+  },
+  "autonomy": {
+    "Email drafts": "ask",
+    "Calendar proposals": "ask",
+    "Filing captures": "auto",
+    "Task changes by EA": "propose",
+    "Bills": "ask",
+    "Memory writes": "propose"
+  },
+  "voice": {
+    "style": "warm",
+    "speed": 1,
+    "readBriefAt": "06:30",
+    "cueWord": "over",
+    "endPhrases": ["that's all", "thanks, that's it", "goodbye", "we're done"],
+    "silenceTurnSeconds": null,
+    "carMode": false
+  },
+  "appLayout": {
+    "hiddenTabs": [],
+    "showFocusRow": true
+  },
+  "devices": [
+    {
+      "id": "dev1",
+      "name": "Josh's iPhone",
+      "lastSeen": "{{NOW;09:41}}",
+      "current": true
+    },
+    {
+      "id": "dev2",
+      "name": "Josh's iPad",
+      "lastSeen": "{{NOW-1;18:05}}",
+      "current": false
+    },
+    {
+      "id": "dev3",
+      "name": "This PC",
+      "lastSeen": "{{NOW;09:41}}",
+      "current": false
+    }
+  ],
+  "capabilities": {
+    "liveRouting": true,
+    "liveVoice": true,
+    "speech": true,
+    "fileStore": false,
+    "calendarWrite": true,
+    "moneyFeed": false,
+    "healthFeed": false,
+    "export": true,
+    "calendarViews": true,
+    "pushPublicKey": "BJStackDemoVapidPublicKeyNotARealOne0000000000000000000000000000000000000000000000000000"
+  }
+}

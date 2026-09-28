@@ -1,0 +1,27 @@
+[
+  {
+    "id": "r1",
+    "toCaptureId": "b1",
+    "text": "Her passport expires inside the six months Indonesia asks for, so it has to be renewed before the trip either way. The renewal is running about six weeks, and the post office at Indooroopilly does the photos and the lodgement in one visit.",
+    "sources": [
+      { "label": "Passport scan", "ref": "file:t9-export" },
+      { "label": "Bali trip", "ref": "task:t1" }
+    ],
+    "at": "{{NOW;08:44}}",
+    "read": false,
+    "labels": { "silo": "family1", "types": ["kids", "legal"], "setBy": "content" },
+    "setAt": "{{NOW;08:44}}",
+    "focus": "family"
+  },
+  {
+    "id": "r2",
+    "toCaptureId": "b2",
+    "text": "Steve is back from leave on {{WEEKDAY+3}}. Last time you two spoke about Bali he asked for the dates in writing first — they are in the trip note.",
+    "sources": [{ "label": "Bali trip", "ref": "task:t1" }],
+    "at": "{{NOW-1;21:38}}",
+    "read": true,
+    "labels": { "silo": "personal:josh", "types": ["open"], "setBy": "source" },
+    "setAt": "{{TODAY-1}}",
+    "focus": "personal"
+  }
+]

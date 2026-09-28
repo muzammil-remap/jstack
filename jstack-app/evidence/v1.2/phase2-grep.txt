@@ -1,0 +1,8 @@
+data/ApiAdapter.ts:37:// TODO(PHASE2: push-wakes) APNs channel (contract §3 push) wakes the app to refresh this adapter's composites
+data/ApiAdapter.ts:38:// TODO(PHASE2: hardening) cert pinning + remote wipe on this transport (contract §5)
+stores/brainStore.ts:62:  // TODO(PHASE2: share-extension) captures arriving from the iOS share sheet enter here
+stores/habitsStore.ts:44:  // TODO(PHASE2: healthkit) daily aggregate push can auto-log matching habits
+stores/habitsStore.ts:45:  // TODO(PHASE2: widgets) home-screen habit ring reads doneToday()
+stores/sessionStore.ts:20:// TODO(PHASE2: remote-hardware) request-only flow (spec §2.10): server may ask, Josh approves each time on-device, biometric-gated, allow-once only
+stores/todayStore.ts:28:  // TODO(PHASE2: rich-push-approvals) sanitised preview + biometric approve from the lock screen lands on this same decision path
+stores/todayStore.ts:29:  // TODO(PHASE2: widgets) needs-you count + next event widgets read this composite

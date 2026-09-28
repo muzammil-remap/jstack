@@ -1,0 +1,61 @@
+{
+  "items": [
+    {
+      "id": "b1",
+      "text": "Ella's passport expires before Bali — start the renewal",
+      "at": "{{NOW;08:31}}",
+      "meta": "voice · Telegram",
+      "source": "voice",
+      "routed": ["→ task · Twenty", "→ reminder {{WEEKDAYSHORT+5}}"],
+      "routing": {
+        "kind": "task",
+        "silos": ["family1"],
+        "labels": ["kids", "legal"],
+        "sensitivity": "sensitive",
+        "storage": "twenty",
+        "also": ["reminder {{WEEKDAYSHORT+5}}"],
+        "reason": "a named child and a dated document"
+      },
+      "labels": { "silo": "family1", "types": ["kids", "legal"], "setBy": "content" },
+      "setAt": "{{NOW;08:31}}",
+      "focus": "family"
+    },
+    {
+      "id": "b2",
+      "text": "Call Steve about Bali before {{WEEKDAY+5}}",
+      "at": "{{NOW-1;21:30}}",
+      "meta": "voice · Telegram",
+      "source": "voice",
+      "routed": ["→ task · Twenty"],
+      "routing": {
+        "kind": "task",
+        "silos": ["personal:josh"],
+        "labels": ["open"],
+        "sensitivity": "normal",
+        "storage": "twenty"
+      },
+      "labels": { "silo": "personal:josh", "types": ["open"], "setBy": "source" },
+      "setAt": "{{TODAY-1}}",
+      "focus": "personal"
+    },
+    {
+      "id": "b3",
+      "text": "Good energy after lunch; the Bali deposit went out and I barely noticed.",
+      "at": "{{NOW-1;13:05}}",
+      "meta": "Close the day",
+      "source": "journal",
+      "routed": ["→ journal"],
+      "routing": {
+        "kind": "journal",
+        "silos": ["personal:josh"],
+        "labels": ["money", "journal"],
+        "sensitivity": "normal",
+        "storage": "journal"
+      },
+      "labels": { "silo": "personal:josh", "types": ["money", "journal"], "setBy": "content" },
+      "setAt": "{{TODAY-1}}",
+      "focus": "personal"
+    }
+  ],
+  "hitRate": { "right": 41, "total": 46, "wrongSources": 2, "misses": 3, "rulesMisled": 1, "fixUrl": "https://example.internal/librarian/fix" }
+}

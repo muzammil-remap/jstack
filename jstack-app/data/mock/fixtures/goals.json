@@ -1,0 +1,61 @@
+[
+  {
+    "id": "g1",
+    "area": "Practice",
+    "text": "decide on Bundaberg",
+    "status": "active",
+    "targetDate": "{{TODAY+8}}",
+    "kpis": [],
+    "taskIds": ["t3"],
+    "deliverableIds": [],
+    "history": [{ "at": "{{NOW-34;09:12}}", "event": "created" }],
+    "labels": { "silo": "work", "types": ["coaching"], "setBy": "josh" },
+    "setAt": "{{TODAY-34}}",
+    "focus": "work"
+  },
+  {
+    "id": "g2",
+    "area": "JSTACK",
+    "text": "V2 live, Notion retired",
+    "status": "active",
+    "kpis": [{ "label": "screens shipped", "value": 12, "target": 18 }],
+    "taskIds": ["t9", "t1"],
+    "deliverableIds": ["f-t9-export"],
+    "history": [
+      { "at": "{{NOW-61;08:40}}", "event": "created" },
+      { "at": "{{NOW-9;17:05}}", "event": "progress", "detail": "12 of 18 screens shipped" }
+    ],
+    "labels": { "silo": "work", "types": ["jstack"], "setBy": "josh" },
+    "setAt": "{{TODAY-61}}",
+    "focus": "work"
+  },
+  {
+    "id": "g3",
+    "area": "Health",
+    "text": "three workouts a week",
+    "status": "behind",
+    "kpis": [{ "label": "this week", "value": 2, "target": 3, "unit": "workouts" }],
+    "taskIds": [],
+    "deliverableIds": [],
+    "history": [{ "at": "{{NOW-120;07:30}}", "event": "created" }],
+    "labels": { "silo": "personal:josh", "types": ["health"], "setBy": "josh" },
+    "setAt": "{{TODAY-120}}",
+    "focus": "personal"
+  },
+  {
+    "id": "g4",
+    "area": "Practice",
+    "text": "hire a second coach",
+    "status": "dropped",
+    "kpis": [],
+    "taskIds": [],
+    "deliverableIds": [],
+    "history": [
+      { "at": "{{NOW-210;10:00}}", "event": "created" },
+      { "at": "{{NOW-46;16:20}}", "event": "dropped", "detail": "Bundaberg first" }
+    ],
+    "labels": { "silo": "work", "types": ["coaching"], "setBy": "josh" },
+    "setAt": "{{TODAY-210}}",
+    "focus": "work"
+  }
+]

@@ -1,0 +1,6 @@
+[
+  { "id": "f1", "at": "{{NOW;02:41}}", "severity": "ok", "text": "EA finished the redaction subtask", "meta": "$0.40 · report on the task" },
+  { "id": "f2", "at": "{{NOW;03:02}}", "severity": "muted", "text": "Dropbox mirror stalled, retried", "meta": "recovered on the retry" },
+  { "id": "f3", "at": "{{NOW;06:31}}", "severity": "alert", "text": "Calendar write-back rejected", "meta": "Google token · renewal staged · needs eyes", "issueId": "e1" },
+  { "id": "f4", "at": "{{NOW;08:31}}", "severity": "ok", "text": "Voice note filed: 1 task, 1 reminder", "meta": "$0.02 · 38s" }
+]

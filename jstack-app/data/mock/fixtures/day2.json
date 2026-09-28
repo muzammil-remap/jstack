@@ -1,0 +1,101 @@
+{
+  "_comment": "D-1 / D2-01..04. A DIFF over day 1, not a second fixture set — see data/mock/db.ts's applyDay2. Day 1 is the scene the demo opens on; day 2 is that same scene the following morning, after a night in which the EA kept working and the clock kept moving. Everything here is something that changed BECAUSE time passed, which is the only thing a second day is for.",
+
+  "seenAtOffsetDays": -1,
+
+  "expire": {
+    "_comment": "c1's expiry has passed. The card is not merely gone: its then-what was applied, so the recommended option was taken and the history says via expiry. That is the promise the card made in silence, kept while nobody was watching.",
+    "actionId": "c1"
+  },
+
+  "laterReturns": {
+    "_comment": "c3 was put off until this morning and is back, open, in Needs you — a Later that never returns is a card quietly dropped.",
+    "actionId": "c3"
+  },
+
+  "habitLogsYesterday": [
+    { "habitId": "h1", "done": true },
+    { "habitId": "h2", "done": true },
+    { "habitId": "h4", "done": false }
+  ],
+
+  "_overnightRun": "T-5/WK-04: the EA's redaction run on t2 finished overnight. The MARKER goes (a marker is about now) but the delegation does not: a run ending is not the task finishing, and t2 is still in progress. The run and its usage row are seeded the same way the subtask's are — one cost record (ADR-43).",
+  "goalProgress": {
+    "_comment": "LG-1, resolution #65 and contract §4.20: the backend advances kpis[].value from agent work and appends the goal's history. Day 2 moves one KPI so the card shows agent-tracked progress rather than a number that only ever changes when Josh types it.",
+    "goalId": "g2",
+    "kpiLabel": "screens shipped",
+    "value": 14,
+    "event": "progress",
+    "detail": "14 of 18 screens shipped"
+  },
+
+  "overnightRun": {
+    "taskId": "t2",
+    "text": "Redaction pass 3 · 200 of 200 redacted",
+    "progressPct": 82,
+    "note": "in progress · 82%",
+    "run": { "id": "run8", "agent": "EA", "outcome": "ok", "seconds": 96, "text": "Redaction pass 3" },
+    "usage": {
+      "id": "u5",
+      "taskId": "t2",
+      "agentId": "ea",
+      "runId": "run8",
+      "model": "claude-sonnet-5",
+      "inputTokens": 21400,
+      "outputTokens": 5200,
+      "cacheReadTokens": 14800,
+      "costAud": 0.06,
+      "labels": { "silo": "work", "types": ["jstack", "confidential"], "setBy": "source" },
+      "focus": "work"
+    }
+  },
+
+  "overnightSubtask": {
+    "_comment": "t1-3 is the EA's last open subtask on t1; overnight it finished. D2-04 asks for the subtask done, the cost recorded and the EA report present, so the delegation is marked done and t1 gains the report it did not have yesterday.",
+    "taskId": "t1",
+    "subtaskId": "t1-3",
+    "_cost": "T-4: the cost is no longer a number of its own here. It is `usage.costAud` below, and `applyDay2` reads the delegation's cost off that row — one cost record (ADR-43).",
+    "run": { "id": "run7", "agent": "EA", "outcome": "ok", "seconds": 214, "text": "Bundaberg memo drafted" },
+    "usage": {
+      "id": "u4",
+      "taskId": "t1",
+      "subtaskId": "t1-3",
+      "agentId": "ea",
+      "runId": "run7",
+      "model": "claude-sonnet-5",
+      "inputTokens": 18600,
+      "outputTokens": 4900,
+      "cacheReadTokens": 11200,
+      "costAud": 0.42,
+      "labels": { "silo": "work", "types": ["jstack"], "setBy": "source" },
+      "focus": "work"
+    },
+    "_fileComment": "X-1: the deliverable the overnight run produced. A report used to carry its own {name, ref} pairs; now the file is an Attachment record like every other file, and `advanceToDay2` appends it to db.files.",
+    "file": {
+      "id": "f-t1-memo",
+      "name": "bundaberg-memo.docx",
+      "kind": "doc",
+      "size": 41220,
+      "storage": "dropbox",
+      "folder": "/JSTACK/Deliverables/2026/t1",
+      "dropboxUrl": "https://www.dropbox.com/home/JSTACK/Deliverables/2026/t1/bundaberg-memo.docx",
+      "previewText": "Three comparable practices priced against the Bundaberg rooms. Two sit under the walk-away rate once fit-out is carried; both are flagged rather than dismissed.",
+      "taskId": "t1",
+      "addedBy": "ea",
+      "labels": { "silo": "work", "types": ["eo"], "setBy": "folder" },
+      "focus": "work"
+    },
+    "report": {
+      "summary": "Bundaberg memo drafted",
+      "body": "Three comparable practices priced, two flagged for the walk-away rate. Draft is in Dropbox; nothing sent.",
+      "flagged": 2,
+      "sources": 3,
+      "state": "open"
+    }
+  },
+
+  "delta": {
+    "_comment": "D2-02's line. Counts are computed from the diff above rather than written here, so the sentence cannot disagree with the data — the same rule CD-18 applies to weekdays.",
+    "prefix": "Since yesterday"
+  }
+}

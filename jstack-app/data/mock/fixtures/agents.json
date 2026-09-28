@@ -1,0 +1,148 @@
+{
+  "issues": [
+    {
+      "id": "e1",
+      "title": "Calendar write-back rejected",
+      "why": "Google token expired · renewal staged · agents cannot write to Calendar until renewed",
+      "verb": {
+        "label": "Renew",
+        "action": "renew"
+      },
+      "state": "open",
+      "detail": "The refresh token was rejected on 6 Sep at 04:12 with invalid_grant. Three write-backs are queued behind it.",
+      "lastSuccessAt": "{{NOW-3;04:10}}"
+    },
+    {
+      "id": "e2",
+      "title": "Weekly security suite did not run",
+      "why": "paused since 28 Aug · injection tests and blocked-action tests are 7 days stale",
+      "verb": {
+        "label": "Run now",
+        "action": "run"
+      },
+      "checkId": "chk3",
+      "state": "open",
+      "detail": "The scheduler skipped the run: the suite is paused, so nothing failed and nothing passed.",
+      "lastSuccessAt": "{{NOW-7;02:00}}"
+    }
+  ],
+  "_comment": "T-4: a run carries no `cost`. What it spent is the sum of the usage.json rows that name it, derived in data/mock/handlers/usage.ts — one cost record (ADR-43, rule 16).",
+  "runs": [
+    {
+      "id": "run6",
+      "agent": "EA",
+      "at": "{{NOW-1;02:14}}",
+      "outcome": "ok",
+      "seconds": 52,
+      "text": "Notion export reconciled"
+    },
+    {
+      "id": "run1",
+      "agent": "EA",
+      "at": "{{NOW;02:41}}",
+      "outcome": "ok",
+      "seconds": 38,
+      "text": "Redaction subtask finished"
+    },
+    {
+      "id": "run2",
+      "agent": "Watchdog",
+      "at": "{{NOW;03:02}}",
+      "outcome": "error",
+      "seconds": 4,
+      "text": "Dropbox mirror stalled, retried"
+    },
+    {
+      "id": "run3",
+      "agent": "EA",
+      "at": "{{NOW;06:31}}",
+      "outcome": "blocked",
+      "seconds": 1,
+      "text": "Calendar write-back rejected"
+    },
+    {
+      "id": "run5",
+      "agent": "EA",
+      "at": "{{NOW;07:12}}",
+      "outcome": "ok",
+      "seconds": 21,
+      "text": "Redaction pass 2 · 118 of 200"
+    },
+    {
+      "id": "run4",
+      "agent": "EA",
+      "at": "{{NOW;08:31}}",
+      "outcome": "ok",
+      "seconds": 38,
+      "text": "Voice note filed: 1 task, 1 reminder"
+    }
+  ],
+  "portals": [
+    {
+      "name": "OpenClaw",
+      "purpose": "control room",
+      "url": "https://openclaw.example"
+    },
+    {
+      "name": "Twenty",
+      "purpose": "tasks",
+      "url": "https://twenty.example"
+    },
+    {
+      "name": "n8n",
+      "purpose": "workflows",
+      "url": "https://n8n.example"
+    },
+    {
+      "name": "Paperclip",
+      "purpose": "later",
+      "url": "https://paperclip.example"
+    },
+    {
+      "name": "NAB",
+      "purpose": "pay",
+      "url": "https://nab.example"
+    },
+    {
+      "name": "Gmail",
+      "purpose": "send",
+      "url": "https://mail.example"
+    },
+    {
+      "name": "Calendar",
+      "purpose": "google",
+      "url": "https://calendar.example"
+    },
+    {
+      "name": "Dropbox",
+      "purpose": "files",
+      "url": "https://dropbox.example"
+    }
+  ],
+  "roster": [
+    {
+      "id": "ea",
+      "name": "EA",
+      "short": "EA",
+      "canTakeTasks": true
+    },
+    {
+      "id": "dev",
+      "name": "Dev",
+      "short": "DV",
+      "canTakeTasks": true
+    },
+    {
+      "id": "josh",
+      "name": "Josh",
+      "short": "JO",
+      "canTakeTasks": false
+    },
+    {
+      "id": "joce",
+      "name": "Joce",
+      "short": "JM",
+      "canTakeTasks": false
+    }
+  ]
+}

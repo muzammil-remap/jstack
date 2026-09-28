@@ -1,0 +1,33 @@
+# Netlify/Cloudflare Pages header rules (P-1). The same set vercel.json
+# carries — two hosts, one policy, and a test that keeps them identical
+# (tests/unit/pwa.test.ts), because a header that is right on one host and
+# missing on the other is worse than one that is missing on both: it passes a
+# spot check.
+#
+# The CSP here is the SERVED one. tools/build-web.mjs also injects a
+# <meta http-equiv> copy into index.html so the policy survives being opened
+# from a file system or a host that strips headers; where both are present the
+# stricter wins, which is the direction we want.
+
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; worker-src 'self'
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  Permissions-Policy: camera=(), geolocation=(), payment=(), usb=()
+  Cross-Origin-Opener-Policy: same-origin
+  X-Frame-Options: DENY
+
+# The worker must not be cached, or a release cannot replace itself.
+/sw.js
+  Cache-Control: no-cache
+
+/manifest.webmanifest
+  Cache-Control: no-cache
+
+# Hashed bundles are immutable by construction.
+/_expo/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable

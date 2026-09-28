@@ -1,0 +1,6 @@
+[
+  { "id": "p1", "text": "Steve's villa deposit is <b>$4,500</b>, not $4,000", "by": "Librarian", "reason": "newer source: Steve's email, 2 Sep", "focus": "family", "state": "open" },
+  { "id": "p2", "text": "File \"Moz discovery call\" under <b>Work · jstack</b>", "by": "Librarian", "reason": "from the attendees", "focus": "work", "state": "open" },
+  { "id": "p3", "text": "Merge two \"Dave B\" people records", "by": "Librarian", "reason": "same email address", "focus": "personal", "state": "open" },
+  { "id": "p4", "text": "Label 3 captures from {{WEEKDAY-2}} as <b>Personal</b>", "by": "Librarian", "reason": "could not tell the silo", "focus": "personal", "state": "open" }
+]

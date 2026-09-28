@@ -1,0 +1,457 @@
+[
+  {
+    "id": "t1",
+    "title": "Send Moz the sample pack",
+    "owner": "josh",
+    "due": "{{TODAY}}",
+    "dueLabel": "today",
+    "priority": "high",
+    "status": "open",
+    "project": "JSTACK",
+    "links": [],
+    "subtasks": [
+      {
+        "id": "t1-1",
+        "title": "Pick three sample emails",
+        "owner": "ea",
+        "done": true
+      },
+      {
+        "id": "t1-2",
+        "title": "Redact identifying details",
+        "owner": "ea",
+        "done": true
+      },
+      {
+        "id": "t1-3",
+        "title": "Draft the covering note",
+        "owner": "ea",
+        "done": false
+      }
+    ],
+    "activity": [
+      {
+        "at": "{{NOW-1;09:00}}",
+        "actor": "ea",
+        "text": "2 of 3 subtasks done"
+      }
+    ],
+    "twentyUrl": "https://twenty.example/tasks/t1",
+    "labels": {
+      "silo": "work",
+      "types": [
+        "jstack"
+      ],
+      "setBy": "source"
+    },
+    "setAt": "{{TODAY-3}}",
+    "focus": "work",
+    "metaParts": {
+      "source": "JSTACK"
+    },
+    "startsAt": "{{NOW-2;09:00}}",
+    "endsAt": "{{NOW;17:00}}",
+    "column": "col-now"
+  },
+  {
+    "id": "t2",
+    "title": "Redact the 200 sample emails",
+    "owner": "ea",
+    "priority": "medium",
+    "status": "in_progress",
+    "project": "JSTACK",
+    "links": [],
+    "delegated": {
+      "to": "ea",
+      "progressPct": 41,
+      "state": "running"
+    },
+    "work": {
+      "agentId": "ea",
+      "state": "running",
+      "since": "{{NOW;02:14}}",
+      "step": "redacting"
+    },
+    "subtasks": [],
+    "activity": [
+      {
+        "at": "{{NOW-1;09:00}}",
+        "actor": "ea",
+        "text": "82 of 200 redacted"
+      }
+    ],
+    "twentyUrl": "https://twenty.example/tasks/t2",
+    "labels": {
+      "silo": "work",
+      "types": [
+        "jstack",
+        "confidential"
+      ],
+      "setBy": "source"
+    },
+    "setAt": "{{TODAY-4}}",
+    "focus": "work",
+    "metaParts": {
+      "source": "EA",
+      "note": "in progress · 41%"
+    },
+    "startsAt": "{{NOW-4;09:00}}",
+    "endsAt": "{{NOW+1;17:00}}",
+    "column": "col-in-progress"
+  },
+  {
+    "id": "t3",
+    "title": "Book the Term 4 holiday flights",
+    "owner": "joce",
+    "due": "{{TODAY+3}}",
+    "dueLabel": "{{WEEKDAYSHORT:due}}",
+    "priority": "medium",
+    "status": "open",
+    "project": "Bali",
+    "links": [],
+    "subtasks": [],
+    "activity": [
+      {
+        "at": "{{DATE-2}}",
+        "actor": "joce",
+        "text": "Sent over the dates"
+      }
+    ],
+    "twentyUrl": "https://twenty.example/tasks/t3",
+    "labels": {
+      "silo": "family1",
+      "types": [
+        "open"
+      ],
+      "setBy": "source"
+    },
+    "setAt": "{{TODAY-2}}",
+    "focus": "family",
+    "metaParts": {
+      "source": "from Joce",
+      "note": "Family"
+    },
+    "column": "col-next"
+  },
+  {
+    "id": "t4",
+    "title": "Waiting-on digest",
+    "owner": "ea",
+    "priority": "low",
+    "status": "open",
+    "project": "JSTACK",
+    "links": [],
+    "repeat": {
+      "rule": "every Mon 8am",
+      "nextRun": "{{TODAY+2}}",
+      "lastRunCost": 0.05
+    },
+    "subtasks": [],
+    "activity": [],
+    "twentyUrl": "https://twenty.example/tasks/t4",
+    "labels": {
+      "silo": "work",
+      "types": [
+        "jstack"
+      ],
+      "setBy": "source"
+    },
+    "setAt": "{{TODAY-20}}",
+    "focus": "work",
+    "metaParts": {
+      "source": "EA",
+      "cost": "$0.05",
+      "note": "recurring · every Mon 8am"
+    },
+    "column": "col-next"
+  },
+  {
+    "id": "t5",
+    "title": "Passport renewal forms",
+    "owner": "josh",
+    "due": "{{TODAY+6}}",
+    "dueLabel": "next week",
+    "priority": "medium",
+    "status": "open",
+    "project": "Home",
+    "links": [],
+    "subtasks": [],
+    "activity": [
+      {
+        "at": "{{NOW-1;09:00}}",
+        "actor": "ea",
+        "text": "Added from an RACQ email mention"
+      }
+    ],
+    "twentyUrl": "https://twenty.example/tasks/t5",
+    "labels": {
+      "silo": "family1",
+      "types": [
+        "identity"
+      ],
+      "setBy": "content"
+    },
+    "setAt": "{{TODAY-1}}",
+    "focus": "family",
+    "metaParts": {
+      "source": "Home",
+      "note": "EA added from the RACQ email"
+    },
+    "column": "col-next"
+  },
+  {
+    "id": "t6",
+    "title": "Recruitment risk memo, Bundaberg",
+    "owner": "josh",
+    "due": "{{TODAY+3}}",
+    "dueLabel": "{{WEEKDAYSHORT:due}}",
+    "priority": "high",
+    "status": "open",
+    "project": "Bundaberg",
+    "links": [],
+    "subtasks": [],
+    "activity": [],
+    "twentyUrl": "https://twenty.example/tasks/t6",
+    "labels": {
+      "silo": "work",
+      "types": [
+        "deals",
+        "confidential"
+      ],
+      "setBy": "content"
+    },
+    "setAt": "{{TODAY-5}}",
+    "focus": "work",
+    "metaParts": {
+      "source": "Practice"
+    },
+    "startsAt": "{{NOW-1;09:00}}",
+    "endsAt": "{{NOW+3;17:00}}",
+    "column": "col-next"
+  },
+  {
+    "id": "t7",
+    "title": "Bali deposit to Steve",
+    "owner": "josh",
+    "due": "{{TODAY+3}}",
+    "dueLabel": "{{WEEKDAYSHORT:due}}",
+    "priority": "medium",
+    "status": "open",
+    "project": "Bali",
+    "links": [],
+    "subtasks": [],
+    "activity": [],
+    "twentyUrl": "https://twenty.example/tasks/t7",
+    "labels": {
+      "silo": "family1",
+      "types": [
+        "money"
+      ],
+      "setBy": "source"
+    },
+    "setAt": "{{TODAY-2}}",
+    "focus": "family",
+    "metaParts": {
+      "source": "Bali trip"
+    },
+    "startsAt": "{{NOW;09:00}}",
+    "endsAt": "{{NOW+3;17:00}}",
+    "column": "col-next"
+  },
+  {
+    "id": "t8",
+    "title": "Three workouts",
+    "owner": "josh",
+    "priority": "low",
+    "status": "open",
+    "project": "Health",
+    "links": [],
+    "repeat": {
+      "rule": "weekly"
+    },
+    "subtasks": [],
+    "activity": [],
+    "twentyUrl": "https://twenty.example/tasks/t8",
+    "labels": {
+      "silo": "personal:josh",
+      "types": [
+        "health"
+      ],
+      "setBy": "source"
+    },
+    "setAt": "{{TODAY-30}}",
+    "focus": "personal",
+    "metaParts": {
+      "source": "Health",
+      "note": "recurring"
+    },
+    "column": "col-next"
+  },
+  {
+    "id": "t9",
+    "title": "Notion export reconciled",
+    "owner": "ea",
+    "priority": "medium",
+    "status": "done",
+    "project": "JSTACK",
+    "links": [],
+    "delegated": {
+      "to": "ea",
+      "state": "done"
+    },
+    "report": {
+      "summary": "1,387 rows reconciled",
+      "body": "3 duplicates merged, flagged for review.",
+      "flagged": 3,
+      "sources": 2,
+      "state": "open"
+    },
+    "subtasks": [],
+    "activity": [
+      {
+        "at": "{{NOW-1;02:14}}",
+        "actor": "ea",
+        "text": "Reconciliation complete",
+        "usageId": "u3"
+      }
+    ],
+    "completedAt": "{{NOW-1;02:14}}",
+    "completedBy": "ea",
+    "twentyUrl": "https://twenty.example/tasks/t9",
+    "labels": {
+      "silo": "work",
+      "types": [
+        "jstack"
+      ],
+      "setBy": "source"
+    },
+    "setAt": "{{TODAY-1}}",
+    "focus": "work",
+    "metaParts": {
+      "source": "EA",
+      "note": "1,387 rows · report attached"
+    },
+    "column": "col-done"
+  },
+  {
+    "id": "t10",
+    "title": "Book dentist",
+    "owner": "josh",
+    "priority": "low",
+    "status": "done",
+    "project": "Health",
+    "links": [],
+    "subtasks": [],
+    "activity": [
+      {
+        "at": "{{NOW-1;08:10}}",
+        "actor": "josh",
+        "text": "Booked"
+      }
+    ],
+    "completedAt": "{{NOW-1;08:10}}",
+    "completedBy": "josh",
+    "twentyUrl": "https://twenty.example/tasks/t10",
+    "labels": {
+      "silo": "personal:josh",
+      "types": [
+        "health"
+      ],
+      "setBy": "source"
+    },
+    "setAt": "{{TODAY-1}}",
+    "focus": "personal",
+    "metaParts": {
+      "source": "you"
+    },
+    "column": "col-done"
+  },
+  {
+    "id": "t11",
+    "title": "Villa contract from Steve",
+    "owner": "josh",
+    "priority": "medium",
+    "status": "waiting",
+    "project": "Bali",
+    "links": [],
+    "waitingOn": {
+      "who": "Steve",
+      "what": "villa contract",
+      "days": 9
+    },
+    "subtasks": [],
+    "activity": [],
+    "twentyUrl": "https://twenty.example/tasks/t11",
+    "labels": {
+      "silo": "family1",
+      "types": [
+        "legal"
+      ],
+      "setBy": "content"
+    },
+    "setAt": "{{TODAY-9}}",
+    "focus": "family",
+    "metaParts": {
+      "source": "waiting on Steve",
+      "note": "9 days"
+    },
+    "column": "col-waiting"
+  },
+  {
+    "id": "t12",
+    "title": "Dev allocation from Andy",
+    "owner": "josh",
+    "priority": "medium",
+    "status": "waiting",
+    "project": "JSTACK",
+    "links": [],
+    "waitingOn": {
+      "who": "Andy",
+      "what": "dev allocation",
+      "days": 4
+    },
+    "subtasks": [],
+    "activity": [],
+    "twentyUrl": "https://twenty.example/tasks/t12",
+    "labels": {
+      "silo": "work",
+      "types": [
+        "jstack"
+      ],
+      "setBy": "source"
+    },
+    "setAt": "{{TODAY-4}}",
+    "focus": "work",
+    "metaParts": {
+      "source": "waiting on Andy",
+      "note": "4 days"
+    },
+    "column": "col-waiting"
+  },
+  {
+    "id": "t13",
+    "title": "Task from Joce: swim carnival forms",
+    "owner": "joce",
+    "priority": "medium",
+    "status": "open",
+    "project": "Home",
+    "links": [],
+    "subtasks": [],
+    "activity": [],
+    "twentyUrl": "https://twenty.example/tasks/t13",
+    "labels": {
+      "silo": "family1",
+      "types": [
+        "kids"
+      ],
+      "setBy": "source"
+    },
+    "setAt": "{{TODAY-1}}",
+    "focus": "family",
+    "metaParts": {
+      "source": "from Joce",
+      "note": "Family"
+    },
+    "column": "col-next"
+  }
+]

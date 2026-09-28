@@ -1,0 +1,7 @@
+{
+  "today": { "tab": "today", "order": ["needs", "insights", "allcal", "calendar", "tasks", "glance", "close"], "hidden": [], "managedBy": "josh", "changedAt": "{{TODAY-30}}" },
+  "tasks": { "tab": "tasks", "order": ["views", "waiting"], "hidden": [], "managedBy": "josh", "changedAt": "{{TODAY-30}}" },
+  "brain": { "tab": "brain", "order": ["entry", "latest", "memory", "rules"], "hidden": [], "managedBy": "josh", "changedAt": "{{TODAY-30}}" },
+  "life": { "tab": "life", "order": ["goals", "habits", "people", "money", "health", "learning"], "hidden": [], "managedBy": "josh", "changedAt": "{{TODAY-30}}" },
+  "agents": { "tab": "agents", "order": ["stats", "portals", "history", "needseyes", "feed", "checks", "lock"], "hidden": [], "managedBy": "josh", "changedAt": "{{TODAY-30}}" }
+}

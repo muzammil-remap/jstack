@@ -1,0 +1,294 @@
+[
+  {
+    "id": 1,
+    "seam": "gen-tokens output drift — theme/tokens.ts edited by hand instead of regenerated",
+    "test": "tests/unit/tokens.test.ts (DS-01)",
+    "red": "Expected: \"#EDEBE5\" Received: \"#ABCDEF\" — DS-01 tools/gen-tokens.mjs regenerates theme/tokens.ts exactly › the pack README's named values hold; Tests: 2 failed, 6 passed, 8 total",
+    "green": "Test Suites: 1 passed, 1 total; Tests: 8 passed, 8 total",
+    "at": "2026-09-05T05:35:00+10:00",
+    "stage": "v2"
+  },
+  {
+    "id": 2,
+    "seam": "a raw colour literal (#ff00ff) written directly in a component instead of a theme/tokens.ts token",
+    "test": "eslint jstack/no-colour-literal (pnpm lint)",
+    "red": "components/chrome/EaLayoutBanner.tsx 33:26 error '#ff00ff' looks like a colour literal. Read it from theme/tokens.ts (useTokens()) instead of writing it here jstack/no-colour-literal — 1 problem (1 error, 0 warnings)",
+    "green": "eslint components/chrome/EaLayoutBanner.tsx — no output, 0 problems",
+    "at": "2026-09-05T05:47:00+10:00",
+    "stage": "v2"
+  },
+  {
+    "id": 3,
+    "seam": "useWindowDimensions imported directly in a component instead of going through theme/useLayout.ts",
+    "test": "eslint jstack/no-window-dimensions (pnpm lint)",
+    "red": "components/chrome/EaLayoutBanner.tsx 10:10 error 'useWindowDimensions' bypasses theme/useLayout.ts's breakpoints. Use useLayout() instead jstack/no-window-dimensions — 4 problems (1 error, 3 warnings)",
+    "green": "eslint components/chrome/EaLayoutBanner.tsx — no output, 0 problems",
+    "at": "2026-09-05T05:48:00+10:00",
+    "stage": "v2"
+  },
+  {
+    "id": 4,
+    "seam": "mock server serves 6 open cards instead of the 5-card rank cap (data/mock/handlers/decisions.ts's slice(0, OPEN_CARD_CAP) widened by one)",
+    "test": "tests/unit/server.test.ts (CT-07 rank + cap 5 open cards)",
+    "red": "Expected: <= 5 Received: 6 — GET /actions?state=open returns at most 5, sorted by rank",
+    "green": "√ GET /actions?state=open returns at most 5, sorted by rank",
+    "at": "2026-09-05T05:37:00+10:00",
+    "stage": "v2",
+    "reproved_at": "2026-09-13T05:58:00+10:00",
+    "reproved_red": "Expected: 5 Received: 6",
+    "reproved_note": "A-6 re-audit D13. The `red` above is what this seam printed on 5 September and stays as the record of that run — but it is not what a re-run prints, and the file is read as proof that the seam reproduces TODAY. It had in fact stopped reproducing: the case asserted `rows.length` against OPEN_CARD_CAP itself, so a planted cap moved both sides of the comparison (D-2, fixed as BUGLOG_v22.md B-264). It pins the literal 5 now, re-planted at A-6 (cap 5 → 6), and this is the output."
+  },
+  {
+    "id": 5,
+    "seam": "undo after the 10s window succeeds instead of 409ing (the UNDO_WINDOW_MS comparison in data/mock/handlers/decisions.ts's postActionUndo multiplied by 100)",
+    "test": "tests/unit/server.test.ts (CT-07 undo window)",
+    "red": "Expected: 409 Received: 200 — undo after the 10s window returns 409",
+    "green": "√ undo within 10s restores the card to open; √ undo after the 10s window returns 409",
+    "at": "2026-09-05T05:39:00+10:00",
+    "stage": "v2",
+    "reproved_at": "2026-09-13T05:58:00+10:00",
+    "reproved_red": "Expected: 10000 Received: 1000000",
+    "reproved_note": "A-6 re-audit D13, and seam 4's story exactly: the case moved the clock by UNDO_WINDOW_MS + 1000, so a planted window carried the clock with it and the undo stayed inside the window. It pins the literal 10_000 now, re-planted at A-6 (window × 100), and this is the output. The 5 September `red` above is kept as the record of that run."
+  },
+  {
+    "id": 6,
+    "seam": "hiding a pinned section (Today's 'needs') accepted instead of rejected (the pinnedHidden check in data/mock/handlers/settings.ts's putLayout disabled)",
+    "test": "tests/unit/server.test.ts (CT-07 pinned section hide → 422)",
+    "red": "Expected: 422 Received: 200 — PUT /layout/today hiding the pinned 'needs' section is rejected",
+    "green": "√ PUT /layout/today hiding the pinned 'needs' section is rejected; √ PUT /layout/today hiding a non-pinned section succeeds",
+    "at": "2026-09-05T05:41:00+10:00",
+    "stage": "v2"
+  },
+  {
+    "id": 7,
+    "seam": "an EA layout proposal without a reason accepted instead of rejected (the reason check in data/mock/handlers/settings.ts's postLayoutEa disabled)",
+    "test": "tests/unit/server.test.ts (CT-07 EA layout without a reason → 422)",
+    "red": "Expected: 422 Received: 200 — POST /layout/today/ea with no reason is rejected",
+    "green": "√ POST /layout/today/ea with no reason is rejected (+ 4 sibling EA-layout tests all green)",
+    "at": "2026-09-05T05:43:00+10:00",
+    "stage": "v2"
+  },
+  {
+    "id": 8,
+    "seam": "a forbidden send verb (sendReminder) added to data/DataProvider.ts's interface",
+    "test": "tests/unit/contract.test.ts (SEC-15 grep half + runtime guard)",
+    "red": "expect(offenders).toEqual([]) — Received [\"sendReminder\"], in \"no DataProvider method name is a forbidden verb\"",
+    "green": "√ no DataProvider method name is a forbidden verb",
+    "at": "2026-09-05T18:40:00+10:00",
+    "note": "Re-run at row 23. The recorded title was stale: A-03's rewrite split this describe into three (method names, CALL_ROUTES route patterns, mock handlers) and added a runtime-guard describe, so the old citation named a test that no longer existed (AUDIT_v2.md AAA-05). The other two greps were re-proved the same way in the same session — a planted `sendReminder` route in CALL_ROUTES and a planted `/tasks/{id}/send` path in a mock handler both went red, and `assertAllowedPath` caught them too.",
+    "stage": "v2"
+  },
+  {
+    "id": 9,
+    "seam": "__JSTACK__ present in the production bundle (metro.config.js's isTestBuild forced true, disabling the lib/testBuild -> testBuild.prod.ts resolver swap)",
+    "test": "SEC-01: pnpm build:web:prod && grep -rl __JSTACK__ <dist-prod>",
+    "red": "C:\\Users\\joshu\\.jstack-dist-prod/_expo/static/js/web/entry-51899fe1362a40593a15c318e69d50aa.js (grep exit 0 — match found)",
+    "green": "grep exit 1 — no match in C:\\Users\\joshu\\.jstack-dist-prod after entry-8c7108d63c75fc2d7092bf58f61d5a3a.js",
+    "at": "2026-09-05T05:52:00+10:00",
+    "stage": "v2"
+  },
+  {
+    "id": 10,
+    "seam": "a fixture record (task t1) with its labels field removed",
+    "test": "tests/unit/fixtures.test.ts (CT-06 every labelled-noun fixture carries scheme-valid labels + focus)",
+    "red": "expect(record.labels).toBeDefined() — Received: undefined, at expectLabelled (every task)",
+    "green": "√ every task; √ every calendar event; √ every brain item; √ the one insight fixture; √ silos and types are identical",
+    "at": "2026-09-05T05:50:00+10:00",
+    "stage": "v2"
+  },
+  {
+    "stage": "v2.1",
+    "id": 1,
+    "seam": "a route added to data/routes.ts with no matching DataProvider method",
+    "test": "pnpm check (tsc --noEmit)",
+    "red": "data/routes.ts(198,5): error TS2322: Type '\"getMutationSeam\"' is not assignable to type 'keyof DataProvider'.",
+    "green": "tsc --noEmit — no output",
+    "at": "2026-09-07T07:20:00+10:00"
+  },
+  {
+    "stage": "v2.1",
+    "id": 2,
+    "seam": "an inline fontSize in a component instead of a Txt kind",
+    "test": "eslint jstack/no-inline-font-size",
+    "red": "components/chrome/TalkBanner.tsx 71:36 error 'fontSize' set outside theme/. Use <Txt kind=\"...\"> ... jstack/no-inline-font-size — 1 problem (1 error, 0 warnings)",
+    "green": "eslint components/chrome/TalkBanner.tsx — no output",
+    "at": "2026-09-07T07:22:00+10:00"
+  },
+  {
+    "stage": "v2.1",
+    "id": 3,
+    "seam": "the mock server's offlineId dedupe removed (data/mock/util.ts replayed() returns null)",
+    "test": "tests/unit/outbox.test.ts (OF-04)",
+    "red": "expected { duplicate: true }, received the record without it — Tests: 2 failed, 26 passed, 28 total",
+    "green": "Tests: 28 passed, 28 total",
+    "at": "2026-09-07T07:26:00+10:00",
+    "note": "MP-A (qa A-8, CD-14). This named `conformance.test.ts` too and that suite STAYS GREEN — the mock has a second dedupe, so the runner never sees the duplicate. Re-run at T2-1 with the same mutation to check rather than take the audit's word for it: FAIL tests/unit/outbox.test.ts (OF-04, 2 failed), PASS tests/unit/conformance.test.ts, Tests: 2 failed, 30 passed, 32 total. A seam that names a guard which does not fire claims coverage it has not got."
+  },
+  {
+    "stage": "v2.1",
+    "id": 4,
+    "seam": "the section validator accepting a 13th block (LIMITS.blocks raised to 13)",
+    "test": "tests/unit/sections.test.ts (CB-02)",
+    "red": "Expected: 12 Received: 13 — thirteen blocks — the number, not `LIMITS.blocks + 1`; Tests: 1 failed, 35 passed, 36 total",
+    "green": "Tests: 36 passed, 36 total",
+    "note": "FOUND A REAL WEAKNESS. The test was written against `LIMITS.blocks + 1`, so it moved WITH the limit and stayed green through the mutation — hard rule 11's own failure mode, in a test written three rows earlier. Rewritten to assert the literal 12 and to check that twelve blocks are ACCEPTED, so the rule is a cap rather than a ban.",
+    "at": "2026-09-07T07:31:00+10:00"
+  },
+  {
+    "stage": "v2.1",
+    "id": 5,
+    "seam": "the Content-Security-Policy line removed from public/_headers",
+    "test": "tests/unit/pwa.test.ts (SH-01)",
+    "red": "Tests: 3 failed, 26 passed, 29 total",
+    "green": "Tests: 29 passed, 29 total",
+    "at": "2026-09-07T07:34:00+10:00"
+  },
+  {
+    "stage": "v2.1",
+    "id": 6,
+    "seam": "lib/time.ts reading a LOCAL field (formatTime's getUTCHours -> getHours)",
+    "test": "tests/unit/time.test.ts under TZ=America/New_York (TZ-02)",
+    "red": "Expected: \"15:00\" Received: \"11:00\" — Tests: 1 failed, 18 passed, 19 total",
+    "green": "Tests: 19 passed, 19 total",
+    "note": "The four-hour difference IS the foreign TZ jest.config.js sets before the workers start. On a Brisbane laptop this mutation is invisible.",
+    "at": "2026-09-07T07:38:00+10:00"
+  },
+  {
+    "stage": "v2.1",
+    "id": 7,
+    "seam": "the conformance runner ignoring a wrong response shape (validate() called, errors discarded)",
+    "test": "tests/unit/conformance.test.ts (WM-05)",
+    "red": "Tests: 3 failed, 8 passed, 11 total",
+    "green": "Tests: 11 passed, 11 total",
+    "at": "2026-09-07T07:41:00+10:00"
+  },
+  {
+    "stage": "v2.1",
+    "id": 8,
+    "seam": "the entry bundle grown by a 282KB incompressible dummy import from app/_layout.tsx",
+    "test": "tests/unit/bundle-budget.test.ts (PF-04)",
+    "red": "overBudget: true — 822KB gzipped against a 661KB budget",
+    "green": "Tests: 3 passed, 3 total (615KB)",
+    "note": "FOUND A REAL DEFECT, and it took two attempts to see. The first pad was 1200 identical strings, which gzip erased — a 241KB import that cost 0KB shipped. The second was random text, and the test STILL passed: `currentEntry()` preferred ~/.jstack-dist (what `pnpm build:web` writes) over ~/.jstack-dist-prod (what `pnpm build:web:prod` writes), so the production budget had been measuring a stale test-flavoured build since F-2. Order reversed, and the dist is now named in the failure.",
+    "at": "2026-09-07T07:52:00+10:00"
+  },
+  {
+    "stage": "v2.1",
+    "id": 9,
+    "seam": "a source file renamed without regenerating the map (components/chrome/TalkBanner.tsx)",
+    "test": "tests/unit/codemap.test.ts (CM-01)",
+    "red": "CM-01 · the map does not drift › regenerating CODEMAP.md changes nothing — Tests: 1 failed, 8 passed, 9 total",
+    "green": "Tests: 9 passed, 9 total",
+    "at": "2026-09-07T07:55:00+10:00"
+  },
+  {
+    "stage": "v2.1",
+    "id": 10,
+    "seam": "the pre-commit hook bypassed (--no-verify) leaving a hand-written CODEMAP reference dangling (layout/SectionRenderer.tsx renamed)",
+    "test": "tools/codemap-check.mjs (the hook's own gate) and tests/unit/codemap.test.ts (CM-03) in CI",
+    "red": "codemap-check exit=1 — \"CODEMAP.md names 2 thing(s) that do not exist: file not found: layout/SectionRenderer.tsx\"; CM-03 red, Tests: 2 failed, 7 passed, 9 total",
+    "green": "codemap-check exit=0; Tests: 9 passed, 9 total",
+    "note": "Worth stating precisely: the fast hook gate walks the HAND-WRITTEN references only and says so in its own output. A rename nothing hand-written mentions leaves it green and is caught by CM-01 in the board instead — which is the design, and is why seam 9 and seam 10 are two seams rather than one.",
+    "at": "2026-09-07T07:58:00+10:00"
+  },
+  {
+    "stage": "v2.2",
+    "id": 1,
+    "seam": "the mock accepts a lock timeout outside the parameter's own published range (`rangeError` in data/mock/handlers/parameters.ts stops checking `max`, so PUT /parameters/lock.afterMinutes of 90 is taken)",
+    "test": "tests/unit/parameters.test.ts (LK-03 and LK-04)",
+    "red": "LK-03 \"a value outside the range is a 422 naming the field, and nothing moves\" — \"status\": 422 expected, \"status\": 200 received; LK-04 \"a proposal outside the range is refused at the door, not at approval\" — Expected: 422, Received: 201; Tests: 2 failed, 20 passed, 22 total",
+    "green": "Tests: 22 passed, 22 total",
+    "at": "2026-09-10T04:26:00+10:00",
+    "note": "BUILD_PLAN §5 predicted LK-03 alone. LK-04 fires too and is named because it does: the EA's propose route and Josh's own PUT share the one validator, which is the property the seam is really testing."
+  },
+  {
+    "stage": "v2.2",
+    "id": 2,
+    "seam": "`serializeFilters` drops the range from the wire (data/taskFilters.ts serialises every filter group but omits `range`)",
+    "test": "tests/unit/taskRange.test.ts (TF-09)",
+    "red": "TF-09 \"carries the range once it is not the default\" — Expected: {\"preset\": \"thisWeek\"}, Received: undefined; and \"carries the range beside a group, not instead of it\"; Tests: 2 failed, 98 passed, 100 total across the twelve suites run",
+    "green": "Tests: 19 passed, 19 total",
+    "at": "2026-09-10T04:33:00+10:00",
+    "note": "BUILD_PLAN §5 predicted TF-01 red ON BOARD. IT IS NOT: `e2e/core/tasks.spec.ts` at 1366 ran 25 passed with the range missing from every request. The browser suite picks a range chip and reads the rows, and the fixture's tasks fall inside the resolved window either way, so nothing visible moves — a real coverage gap, recorded rather than papered over. The unit guard is the one that fires, and it is named alone."
+  },
+  {
+    "stage": "v2.2",
+    "id": 3,
+    "seam": "`DRAG_THRESHOLD` set to 0 in lib/drag.ts — a tap becomes a drag",
+    "test": "tests/unit/drag.test.ts (BD-04) and e2e/core/board.spec.ts (BD-04, w1366)",
+    "red": "unit: BD-04 \"a 3px wobble is still a tap — a finger is not a mouse\", \"the boundary itself: 3.9px taps, 4px picks up\" and \"the threshold is measured from where the finger went DOWN\" — Expected: 4, and a 3-event diff; browser: BD-04 \"a tap is still a tap — a 3px wobble opens the card rather than moving it\" — expect(locator).toBeVisible() failed, the card never opened; 1 failed, 19 passed",
+    "green": "unit Tests: 23 passed, 23 total; browser 49 passed, 11 skipped over board/textentry/tasks/gantt at w1366",
+    "at": "2026-09-10T04:52:00+10:00",
+    "note": "BUILD_PLAN §5 predicted GT-06. The Gantt spec STAYS GREEN — its drags are all well past 4px — and the guard that fires in the browser is BD-04 on the Board. Both named guards were seen red; GT-06 is not named because it does not fire."
+  },
+  {
+    "stage": "v2.2",
+    "id": 4,
+    "seam": "`formatTime12` reads a UTC field (`getUTCHours()`) instead of the device's local one — the V2.1 basis, reintroduced",
+    "test": "tests/unit/time.test.ts under JSTACK_TZ=Australia/Brisbane (TD-01, TD-02, TD-03)",
+    "red": "TD-01 \"today, tomorrow and yesterday, in this device's zone\" — Expected: \"Today 2:14pm\", Received: \"Today 4:14am\"; TD-02 \"a span inside one day keeps one date and two times\" — Expected: \"Fri 11 Sep, 9:00am – 5:00pm\", Received: \"Fri 11 Sep, 11:00pm – 7:00am\"; TD-03 also red",
+    "green": "Tests: 35 passed, 35 total (Brisbane); the same suite is run again under America/New_York by the board",
+    "at": "2026-09-10T04:38:00+10:00",
+    "note": "THE SEAM HAD TO BE INVERTED. BUILD_PLAN §5 says \"formatWhen reading getHours()\", which was the defect under ADR-29's fixed +10:00 basis. D-1 (ADR-47) made the DEVICE's zone the basis, so `getHours()` is now correct and `getUTCHours()` is the regression. The seam tests the same property from the other side: one basis, and every surface on it."
+  },
+  {
+    "stage": "v2.2",
+    "id": 5,
+    "seam": "`lib/mic.ts` stop() skips `track.stop()` — the session ends and the browser's recording indicator stays lit",
+    "test": "tests/unit/mic.test.ts (MC-07, and MC-01, MC-06, MC-08 with it)",
+    "red": "MC-07 \"stop() calls track.stop() on every track of the stream\", \"stopActiveMic() — what relock() calls\", \"stop() is idempotent\"; MC-01 \"starting a second session stops the first, and its tracks\"; MC-06 both cases; MC-08; Tests: 7 failed, 41 passed, 48 total",
+    "green": "Tests: 16 passed, 16 total",
+    "at": "2026-09-10T04:47:00+10:00",
+    "note": "Seven cases across four IDs, which is the point: MC-07 is the direct claim and the other three reach the same line by their own routes (a second session, the auto-stop, an error path). A regression here would be caught four ways."
+  },
+  {
+    "stage": "v2.2",
+    "id": 6,
+    "seam": "a list registered in `layout/lists.ts` that says NEITHER what its rows open nor why they do not (the `components/brain/Find.tsx` entry loses its `opens`)",
+    "test": "tests/unit/opens.test.ts (OP-07)",
+    "red": "OP-07 \"every entry says EITHER what it opens OR why it does not, never both and never neither\"; Tests: 1 failed, 6 passed, 7 total",
+    "green": "Tests: 7 passed, 7 total",
+    "at": "2026-09-10T04:41:00+10:00",
+    "note": "BUILD_PLAN §5 says \"a rows block row with an id and no onOpen\". There is no `onOpen` in the tree: O-1 answered ADR-52 with a REGISTRY rather than a per-row callback, and a rows bind carries a `verb` with an `open` action. The seam is written against what shipped, and it tests the same rule — a list that does not say how it opens is red the day it is written."
+  },
+  {
+    "stage": "v2.2",
+    "id": 7,
+    "seam": "the silo gate in `data/mock/search.ts` opened — a record outside the session's silos is returned",
+    "test": "tests/unit/search.test.ts (GS-01)",
+    "red": "GS-01 \"a record outside the user's silos never comes back — and the query would have found it\" — Expected: < 4, Received: 4; Tests: 1 failed, 15 passed, 16 total",
+    "green": "Tests: 16 passed, 16 total",
+    "at": "2026-09-10T04:41:00+10:00",
+    "note": "The guard is a negative claim with a positive partner — the same query proves it WOULD have found the record — so it cannot pass against a search that returns nothing."
+  },
+  {
+    "stage": "v2.2",
+    "id": 8,
+    "seam": "`PUT /habits` purges an archived habit's log rows (the archive write drops every `habitLogs` entry belonging to a habit it archived)",
+    "test": "tests/unit/habitArchive.test.ts (LH-06 and LH-07)",
+    "red": "LH-06 \"keeps every log — the count before and after archiving is identical\" — Expected: 122, Received: 0; LH-06 \"stats for an archived habit still compute\"; LH-07 \"restoring returns the habit AND its logs and stats, unchanged\" and \"the days of history the restore line promises is a number the stats can produce\" — Expected: 0, Received: 122; Tests: 4 failed, 8 passed, 12 total",
+    "green": "Tests: 12 passed, 12 total",
+    "at": "2026-09-10T04:41:00+10:00",
+    "note": "Josh's words are the acceptance: \"when I delete a habit from my current tracking list, the data must be retained\". Four cases go red, and LH-07's pair matters most — a purge is invisible until somebody restores."
+  },
+  {
+    "stage": "v2.2",
+    "id": 9,
+    "seam": "`syncStatus` ignores `conflicts` (lib/syncStatus.ts tests only `lastError` for attention)",
+    "test": "tests/unit/syncStatus.test.ts (SY-01)",
+    "red": "SY-01 \"a conflict the server would not take → attention\" and \"attention outranks a queue that is draining, because waiting will not fix it\"; Tests: 2 failed, 21 passed, 23 total across the two suites run",
+    "green": "Tests: 11 passed, 11 total",
+    "at": "2026-09-10T04:41:00+10:00",
+    "note": "`tests/unit/stores/sync.test.ts` was run with it and STAYS GREEN — its SY-01 case drives `lastError`, not a conflict — so it is not named. The seam is the reason the dot's precedence is a table: a conflict is the one state that waiting does not clear."
+  },
+  {
+    "stage": "v2.2",
+    "id": 10,
+    "seam": "a `Field` without the focus ring (`focusRing` in theme/ui/fieldEditor.ts returns `outlineStyle: none` when focused)",
+    "test": "e2e/core/textentry.spec.ts (TE-05, w1366 only)",
+    "red": "TE-05 \"a focused field takes a 2px accent outline at 2px offset, the border unchanged, the caret accent\" — Expected: \"solid\", Received: \"none\"; 1 failed, 3 passed",
+    "green": "3 passed, 1 skipped at w1366 in the same file; 49 passed across the four browser files run green",
+    "at": "2026-09-10T05:04:00+10:00",
+    "note": "`tests/native/primitives.test.tsx` was run with it and STAYS GREEN (49 passed) — it asserts that a single-line field does not become the EDITOR, which is a different claim — so it is not named. A focus ring is a computed style, and only a browser has one."
+  }
+]

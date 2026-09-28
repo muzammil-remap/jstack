@@ -1,0 +1,6428 @@
+{
+  "requests": {
+    "/actions/{id}": {
+      "post": {
+        "$ref": "#/components/schemas/PostActionBody"
+      }
+    },
+    "/actions/{id}/draft": {
+      "put": {
+        "$ref": "#/components/schemas/ActionDraftBody"
+      }
+    },
+    "/agents/caps": {
+      "put": {
+        "$ref": "#/components/schemas/AgentCapsBody"
+      }
+    },
+    "/agents/issues/{id}": {
+      "post": {
+        "$ref": "#/components/schemas/AgentIssueActionBody"
+      }
+    },
+    "/auth/register-device": {
+      "post": {
+        "$ref": "#/components/schemas/RegisterDeviceBody"
+      }
+    },
+    "/auth/webauthn/{step}": {
+      "post": {
+        "$ref": "#/components/schemas/WebauthnBody"
+      }
+    },
+    "/brain/dump": {
+      "post": {
+        "$ref": "#/components/schemas/BrainDumpBody"
+      }
+    },
+    "/brain/items/{id}": {
+      "put": {
+        "$ref": "#/components/schemas/BrainItemPatch"
+      }
+    },
+    "/brain/replies/{id}": {
+      "patch": {
+        "$ref": "#/components/schemas/ReplyPatch"
+      }
+    },
+    "/calendar/propose": {
+      "post": {
+        "$ref": "#/components/schemas/CalendarProposeBody"
+      }
+    },
+    "/chat": {
+      "post": {
+        "$ref": "#/components/schemas/ChatBody"
+      }
+    },
+    "/devices/{id}/revoke": {
+      "post": {
+        "$ref": "#/components/schemas/HighRiskBody"
+      }
+    },
+    "/events/{id}": {
+      "patch": {
+        "$ref": "#/components/schemas/CalEventPatch"
+      }
+    },
+    "/focuses": {
+      "put": {
+        "$ref": "#/components/schemas/FocusesBody"
+      }
+    },
+    "/goals": {
+      "put": {
+        "$ref": "#/components/schemas/GoalsBody"
+      }
+    },
+    "/habits": {
+      "put": {
+        "$ref": "#/components/schemas/HabitsBody"
+      }
+    },
+    "/habits/{id}/log": {
+      "post": {
+        "$ref": "#/components/schemas/HabitLogBody"
+      }
+    },
+    "/insights/{id}": {
+      "post": {
+        "$ref": "#/components/schemas/InsightActionBody"
+      }
+    },
+    "/journal": {
+      "post": {
+        "$ref": "#/components/schemas/JournalBody"
+      }
+    },
+    "/layout/app": {
+      "put": {
+        "$ref": "#/components/schemas/AppLayoutPatch"
+      }
+    },
+    "/layout/{tab}": {
+      "put": {
+        "$ref": "#/components/schemas/LayoutPatch"
+      }
+    },
+    "/layout/{tab}/ea": {
+      "post": {
+        "$ref": "#/components/schemas/LayoutEaBody"
+      }
+    },
+    "/life/sections/{id}/config": {
+      "put": {
+        "$ref": "#/components/schemas/LifeSectionConfigPatch"
+      }
+    },
+    "/lock": {
+      "post": {
+        "$ref": "#/components/schemas/HighRiskBody"
+      }
+    },
+    "/memory/proposals/{id}": {
+      "post": {
+        "$ref": "#/components/schemas/MemoryProposalBody"
+      }
+    },
+    "/parameters/propose": {
+      "post": {
+        "$ref": "#/components/schemas/ParameterProposeBody"
+      }
+    },
+    "/parameters/{key}": {
+      "put": {
+        "$ref": "#/components/schemas/ParameterValueBody"
+      }
+    },
+    "/people/{id}/act": {
+      "post": {
+        "$ref": "#/components/schemas/PersonActBody"
+      }
+    },
+    "/push/subscribe": {
+      "post": {
+        "$ref": "#/components/schemas/PushSubscribeBody"
+      }
+    },
+    "/recover": {
+      "post": {
+        "$ref": "#/components/schemas/RecoverBody"
+      }
+    },
+    "/sections/propose": {
+      "post": {
+        "$ref": "#/components/schemas/SectionProposeBody"
+      }
+    },
+    "/sections/{id}": {
+      "put": {
+        "$ref": "#/components/schemas/SectionConfigPatch"
+      }
+    },
+    "/settings/autonomy": {
+      "put": {
+        "$ref": "#/components/schemas/AutonomySettings"
+      }
+    },
+    "/settings/autonomy/propose": {
+      "post": {
+        "$ref": "#/components/schemas/AutonomyProposeBody"
+      }
+    },
+    "/settings/autonomy/rules": {
+      "put": {
+        "$ref": "#/components/schemas/AutonomyRuleList"
+      }
+    },
+    "/settings/notifications/{id}": {
+      "put": {
+        "$ref": "#/components/schemas/NotificationDevicesBody"
+      }
+    },
+    "/settings/quiet-hours": {
+      "put": {
+        "$ref": "#/components/schemas/QuietHours"
+      }
+    },
+    "/settings/voice": {
+      "put": {
+        "$ref": "#/components/schemas/VoiceSettings"
+      }
+    },
+    "/slicers": {
+      "put": {
+        "$ref": "#/components/schemas/SlicerList"
+      }
+    },
+    "/tasks": {
+      "post": {
+        "$ref": "#/components/schemas/TaskCreateBody"
+      }
+    },
+    "/tasks/{id}": {
+      "patch": {
+        "$ref": "#/components/schemas/TaskPatch"
+      },
+      "put": {
+        "$ref": "#/components/schemas/Task"
+      }
+    },
+    "/tasks/{id}/complete": {
+      "post": {
+        "$ref": "#/components/schemas/CompleteBody"
+      }
+    },
+    "/tasks/{id}/delegate": {
+      "post": {
+        "$ref": "#/components/schemas/DelegateBody"
+      }
+    },
+    "/tasks/{id}/report": {
+      "post": {
+        "$ref": "#/components/schemas/TaskReportBody"
+      }
+    },
+    "/tasks/{id}/subtasks": {
+      "post": {
+        "$ref": "#/components/schemas/SubtaskBody"
+      }
+    },
+    "/tasks/{id}/subtasks/{sid}": {
+      "patch": {
+        "$ref": "#/components/schemas/SubtaskPatch"
+      }
+    },
+    "/{noun}/{id}/labels": {
+      "put": {
+        "$ref": "#/components/schemas/LabelsBody"
+      }
+    }
+  },
+  "schemas": {
+    "ActionBillLine": {
+      "type": "object",
+      "properties": {
+        "k": {
+          "type": "string"
+        },
+        "v": {
+          "type": "string"
+        },
+        "copy": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "k",
+        "v"
+      ]
+    },
+    "ActionDraftBody": {
+      "type": "object",
+      "properties": {
+        "subject": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "body"
+      ]
+    },
+    "ActionHistoryEntry": {
+      "type": "object",
+      "properties": {
+        "verb": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "undone"
+              ]
+            },
+            {
+              "$ref": "#/components/schemas/ActionVerb"
+            }
+          ]
+        },
+        "option": {
+          "type": "number",
+          "enum": [
+            1,
+            2,
+            3
+          ]
+        },
+        "at": {
+          "type": "string"
+        },
+        "via": {
+          "type": "string",
+          "enum": [
+            "app",
+            "telegram",
+            "expiry"
+          ]
+        }
+      },
+      "required": [
+        "verb",
+        "at",
+        "via"
+      ]
+    },
+    "ActionItem": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/LabelledMeta"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "kind": {
+              "$ref": "#/components/schemas/ActionKind"
+            },
+            "title": {
+              "type": "string"
+            },
+            "state": {
+              "$ref": "#/components/schemas/ActionState"
+            },
+            "rank": {
+              "type": "number"
+            },
+            "options": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ActionOption"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            "recommended": {
+              "type": "number",
+              "enum": [
+                1,
+                2,
+                3
+              ]
+            },
+            "quote": {
+              "type": "string"
+            },
+            "bill": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ActionBillLine"
+              }
+            },
+            "section": {
+              "$ref": "#/components/schemas/SectionConfig"
+            },
+            "triage": {
+              "$ref": "#/components/schemas/TriageProposal"
+            },
+            "rule": {
+              "$ref": "#/components/schemas/ActionRule"
+            },
+            "parameter": {
+              "$ref": "#/components/schemas/ParameterProposal"
+            },
+            "why": {
+              "type": "string"
+            },
+            "sources": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ActionSource"
+              }
+            },
+            "expiresAt": {
+              "type": "string"
+            },
+            "thenWhat": {
+              "type": "string"
+            },
+            "silence": {
+              "type": "string"
+            },
+            "verb": {
+              "type": "string"
+            },
+            "toast": {
+              "type": "string"
+            },
+            "history": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ActionHistoryEntry"
+              }
+            },
+            "receipt": {
+              "$ref": "#/components/schemas/ActionReceipt"
+            },
+            "sourceUrl": {
+              "type": "string"
+            },
+            "laterUntil": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "kind",
+            "title",
+            "state",
+            "rank",
+            "why",
+            "sources",
+            "expiresAt",
+            "thenWhat",
+            "silence",
+            "verb",
+            "toast",
+            "history",
+            "receipt"
+          ]
+        }
+      ]
+    },
+    "ActionKind": {
+      "type": "string",
+      "enum": [
+        "opts",
+        "quote",
+        "bill",
+        "section",
+        "parameter",
+        "triage",
+        "rule"
+      ]
+    },
+    "ActionList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/ActionItem"
+      }
+    },
+    "ActionOption": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "why": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "text",
+        "why"
+      ]
+    },
+    "ActionReceipt": {
+      "type": "object",
+      "properties": {
+        "cost": {
+          "type": "number"
+        },
+        "model": {
+          "type": "string"
+        },
+        "sources": {
+          "type": "number"
+        },
+        "seconds": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "cost",
+        "model",
+        "sources",
+        "seconds"
+      ]
+    },
+    "ActionRule": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "scope": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "all"
+              ]
+            },
+            {
+              "$ref": "#/components/schemas/ActionKind"
+            }
+          ]
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "ask"
+          ]
+        },
+        "why": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "text",
+        "scope",
+        "mode",
+        "why"
+      ]
+    },
+    "ActionSource": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "ref": {
+          "type": "string"
+        },
+        "ts": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "label",
+        "ref"
+      ]
+    },
+    "ActionState": {
+      "type": "string",
+      "enum": [
+        "open",
+        "answered",
+        "later",
+        "expired",
+        "undone"
+      ]
+    },
+    "ActionVerb": {
+      "type": "string",
+      "enum": [
+        "approve",
+        "revise",
+        "later",
+        "never",
+        "teach"
+      ]
+    },
+    "AgentCapRow": {
+      "type": "object",
+      "properties": {
+        "agent": {
+          "type": "string"
+        },
+        "cap": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "agent",
+        "cap"
+      ]
+    },
+    "AgentCapsBody": {
+      "type": "object",
+      "properties": {
+        "caps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/AgentCapRow"
+          }
+        },
+        "nonce": {
+          "type": "string"
+        },
+        "biometricAssertion": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "caps",
+        "nonce",
+        "biometricAssertion"
+      ]
+    },
+    "AgentIssue": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "why": {
+          "type": "string"
+        },
+        "verb": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "action": {
+              "type": "string",
+              "enum": [
+                "renew",
+                "run",
+                "open"
+              ]
+            }
+          },
+          "required": [
+            "label",
+            "action"
+          ]
+        },
+        "checkId": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "open",
+            "done"
+          ]
+        },
+        "detail": {
+          "type": "string"
+        },
+        "lastSuccessAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "why",
+        "verb",
+        "state"
+      ]
+    },
+    "AgentIssueActionBody": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "renew",
+            "run",
+            "open"
+          ]
+        }
+      },
+      "required": [
+        "action"
+      ]
+    },
+    "AgentIssueList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/AgentIssue"
+      }
+    },
+    "AgentRoster": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/AgentRosterEntry"
+      }
+    },
+    "AgentRosterEntry": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/components/schemas/TaskOwner"
+        },
+        "name": {
+          "type": "string"
+        },
+        "short": {
+          "type": "string"
+        },
+        "canTakeTasks": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "short",
+        "canTakeTasks"
+      ]
+    },
+    "AgentRun": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "agent": {
+          "type": "string"
+        },
+        "at": {
+          "type": "string"
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "ok",
+            "error",
+            "blocked"
+          ]
+        },
+        "cost": {
+          "type": "number"
+        },
+        "seconds": {
+          "type": "number"
+        },
+        "text": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "agent",
+        "at",
+        "outcome",
+        "cost",
+        "seconds",
+        "text"
+      ]
+    },
+    "AgentRunList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/AgentRun"
+      }
+    },
+    "AgentSummary": {
+      "type": "object",
+      "properties": {
+        "runsToday": {
+          "type": "number"
+        },
+        "successPct": {
+          "type": "number"
+        },
+        "spendToday": {
+          "type": "number"
+        },
+        "issues": {
+          "type": "number"
+        },
+        "health": {
+          "type": "string",
+          "enum": [
+            "healthy",
+            "degraded"
+          ]
+        },
+        "heartbeat": {
+          "type": "object",
+          "properties": {
+            "every": {
+              "type": "string"
+            },
+            "last": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "every",
+            "last"
+          ]
+        }
+      },
+      "required": [
+        "runsToday",
+        "successPct",
+        "spendToday",
+        "issues",
+        "health",
+        "heartbeat"
+      ]
+    },
+    "AppLayout": {
+      "type": "object",
+      "properties": {
+        "hiddenTabs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "showFocusRow": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "hiddenTabs",
+        "showFocusRow"
+      ]
+    },
+    "AppLayoutPatch": {
+      "type": "object",
+      "properties": {
+        "hiddenTabs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "showFocusRow": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Attachment": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/LabelledMeta"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "kind": {
+              "$ref": "#/components/schemas/AttachmentKind"
+            },
+            "size": {
+              "type": "number"
+            },
+            "storage": {
+              "type": "string",
+              "enum": [
+                "store",
+                "dropbox",
+                "url"
+              ]
+            },
+            "url": {
+              "type": "string"
+            },
+            "urlExpiresAt": {
+              "type": "string"
+            },
+            "dropboxUrl": {
+              "type": "string"
+            },
+            "folder": {
+              "type": "string"
+            },
+            "previewText": {
+              "type": "string"
+            },
+            "taskId": {
+              "type": "string"
+            },
+            "subtaskId": {
+              "type": "string"
+            },
+            "brainId": {
+              "type": "string"
+            },
+            "captureId": {
+              "type": "string"
+            },
+            "addedBy": {
+              "type": "string",
+              "enum": [
+                "josh",
+                "joce",
+                "ea",
+                "dev"
+              ]
+            },
+            "at": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "kind",
+            "storage",
+            "folder",
+            "addedBy",
+            "at"
+          ]
+        }
+      ]
+    },
+    "AttachmentKind": {
+      "type": "string",
+      "enum": [
+        "pdf",
+        "doc",
+        "sheet",
+        "image",
+        "text",
+        "link"
+      ]
+    },
+    "AttachmentList": {
+      "type": "object",
+      "properties": {
+        "attachments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Attachment"
+          }
+        }
+      },
+      "required": [
+        "attachments"
+      ]
+    },
+    "AuthNonce": {
+      "type": "object",
+      "properties": {
+        "nonce": {
+          "type": "string"
+        },
+        "expiresAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "nonce",
+        "expiresAt"
+      ]
+    },
+    "AuthToken": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "token"
+      ]
+    },
+    "AutonomyLevel": {
+      "type": "string",
+      "enum": [
+        "ask",
+        "propose",
+        "auto"
+      ]
+    },
+    "AutonomyProposeBody": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "AutonomyRule": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "scope": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "all"
+              ]
+            },
+            {
+              "$ref": "#/components/schemas/ActionKind"
+            }
+          ]
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "ask"
+          ]
+        },
+        "on": {
+          "type": "boolean"
+        },
+        "addedBy": {
+          "type": "string",
+          "enum": [
+            "josh",
+            "ea"
+          ]
+        },
+        "addedAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "text",
+        "scope",
+        "mode",
+        "on"
+      ]
+    },
+    "AutonomyRuleList": {
+      "type": "object",
+      "properties": {
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/AutonomyRule"
+          }
+        }
+      },
+      "required": [
+        "rules"
+      ]
+    },
+    "AutonomySettings": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/components/schemas/AutonomyLevel"
+      }
+    },
+    "Block": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "rows"
+              ]
+            },
+            "idPrefix": {
+              "type": "string"
+            },
+            "bind": {
+              "type": "string"
+            },
+            "rows": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/BlockRow"
+              }
+            }
+          },
+          "required": [
+            "type",
+            "idPrefix"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "stats"
+              ]
+            },
+            "idPrefix": {
+              "type": "string"
+            },
+            "bind": {
+              "type": "string"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/BlockStat"
+              }
+            }
+          },
+          "required": [
+            "type",
+            "idPrefix"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "bars"
+              ]
+            },
+            "idPrefix": {
+              "type": "string"
+            },
+            "bind": {
+              "type": "string"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/BlockBar"
+              }
+            }
+          },
+          "required": [
+            "type",
+            "idPrefix"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "chips"
+              ]
+            },
+            "idPrefix": {
+              "type": "string"
+            },
+            "bind": {
+              "type": "string"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/BlockChip"
+              }
+            }
+          },
+          "required": [
+            "type",
+            "idPrefix"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "grid"
+              ]
+            },
+            "idPrefix": {
+              "type": "string"
+            },
+            "bind": {
+              "type": "string"
+            },
+            "tiles": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/BlockTile"
+              }
+            }
+          },
+          "required": [
+            "type",
+            "idPrefix"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "text"
+              ]
+            },
+            "idPrefix": {
+              "type": "string"
+            },
+            "bind": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "type"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "ghost"
+              ]
+            },
+            "idPrefix": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "text"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "links"
+              ]
+            },
+            "idPrefix": {
+              "type": "string"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/BlockLink"
+              }
+            }
+          },
+          "required": [
+            "type",
+            "idPrefix",
+            "items"
+          ]
+        }
+      ]
+    },
+    "BlockBar": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "value": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "amount": {
+          "type": "string"
+        },
+        "over": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "value",
+        "max",
+        "amount"
+      ]
+    },
+    "BlockChip": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "on": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "on"
+      ]
+    },
+    "BlockLink": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "url"
+      ]
+    },
+    "BlockRow": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "item": {
+          "type": "string"
+        },
+        "meta": {
+          "type": "string"
+        },
+        "verb": {
+          "$ref": "#/components/schemas/BlockVerb"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ]
+    },
+    "BlockStat": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "sens": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "value",
+        "label"
+      ]
+    },
+    "BlockTile": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "purpose"
+      ]
+    },
+    "BlockVerb": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "action": {
+          "$ref": "#/components/schemas/BlockVerbAction"
+        }
+      },
+      "required": [
+        "label",
+        "action"
+      ]
+    },
+    "BlockVerbAction": {
+      "type": "string",
+      "enum": [
+        "open",
+        "draft",
+        "nudge",
+        "done",
+        "toggle"
+      ]
+    },
+    "BrainDumpBody": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "audioRef": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "voice",
+            "typed",
+            "share"
+          ]
+        },
+        "offlineId": {
+          "type": "string"
+        },
+        "attachmentIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "source"
+      ]
+    },
+    "BrainItem": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/LabelledMeta"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            },
+            "at": {
+              "type": "string"
+            },
+            "meta": {
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/components/schemas/BrainSource"
+            },
+            "routed": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "routing": {
+              "$ref": "#/components/schemas/CaptureRouting"
+            },
+            "extractedText": {
+              "type": "string"
+            },
+            "extractedFrom": {
+              "type": "string"
+            },
+            "extractedWords": {
+              "type": "number"
+            },
+            "screened": {
+              "type": "boolean"
+            },
+            "state": {
+              "type": "string",
+              "enum": [
+                "in review"
+              ]
+            },
+            "editedAt": {
+              "type": "string"
+            },
+            "versions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/BrainItemVersion"
+              }
+            }
+          },
+          "required": [
+            "id",
+            "text",
+            "at",
+            "meta",
+            "source",
+            "routed"
+          ]
+        }
+      ]
+    },
+    "BrainItemList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/BrainItem"
+      }
+    },
+    "BrainItemPatch": {
+      "type": "object",
+      "properties": {
+        "labels": {
+          "$ref": "#/components/schemas/Labels"
+        },
+        "setAt": {
+          "type": "string"
+        },
+        "focus": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "at": {
+          "type": "string"
+        },
+        "meta": {
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/components/schemas/BrainSource"
+        },
+        "routed": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "routing": {
+          "$ref": "#/components/schemas/CaptureRouting"
+        },
+        "extractedText": {
+          "type": "string"
+        },
+        "extractedFrom": {
+          "type": "string"
+        },
+        "extractedWords": {
+          "type": "number"
+        },
+        "screened": {
+          "type": "boolean"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "in review"
+          ]
+        },
+        "editedAt": {
+          "type": "string"
+        },
+        "versions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/BrainItemVersion"
+          }
+        }
+      }
+    },
+    "BrainItemVersion": {
+      "type": "object",
+      "properties": {
+        "at": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "editor": {
+          "type": "string",
+          "enum": [
+            "josh",
+            "ea"
+          ]
+        }
+      },
+      "required": [
+        "at",
+        "text",
+        "editor"
+      ]
+    },
+    "BrainItemVersionList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/BrainItemVersion"
+      }
+    },
+    "BrainSearchResult": {
+      "type": "object",
+      "properties": {
+        "answer": {
+          "$ref": "#/components/schemas/FindAnswer",
+          "nullable": true
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/FindResult"
+          }
+        }
+      },
+      "required": [
+        "answer",
+        "results"
+      ]
+    },
+    "BrainSource": {
+      "type": "string",
+      "enum": [
+        "voice",
+        "typed",
+        "transcript",
+        "journal",
+        "agent",
+        "share",
+        "system"
+      ]
+    },
+    "CalEvent": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/LabelledMeta"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "startsAt": {
+              "type": "string"
+            },
+            "endsAt": {
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/components/schemas/CalendarSource"
+            },
+            "prep": {
+              "type": "string"
+            },
+            "protectedByEa": {
+              "type": "boolean"
+            },
+            "googleUrl": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "title",
+            "startsAt",
+            "endsAt",
+            "source"
+          ]
+        }
+      ]
+    },
+    "CalEventPatch": {
+      "type": "object",
+      "properties": {
+        "labels": {
+          "$ref": "#/components/schemas/Labels"
+        },
+        "setAt": {
+          "type": "string"
+        },
+        "focus": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "startsAt": {
+          "type": "string"
+        },
+        "endsAt": {
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/components/schemas/CalendarSource"
+        },
+        "prep": {
+          "type": "string"
+        },
+        "protectedByEa": {
+          "type": "boolean"
+        },
+        "googleUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "CalendarProposeBody": {
+      "type": "object",
+      "properties": {
+        "gapStart": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "attendee": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "gapStart",
+        "title"
+      ]
+    },
+    "CalendarProposeResult": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "drafted-not-sent"
+          ]
+        }
+      },
+      "required": [
+        "status"
+      ]
+    },
+    "CalendarSource": {
+      "type": "string",
+      "enum": [
+        "personal",
+        "work",
+        "family"
+      ]
+    },
+    "CalendarWindow": {
+      "type": "object",
+      "properties": {
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/CalEvent"
+          }
+        },
+        "gaps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/FreeGap"
+          }
+        }
+      },
+      "required": [
+        "events",
+        "gaps"
+      ]
+    },
+    "Capabilities": {
+      "type": "object",
+      "properties": {
+        "liveRouting": {
+          "type": "boolean"
+        },
+        "liveVoice": {
+          "type": "boolean"
+        },
+        "speech": {
+          "type": "boolean"
+        },
+        "fileStore": {
+          "type": "boolean"
+        },
+        "calendarWrite": {
+          "type": "boolean"
+        },
+        "moneyFeed": {
+          "type": "boolean"
+        },
+        "healthFeed": {
+          "type": "boolean"
+        },
+        "export": {
+          "type": "boolean"
+        },
+        "calendarViews": {
+          "type": "boolean"
+        },
+        "pushPublicKey": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "liveRouting",
+        "liveVoice",
+        "speech",
+        "fileStore",
+        "calendarWrite",
+        "moneyFeed",
+        "healthFeed",
+        "export",
+        "calendarViews"
+      ]
+    },
+    "CaptureRouting": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "task",
+            "journal",
+            "memory",
+            "question",
+            "note",
+            "reading"
+          ]
+        },
+        "silos": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sensitivity": {
+          "$ref": "#/components/schemas/Sensitivity"
+        },
+        "storage": {
+          "type": "string",
+          "enum": [
+            "twenty",
+            "journal",
+            "memory",
+            "dropbox"
+          ]
+        },
+        "provisional": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "also": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "kind",
+        "silos",
+        "labels",
+        "sensitivity",
+        "storage"
+      ]
+    },
+    "ChatBody": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "text"
+      ]
+    },
+    "ChatReply": {
+      "type": "object",
+      "properties": {
+        "reply": {
+          "type": "string"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "reply",
+        "sources"
+      ]
+    },
+    "ChatThread": {
+      "type": "object",
+      "properties": {
+        "turns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ChatTurn"
+          }
+        }
+      },
+      "required": [
+        "turns"
+      ]
+    },
+    "ChatTurn": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string",
+          "enum": [
+            "josh",
+            "ea"
+          ]
+        },
+        "text": {
+          "type": "string"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "from",
+        "text"
+      ]
+    },
+    "Column": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "statuses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/TaskStatus"
+          }
+        },
+        "order": {
+          "type": "number"
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "twenty"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "statuses",
+        "order",
+        "source"
+      ]
+    },
+    "ColumnList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Column"
+      }
+    },
+    "CompleteBody": {
+      "type": "object",
+      "properties": {
+        "includeSubtasks": {
+          "type": "boolean"
+        },
+        "offlineId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "includeSubtasks"
+      ]
+    },
+    "Composite": {
+      "type": "object",
+      "properties": {
+        "seenAt": {
+          "type": "string"
+        },
+        "generatedAt": {
+          "type": "string"
+        },
+        "delta": {
+          "$ref": "#/components/schemas/Delta"
+        }
+      },
+      "required": [
+        "seenAt",
+        "generatedAt"
+      ]
+    },
+    "DelegateBody": {
+      "type": "object",
+      "properties": {
+        "to": {
+          "$ref": "#/components/schemas/TaskOwner"
+        },
+        "scope": {
+          "type": "string"
+        }
+      }
+    },
+    "Delta": {
+      "type": "object",
+      "properties": {
+        "added": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "changed": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "removed": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "added",
+        "changed",
+        "removed"
+      ]
+    },
+    "Device": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "lastSeen": {
+          "type": "string"
+        },
+        "current": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "lastSeen",
+        "current"
+      ]
+    },
+    "DeviceRegistration": {
+      "type": "object",
+      "properties": {
+        "deviceId": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "deviceId",
+        "token"
+      ]
+    },
+    "DumpResult": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "$ref": "#/components/schemas/BrainItem"
+        },
+        "routed": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "duplicate": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "item",
+        "routed"
+      ]
+    },
+    "ExportJob": {
+      "type": "object",
+      "properties": {
+        "jobId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "jobId"
+      ]
+    },
+    "FeedEvent": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "at": {
+          "type": "string"
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "ok",
+            "muted",
+            "alert"
+          ]
+        },
+        "text": {
+          "type": "string"
+        },
+        "meta": {
+          "type": "string"
+        },
+        "issueId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "at",
+        "severity",
+        "text",
+        "meta"
+      ]
+    },
+    "FeedEventList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/FeedEvent"
+      }
+    },
+    "FindAnswer": {
+      "type": "object",
+      "properties": {
+        "headline": {
+          "type": "string"
+        },
+        "synthesis": {
+          "type": "string"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ActionSource"
+          }
+        },
+        "confidence": {
+          "type": "number"
+        },
+        "seconds": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "headline",
+        "synthesis",
+        "sources",
+        "confidence",
+        "seconds"
+      ]
+    },
+    "FindResult": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "snippet": {
+          "type": "string"
+        },
+        "ref": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "snippet",
+        "ref"
+      ]
+    },
+    "Focus": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "fixed": {
+          "type": "boolean"
+        },
+        "filter": {
+          "type": "object",
+          "properties": {
+            "silos": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "projects": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "types": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "filter"
+      ]
+    },
+    "FocusList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Focus"
+      }
+    },
+    "FocusesBody": {
+      "type": "object",
+      "properties": {
+        "focuses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Focus"
+          }
+        }
+      },
+      "required": [
+        "focuses"
+      ]
+    },
+    "FreeGap": {
+      "type": "object",
+      "properties": {
+        "startsAt": {
+          "type": "string"
+        },
+        "endsAt": {
+          "type": "string"
+        },
+        "suggestion": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "startsAt",
+        "endsAt"
+      ]
+    },
+    "Goal": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/LabelledMeta"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "area": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            },
+            "status": {
+              "$ref": "#/components/schemas/GoalStatus"
+            },
+            "targetDate": {
+              "type": "string"
+            },
+            "kpis": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/GoalKpi"
+              }
+            },
+            "taskIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "deliverableIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "history": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/GoalHistoryEntry"
+              }
+            }
+          },
+          "required": [
+            "id",
+            "area",
+            "text",
+            "status",
+            "taskIds",
+            "deliverableIds",
+            "history"
+          ]
+        }
+      ]
+    },
+    "GoalComposite": {
+      "type": "object",
+      "properties": {
+        "goal": {
+          "$ref": "#/components/schemas/Goal"
+        },
+        "tasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Task"
+          }
+        },
+        "deliverables": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Attachment"
+          }
+        }
+      },
+      "required": [
+        "goal",
+        "tasks",
+        "deliverables"
+      ]
+    },
+    "GoalHistoryEntry": {
+      "type": "object",
+      "properties": {
+        "at": {
+          "type": "string"
+        },
+        "event": {
+          "type": "string"
+        },
+        "detail": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "at",
+        "event"
+      ]
+    },
+    "GoalKpi": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "value": {
+          "type": "number"
+        },
+        "target": {
+          "type": "number"
+        },
+        "unit": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "label",
+        "value",
+        "target"
+      ]
+    },
+    "GoalList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Goal"
+      }
+    },
+    "GoalStatus": {
+      "type": "string",
+      "enum": [
+        "active",
+        "behind",
+        "done",
+        "dropped"
+      ]
+    },
+    "GoalsBody": {
+      "type": "object",
+      "properties": {
+        "goals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Goal"
+          }
+        }
+      },
+      "required": [
+        "goals"
+      ]
+    },
+    "Habit": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "sort": {
+          "type": "number"
+        },
+        "archived": {
+          "type": "boolean"
+        },
+        "archivedAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "sort"
+      ]
+    },
+    "HabitList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Habit"
+      }
+    },
+    "HabitLog": {
+      "type": "object",
+      "properties": {
+        "habitId": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "done": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "habitId",
+        "date",
+        "done"
+      ]
+    },
+    "HabitLogBody": {
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string"
+        },
+        "done": {
+          "type": "boolean"
+        },
+        "offlineId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "date",
+        "done"
+      ]
+    },
+    "HabitPeriod": {
+      "type": "string",
+      "enum": [
+        "week",
+        "month",
+        "year",
+        "all"
+      ]
+    },
+    "HabitStatRow": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "days": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "boolean"
+          }
+        },
+        "archived": {
+          "type": "boolean"
+        },
+        "streak": {
+          "type": "object",
+          "properties": {
+            "current": {
+              "type": "number"
+            },
+            "longest": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "current",
+            "longest"
+          ]
+        },
+        "done": {
+          "type": "number"
+        },
+        "possible": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "days",
+        "streak",
+        "done",
+        "possible"
+      ]
+    },
+    "HabitStats": {
+      "type": "object",
+      "properties": {
+        "period": {
+          "$ref": "#/components/schemas/HabitPeriod"
+        },
+        "earliest": {
+          "type": "string"
+        },
+        "habits": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/HabitStatRow"
+          }
+        }
+      },
+      "required": [
+        "period",
+        "earliest",
+        "habits"
+      ]
+    },
+    "HabitsBody": {
+      "type": "object",
+      "properties": {
+        "habits": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Habit"
+          }
+        }
+      },
+      "required": [
+        "habits"
+      ]
+    },
+    "HealthComposite": {
+      "type": "object",
+      "additionalProperties": {},
+      "nullable": true
+    },
+    "HighRiskBody": {
+      "type": "object",
+      "properties": {
+        "nonce": {
+          "type": "string"
+        },
+        "biometricAssertion": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "nonce",
+        "biometricAssertion"
+      ]
+    },
+    "Insight": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/LabelledMeta"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            },
+            "why": {
+              "type": "string"
+            },
+            "sources": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ActionSource"
+              }
+            },
+            "primary": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "action": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "label",
+                "action"
+              ]
+            },
+            "secondary": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "action": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "label",
+                "action"
+              ]
+            },
+            "state": {
+              "type": "string",
+              "enum": [
+                "open",
+                "done"
+              ]
+            },
+            "result": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "text",
+            "why",
+            "sources",
+            "primary",
+            "secondary",
+            "state"
+          ]
+        }
+      ]
+    },
+    "InsightActionBody": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "block",
+            "leave"
+          ]
+        }
+      },
+      "required": [
+        "action"
+      ]
+    },
+    "JournalBody": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "voice",
+            "typed"
+          ]
+        },
+        "offlineId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "text",
+        "source"
+      ]
+    },
+    "LabelAuditRow": {
+      "type": "object",
+      "properties": {
+        "fromSilo": {
+          "type": "string"
+        },
+        "fromTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "toSilo": {
+          "type": "string"
+        },
+        "toTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "actor": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "ts": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "fromSilo",
+        "fromTypes",
+        "toSilo",
+        "toTypes",
+        "actor",
+        "ts"
+      ]
+    },
+    "LabelAuditRowList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/LabelAuditRow"
+      }
+    },
+    "LabelSetBy": {
+      "type": "string",
+      "enum": [
+        "source",
+        "review",
+        "pattern",
+        "content",
+        "folder",
+        "josh"
+      ]
+    },
+    "LabelType": {
+      "type": "string",
+      "enum": [
+        "open",
+        "unlabelled",
+        "journal",
+        "health",
+        "money",
+        "identity",
+        "legal",
+        "kids",
+        "confidential",
+        "relationship",
+        "eo",
+        "cosol",
+        "coreasset",
+        "coaching",
+        "medical",
+        "deals",
+        "jstack"
+      ]
+    },
+    "LabelledMeta": {
+      "type": "object",
+      "properties": {
+        "labels": {
+          "$ref": "#/components/schemas/Labels"
+        },
+        "setAt": {
+          "type": "string"
+        },
+        "focus": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "labels",
+        "setAt",
+        "focus"
+      ]
+    },
+    "Labels": {
+      "type": "object",
+      "properties": {
+        "silo": {
+          "$ref": "#/components/schemas/Silo"
+        },
+        "types": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/LabelType"
+          }
+        },
+        "setBy": {
+          "$ref": "#/components/schemas/LabelSetBy"
+        }
+      },
+      "required": [
+        "silo",
+        "types",
+        "setBy"
+      ]
+    },
+    "LabelsBody": {
+      "type": "object",
+      "properties": {
+        "silo": {
+          "$ref": "#/components/schemas/Silo"
+        },
+        "types": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/LabelType"
+          }
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "silo",
+        "types"
+      ]
+    },
+    "LabelsScheme": {
+      "type": "object",
+      "additionalProperties": {}
+    },
+    "Layout": {
+      "type": "object",
+      "properties": {
+        "tab": {
+          "type": "string"
+        },
+        "order": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "hidden": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "managedBy": {
+          "type": "string",
+          "enum": [
+            "josh",
+            "ea"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "changedAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tab",
+        "order",
+        "hidden",
+        "managedBy",
+        "changedAt"
+      ]
+    },
+    "LayoutEaBody": {
+      "type": "object",
+      "properties": {
+        "order": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "hidden": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "order",
+        "hidden",
+        "reason"
+      ]
+    },
+    "LayoutPatch": {
+      "type": "object",
+      "properties": {
+        "tab": {
+          "type": "string"
+        },
+        "order": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "hidden": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "managedBy": {
+          "type": "string",
+          "enum": [
+            "josh",
+            "ea"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "changedAt": {
+          "type": "string"
+        }
+      }
+    },
+    "LearningItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "meta": {
+          "type": "string"
+        },
+        "focus": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "read",
+            "watch",
+            "listen"
+          ]
+        },
+        "body": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "meta",
+        "focus"
+      ]
+    },
+    "LearningList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/LearningItem"
+      }
+    },
+    "LifeComposite": {
+      "type": "object",
+      "properties": {
+        "goals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Goal"
+          }
+        },
+        "habits": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Habit"
+          }
+        },
+        "habitLogs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/HabitLog"
+          }
+        },
+        "people": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Person"
+          }
+        },
+        "money": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/MoneyRow"
+          }
+        },
+        "moneyDue": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/MoneyDue"
+          }
+        },
+        "learning": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/LearningItem"
+          }
+        }
+      },
+      "required": [
+        "goals",
+        "habits",
+        "habitLogs",
+        "people",
+        "money",
+        "moneyDue",
+        "learning"
+      ]
+    },
+    "LifeSectionConfig": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "thresholds": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        },
+        "showWithin": {
+          "type": "number"
+        },
+        "managedByEa": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "managedByEa"
+      ]
+    },
+    "LifeSectionConfigPatch": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "thresholds": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        },
+        "showWithin": {
+          "type": "number"
+        },
+        "managedByEa": {
+          "type": "boolean"
+        }
+      }
+    },
+    "LockResult": {
+      "type": "object",
+      "properties": {
+        "locked": {
+          "type": "boolean",
+          "enum": [
+            true
+          ]
+        },
+        "at": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "locked",
+        "at"
+      ]
+    },
+    "MemoryHistoryEntry": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "decision": {
+          "type": "string",
+          "enum": [
+            "accepted",
+            "edited",
+            "declined"
+          ]
+        },
+        "at": {
+          "type": "string"
+        },
+        "by": {
+          "type": "string"
+        },
+        "was": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "text",
+        "decision",
+        "at",
+        "by"
+      ]
+    },
+    "MemoryHistoryList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/MemoryHistoryEntry"
+      }
+    },
+    "MemoryHitRate": {
+      "type": "object",
+      "properties": {
+        "right": {
+          "type": "number"
+        },
+        "total": {
+          "type": "number"
+        },
+        "wrongSources": {
+          "type": "number"
+        },
+        "misses": {
+          "type": "number"
+        },
+        "rulesMisled": {
+          "type": "number"
+        },
+        "fixUrl": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "right",
+        "total",
+        "wrongSources",
+        "misses",
+        "rulesMisled"
+      ]
+    },
+    "MemoryProposal": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "by": {
+          "type": "string",
+          "enum": [
+            "Librarian"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "focus": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "open",
+            "accepted",
+            "edited"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "text",
+        "by",
+        "reason",
+        "focus",
+        "state"
+      ]
+    },
+    "MemoryProposalBody": {
+      "type": "object",
+      "properties": {
+        "verb": {
+          "type": "string",
+          "enum": [
+            "ok",
+            "edit"
+          ]
+        },
+        "text": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "verb"
+      ]
+    },
+    "MemoryProposalList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/MemoryProposal"
+      }
+    },
+    "MoneyComposite": {
+      "type": "object",
+      "properties": {
+        "rows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/MoneyRow"
+          }
+        },
+        "due": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/MoneyDue"
+          }
+        },
+        "feedNote": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "rows",
+        "due",
+        "feedNote"
+      ]
+    },
+    "MoneyDue": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "feed": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "text",
+        "date",
+        "feed"
+      ]
+    },
+    "MoneyRow": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "spent": {
+          "type": "number"
+        },
+        "budget": {
+          "type": "number"
+        },
+        "pct": {
+          "type": "number"
+        },
+        "over": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "category",
+        "spent",
+        "budget",
+        "pct",
+        "over"
+      ]
+    },
+    "NoContent": {
+      "type": "object",
+      "additionalProperties": false
+    },
+    "NotificationDevicesBody": {
+      "type": "object",
+      "properties": {
+        "devices": {
+          "type": "object",
+          "properties": {
+            "iphone": {
+              "type": "boolean"
+            },
+            "ipad": {
+              "type": "boolean"
+            },
+            "pc": {
+              "type": "boolean"
+            },
+            "telegram": {
+              "type": "boolean"
+            }
+          }
+        }
+      },
+      "required": [
+        "devices"
+      ]
+    },
+    "NotificationGroup": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "meta": {
+          "type": "string"
+        },
+        "devices": {
+          "type": "object",
+          "properties": {
+            "iphone": {
+              "type": "boolean"
+            },
+            "ipad": {
+              "type": "boolean"
+            },
+            "pc": {
+              "type": "boolean"
+            },
+            "telegram": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "iphone",
+            "ipad",
+            "pc",
+            "telegram"
+          ]
+        },
+        "locked": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "meta",
+        "devices"
+      ]
+    },
+    "NotificationGroupList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/NotificationGroup"
+      }
+    },
+    "NudgeResult": {
+      "type": "object",
+      "properties": {
+        "draftRef": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "draftRef"
+      ]
+    },
+    "Parameter": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/ParameterDef"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                }
+              ]
+            },
+            "refused": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "boolean"
+                    }
+                  ]
+                },
+                "at": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "value",
+                "at"
+              ]
+            }
+          },
+          "required": [
+            "value"
+          ]
+        }
+      ]
+    },
+    "ParameterChangeable": {
+      "type": "string",
+      "enum": [
+        "josh",
+        "josh-or-ea-proposal"
+      ]
+    },
+    "ParameterDef": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/components/schemas/ParameterKey"
+        },
+        "label": {
+          "type": "string"
+        },
+        "help": {
+          "type": "string"
+        },
+        "unit": {
+          "$ref": "#/components/schemas/ParameterUnit"
+        },
+        "default": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            }
+          ]
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "choices": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "usedBy": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "plannedFor": {
+          "type": "string"
+        },
+        "changeable": {
+          "$ref": "#/components/schemas/ParameterChangeable"
+        }
+      },
+      "required": [
+        "key",
+        "label",
+        "help",
+        "unit",
+        "default",
+        "usedBy",
+        "changeable"
+      ]
+    },
+    "ParameterKey": {
+      "type": "string",
+      "enum": [
+        "lock.afterMinutes",
+        "lock.lockOnHideTouch",
+        "tasks.rangeDays",
+        "files.recentDays",
+        "mic.autoStopSeconds",
+        "search.maxResults"
+      ]
+    },
+    "ParameterList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Parameter"
+      }
+    },
+    "ParameterProposal": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "current": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            }
+          ]
+        },
+        "proposed": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            }
+          ]
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "label",
+        "current",
+        "proposed",
+        "reason"
+      ]
+    },
+    "ParameterProposeBody": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            }
+          ]
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "value",
+        "reason"
+      ]
+    },
+    "ParameterUnit": {
+      "type": "string",
+      "enum": [
+        "minutes",
+        "seconds",
+        "days",
+        "count",
+        "boolean"
+      ]
+    },
+    "ParameterValueBody": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            }
+          ]
+        },
+        "offlineId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "Person": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "item": {
+          "type": "string"
+        },
+        "meta": {
+          "type": "string"
+        },
+        "verb": {
+          "$ref": "#/components/schemas/PersonVerb"
+        },
+        "focus": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "item",
+        "meta",
+        "verb",
+        "focus"
+      ]
+    },
+    "PersonActBody": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "nudge",
+            "done"
+          ]
+        },
+        "offlineId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "action"
+      ]
+    },
+    "PersonList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Person"
+      }
+    },
+    "PersonVerb": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "nudge",
+            "done"
+          ]
+        }
+      },
+      "required": [
+        "label",
+        "action"
+      ]
+    },
+    "Portal": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "purpose",
+        "url"
+      ]
+    },
+    "PortalList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Portal"
+      }
+    },
+    "PostActionBody": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "verb": {
+              "type": "string",
+              "enum": [
+                "approve"
+              ]
+            },
+            "option": {
+              "type": "number",
+              "enum": [
+                1,
+                2,
+                3
+              ]
+            }
+          },
+          "required": [
+            "verb"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "verb": {
+              "type": "string",
+              "enum": [
+                "revise"
+              ]
+            },
+            "revision": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "verb",
+            "revision"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "verb": {
+              "type": "string",
+              "enum": [
+                "later"
+              ]
+            },
+            "until": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "verb"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "verb": {
+              "type": "string",
+              "enum": [
+                "never"
+              ]
+            },
+            "rule": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "verb"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "verb": {
+              "type": "string",
+              "enum": [
+                "teach"
+              ]
+            },
+            "rule": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "verb",
+            "rule"
+          ]
+        }
+      ]
+    },
+    "PostActionResult": {
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/ActionItem"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "outbox_user_sends"
+              ]
+            }
+          },
+          "required": [
+            "status"
+          ]
+        }
+      ]
+    },
+    "PushSubscribeBody": {
+      "type": "object",
+      "properties": {
+        "device": {
+          "type": "string"
+        },
+        "endpoint": {
+          "type": "string"
+        },
+        "keys": {
+          "type": "object",
+          "properties": {
+            "p256dh": {
+              "type": "string"
+            },
+            "auth": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "p256dh",
+            "auth"
+          ]
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "device",
+        "endpoint",
+        "keys",
+        "groups"
+      ]
+    },
+    "QuietHours": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "type": "string"
+        },
+        "end": {
+          "type": "string"
+        },
+        "exceptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "needsYou": {
+          "type": "object",
+          "properties": {
+            "windows": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "string"
+                  },
+                  "end": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "start",
+                  "end"
+                ]
+              }
+            },
+            "respectsQuietHours": {
+              "type": "boolean"
+            },
+            "paused": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "windows",
+            "respectsQuietHours",
+            "paused"
+          ]
+        }
+      },
+      "required": [
+        "start",
+        "end",
+        "exceptions"
+      ]
+    },
+    "RecoverBody": {
+      "type": "object",
+      "properties": {
+        "recoveryKey": {
+          "type": "string"
+        },
+        "nonce": {
+          "type": "string"
+        },
+        "biometricAssertion": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "recoveryKey",
+        "nonce",
+        "biometricAssertion"
+      ]
+    },
+    "RecoverResult": {
+      "type": "object",
+      "properties": {
+        "restored": {
+          "type": "boolean",
+          "enum": [
+            true
+          ]
+        },
+        "agentsResuming": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "restored",
+        "agentsResuming"
+      ]
+    },
+    "RegisterDeviceBody": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "publicKey": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "publicKey"
+      ]
+    },
+    "Reply": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/LabelledMeta"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "toCaptureId": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            },
+            "sources": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "type": "string"
+                  },
+                  "ref": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "label",
+                  "ref"
+                ]
+              }
+            },
+            "at": {
+              "type": "string"
+            },
+            "read": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "toCaptureId",
+            "text",
+            "sources",
+            "at",
+            "read"
+          ]
+        }
+      ]
+    },
+    "ReplyList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Reply"
+      }
+    },
+    "ReplyPatch": {
+      "type": "object",
+      "properties": {
+        "read": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "read"
+      ]
+    },
+    "ReviewComposite": {
+      "type": "object",
+      "properties": {
+        "anchor": {
+          "type": "string"
+        },
+        "weekThatWas": {
+          "type": "object",
+          "properties": {
+            "decisions": {
+              "type": "number"
+            },
+            "promisesKept": {
+              "type": "number"
+            },
+            "timeByFocus": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "number"
+              }
+            }
+          },
+          "required": [
+            "decisions",
+            "promisesKept",
+            "timeByFocus"
+          ]
+        },
+        "weekAhead": {
+          "type": "object",
+          "properties": {
+            "habitsPct": {
+              "type": "number"
+            },
+            "spend": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "habitsPct",
+            "spend"
+          ]
+        },
+        "threePriorities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "anchor",
+        "weekThatWas",
+        "weekAhead",
+        "threePriorities"
+      ]
+    },
+    "Schedule": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "meta": {
+          "type": "string"
+        },
+        "cadence": {
+          "type": "string"
+        },
+        "paused": {
+          "type": "boolean"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "routine",
+            "ea_task"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "meta",
+        "cadence",
+        "paused",
+        "kind"
+      ]
+    },
+    "ScheduleList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Schedule"
+      }
+    },
+    "SearchGroup": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/components/schemas/SearchKind"
+        },
+        "count": {
+          "type": "number"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/SearchResult"
+          }
+        }
+      },
+      "required": [
+        "kind",
+        "count",
+        "items"
+      ]
+    },
+    "SearchKind": {
+      "type": "string",
+      "enum": [
+        "task",
+        "subtask",
+        "brain",
+        "reply",
+        "file",
+        "decision",
+        "issue",
+        "learning",
+        "goal",
+        "habit",
+        "person",
+        "rule"
+      ]
+    },
+    "SearchMatch": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "start": {
+          "type": "number"
+        },
+        "end": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "field",
+        "start",
+        "end"
+      ]
+    },
+    "SearchRef": {
+      "type": "object",
+      "properties": {
+        "tab": {
+          "type": "string"
+        },
+        "dialog": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tab",
+        "dialog",
+        "id"
+      ]
+    },
+    "SearchResponse": {
+      "type": "object",
+      "properties": {
+        "q": {
+          "type": "string"
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/SearchGroup"
+          }
+        },
+        "truncated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "q",
+        "groups",
+        "truncated"
+      ]
+    },
+    "SearchResult": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/components/schemas/SearchKind"
+        },
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "snippet": {
+          "type": "string"
+        },
+        "silo": {
+          "type": "string"
+        },
+        "sensitivity": {
+          "$ref": "#/components/schemas/Sensitivity"
+        },
+        "matches": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/SearchMatch"
+          }
+        },
+        "ref": {
+          "$ref": "#/components/schemas/SearchRef"
+        },
+        "at": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "title",
+        "snippet",
+        "silo",
+        "sensitivity",
+        "matches",
+        "ref"
+      ]
+    },
+    "SectionCatalogue": {
+      "type": "object",
+      "properties": {
+        "blocks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/SectionCatalogueBlock"
+          }
+        },
+        "verbs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/BlockVerbAction"
+          }
+        },
+        "sectionVerbs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/SectionVerbAction"
+          }
+        },
+        "endpoints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "feeds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "limits": {
+          "type": "object",
+          "properties": {
+            "blocks": {
+              "type": "number"
+            },
+            "string": {
+              "type": "number"
+            },
+            "items": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "blocks",
+            "string",
+            "items"
+          ]
+        }
+      },
+      "required": [
+        "blocks",
+        "verbs",
+        "sectionVerbs",
+        "endpoints",
+        "feeds",
+        "limits"
+      ]
+    },
+    "SectionCatalogueBlock": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "binds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "literal": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "type",
+        "binds",
+        "literal"
+      ]
+    },
+    "SectionConfig": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "tab": {
+          "type": "string",
+          "enum": [
+            "today",
+            "tasks",
+            "brain",
+            "life",
+            "agents"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "hint": {
+          "type": "string"
+        },
+        "column": {
+          "type": "number",
+          "enum": [
+            1,
+            2,
+            3
+          ]
+        },
+        "feed": {
+          "type": "string"
+        },
+        "badge": {
+          "type": "string",
+          "enum": [
+            "count"
+          ]
+        },
+        "configure": {
+          "type": "boolean"
+        },
+        "verb": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "action": {
+              "$ref": "#/components/schemas/SectionVerbAction"
+            }
+          },
+          "required": [
+            "label",
+            "action"
+          ]
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "endpoint": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "endpoint"
+          ]
+        },
+        "blocks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Block"
+          }
+        },
+        "version": {
+          "type": "number"
+        },
+        "state": {
+          "$ref": "#/components/schemas/SectionState"
+        },
+        "managedBy": {
+          "type": "string",
+          "enum": [
+            "josh",
+            "ea"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "changedAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "tab",
+        "title",
+        "column",
+        "source",
+        "blocks",
+        "version",
+        "state",
+        "managedBy",
+        "changedAt"
+      ]
+    },
+    "SectionConfigPatch": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "tab": {
+          "type": "string",
+          "enum": [
+            "today",
+            "tasks",
+            "brain",
+            "life",
+            "agents"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "hint": {
+          "type": "string"
+        },
+        "column": {
+          "type": "number",
+          "enum": [
+            1,
+            2,
+            3
+          ]
+        },
+        "feed": {
+          "type": "string"
+        },
+        "badge": {
+          "type": "string",
+          "enum": [
+            "count"
+          ]
+        },
+        "configure": {
+          "type": "boolean"
+        },
+        "verb": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "action": {
+              "$ref": "#/components/schemas/SectionVerbAction"
+            }
+          },
+          "required": [
+            "label",
+            "action"
+          ]
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "endpoint": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "endpoint"
+          ]
+        },
+        "blocks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Block"
+          }
+        },
+        "version": {
+          "type": "number"
+        },
+        "state": {
+          "$ref": "#/components/schemas/SectionState"
+        },
+        "managedBy": {
+          "type": "string",
+          "enum": [
+            "josh",
+            "ea"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "changedAt": {
+          "type": "string"
+        }
+      }
+    },
+    "SectionList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/SectionConfig"
+      }
+    },
+    "SectionProposeBody": {
+      "type": "object",
+      "properties": {
+        "config": {
+          "$ref": "#/components/schemas/SectionConfig"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "config",
+        "reason"
+      ]
+    },
+    "SectionState": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "active",
+        "retired"
+      ]
+    },
+    "SectionVerbAction": {
+      "type": "string",
+      "enum": [
+        "copy-csv",
+        "open-files-archive",
+        "open-learning-archive"
+      ]
+    },
+    "SecurityCheck": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "ok": {
+          "type": "boolean"
+        },
+        "lastRun": {
+          "type": "string"
+        },
+        "issueId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "status",
+        "ok"
+      ]
+    },
+    "SecurityCheckList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/SecurityCheck"
+      }
+    },
+    "Sensitivity": {
+      "type": "string",
+      "enum": [
+        "open",
+        "normal",
+        "sensitive"
+      ]
+    },
+    "Session": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/components/schemas/SessionUser"
+        },
+        "silos": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Silo"
+          }
+        },
+        "device": {
+          "$ref": "#/components/schemas/Device"
+        },
+        "devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Device"
+          }
+        },
+        "tokenTtlSeconds": {
+          "type": "number"
+        },
+        "lockedReason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "user",
+        "silos",
+        "device",
+        "devices",
+        "tokenTtlSeconds"
+      ]
+    },
+    "SessionUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "owner",
+            "partner",
+            "dev"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "role"
+      ]
+    },
+    "Silo": {
+      "type": "string",
+      "enum": [
+        "personal:josh",
+        "personal:joce",
+        "family1",
+        "family2",
+        "work"
+      ]
+    },
+    "Slicer": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "predicate": {
+          "$ref": "#/components/schemas/SlicerPredicate"
+        },
+        "fixed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "predicate"
+      ]
+    },
+    "SlicerList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Slicer"
+      }
+    },
+    "SlicerPredicate": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "dueWithin"
+              ]
+            },
+            "days": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "kind",
+            "days"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "status"
+              ]
+            },
+            "status": {
+              "$ref": "#/components/schemas/TaskStatus"
+            }
+          },
+          "required": [
+            "kind",
+            "status"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "delegated"
+              ]
+            }
+          },
+          "required": [
+            "kind"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "owner"
+              ]
+            },
+            "owner": {
+              "$ref": "#/components/schemas/TaskOwner"
+            }
+          },
+          "required": [
+            "kind",
+            "owner"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "repeat"
+              ]
+            }
+          },
+          "required": [
+            "kind"
+          ]
+        }
+      ]
+    },
+    "Spend": {
+      "type": "object",
+      "properties": {
+        "month": {
+          "type": "object",
+          "properties": {
+            "spent": {
+              "type": "number"
+            },
+            "cap": {
+              "type": "number"
+            },
+            "landing": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "spent",
+            "cap",
+            "landing"
+          ]
+        },
+        "caps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "agent": {
+                "type": "string"
+              },
+              "spent": {
+                "type": "number"
+              },
+              "cap": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "agent",
+              "spent",
+              "cap"
+            ]
+          }
+        }
+      },
+      "required": [
+        "month",
+        "caps"
+      ]
+    },
+    "Subtask": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "owner": {
+          "$ref": "#/components/schemas/TaskOwner"
+        },
+        "done": {
+          "type": "boolean"
+        },
+        "meta": {
+          "type": "string"
+        },
+        "completedAt": {
+          "type": "string"
+        },
+        "delegatedTo": {
+          "$ref": "#/components/schemas/TaskOwner"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "owner",
+        "done"
+      ]
+    },
+    "SubtaskBody": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "owner": {
+          "$ref": "#/components/schemas/TaskOwner"
+        },
+        "restoreId": {
+          "type": "string"
+        },
+        "attachmentIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "title",
+        "owner"
+      ]
+    },
+    "SubtaskPatch": {
+      "type": "object",
+      "properties": {
+        "done": {
+          "type": "boolean"
+        },
+        "title": {
+          "type": "string"
+        },
+        "owner": {
+          "$ref": "#/components/schemas/TaskOwner"
+        },
+        "delegatedTo": {
+          "$ref": "#/components/schemas/TaskOwner"
+        },
+        "offlineId": {
+          "type": "string"
+        }
+      }
+    },
+    "SyncStatus": {
+      "type": "object",
+      "properties": {
+        "queued": {
+          "type": "number"
+        },
+        "lastSyncAt": {
+          "type": "string"
+        },
+        "conflicts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "offlineId": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "localText": {
+                "type": "string"
+              },
+              "serverReason": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "offlineId",
+              "path",
+              "localText",
+              "serverReason"
+            ]
+          }
+        }
+      },
+      "required": [
+        "queued",
+        "conflicts"
+      ]
+    },
+    "Task": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/LabelledMeta"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "metaParts": {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "type": "string"
+                },
+                "cost": {
+                  "type": "string"
+                },
+                "note": {
+                  "type": "string"
+                }
+              }
+            },
+            "owner": {
+              "$ref": "#/components/schemas/TaskOwner"
+            },
+            "due": {
+              "type": "string"
+            },
+            "dueLabel": {
+              "type": "string"
+            },
+            "priority": {
+              "type": "string",
+              "enum": [
+                "low",
+                "medium",
+                "high"
+              ]
+            },
+            "status": {
+              "$ref": "#/components/schemas/TaskStatus"
+            },
+            "project": {
+              "type": "string"
+            },
+            "links": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "label",
+                  "url"
+                ]
+              }
+            },
+            "repeat": {
+              "type": "object",
+              "properties": {
+                "rule": {
+                  "type": "string"
+                },
+                "nextRun": {
+                  "type": "string"
+                },
+                "lastRunCost": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "rule"
+              ]
+            },
+            "delegated": {
+              "type": "object",
+              "properties": {
+                "to": {
+                  "type": "string",
+                  "enum": [
+                    "ea"
+                  ]
+                },
+                "progressPct": {
+                  "type": "number"
+                },
+                "cost": {
+                  "type": "number"
+                },
+                "state": {
+                  "$ref": "#/components/schemas/TaskDelegationState"
+                }
+              },
+              "required": [
+                "to",
+                "state"
+              ]
+            },
+            "startsAt": {
+              "type": "string"
+            },
+            "endsAt": {
+              "type": "string"
+            },
+            "completedAt": {
+              "type": "string"
+            },
+            "completedBy": {
+              "$ref": "#/components/schemas/TaskOwner"
+            },
+            "delegatedAt": {
+              "type": "string"
+            },
+            "goalId": {
+              "type": "string"
+            },
+            "column": {
+              "type": "string"
+            },
+            "work": {
+              "$ref": "#/components/schemas/Work"
+            },
+            "subtasks": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Subtask"
+              }
+            },
+            "report": {
+              "$ref": "#/components/schemas/TaskReport"
+            },
+            "activity": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "at": {
+                    "type": "string"
+                  },
+                  "actor": {
+                    "type": "string"
+                  },
+                  "text": {
+                    "type": "string"
+                  },
+                  "usageId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "at",
+                  "actor",
+                  "text"
+                ]
+              }
+            },
+            "waitingOn": {
+              "type": "object",
+              "properties": {
+                "who": {
+                  "type": "string"
+                },
+                "what": {
+                  "type": "string"
+                },
+                "days": {
+                  "type": "number"
+                },
+                "note": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "who",
+                "what",
+                "days"
+              ]
+            },
+            "twentyUrl": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "title",
+            "owner",
+            "priority",
+            "status",
+            "links",
+            "subtasks",
+            "activity"
+          ]
+        }
+      ]
+    },
+    "TaskCreateBody": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "labels": {
+              "$ref": "#/components/schemas/Labels"
+            },
+            "setAt": {
+              "type": "string"
+            },
+            "focus": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "metaParts": {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "type": "string"
+                },
+                "cost": {
+                  "type": "string"
+                },
+                "note": {
+                  "type": "string"
+                }
+              }
+            },
+            "owner": {
+              "$ref": "#/components/schemas/TaskOwner"
+            },
+            "due": {
+              "type": "string"
+            },
+            "dueLabel": {
+              "type": "string"
+            },
+            "priority": {
+              "type": "string",
+              "enum": [
+                "low",
+                "medium",
+                "high"
+              ]
+            },
+            "status": {
+              "$ref": "#/components/schemas/TaskStatus"
+            },
+            "project": {
+              "type": "string"
+            },
+            "links": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "label",
+                  "url"
+                ]
+              }
+            },
+            "repeat": {
+              "type": "object",
+              "properties": {
+                "rule": {
+                  "type": "string"
+                },
+                "nextRun": {
+                  "type": "string"
+                },
+                "lastRunCost": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "rule"
+              ]
+            },
+            "delegated": {
+              "type": "object",
+              "properties": {
+                "to": {
+                  "type": "string",
+                  "enum": [
+                    "ea"
+                  ]
+                },
+                "progressPct": {
+                  "type": "number"
+                },
+                "cost": {
+                  "type": "number"
+                },
+                "state": {
+                  "$ref": "#/components/schemas/TaskDelegationState"
+                }
+              },
+              "required": [
+                "to",
+                "state"
+              ]
+            },
+            "startsAt": {
+              "type": "string"
+            },
+            "endsAt": {
+              "type": "string"
+            },
+            "completedAt": {
+              "type": "string"
+            },
+            "completedBy": {
+              "$ref": "#/components/schemas/TaskOwner"
+            },
+            "delegatedAt": {
+              "type": "string"
+            },
+            "goalId": {
+              "type": "string"
+            },
+            "column": {
+              "type": "string"
+            },
+            "work": {
+              "$ref": "#/components/schemas/Work"
+            },
+            "report": {
+              "$ref": "#/components/schemas/TaskReport"
+            },
+            "waitingOn": {
+              "type": "object",
+              "properties": {
+                "who": {
+                  "type": "string"
+                },
+                "what": {
+                  "type": "string"
+                },
+                "days": {
+                  "type": "number"
+                },
+                "note": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "who",
+                "what",
+                "days"
+              ]
+            },
+            "twentyUrl": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "labels",
+            "setAt",
+            "focus",
+            "title",
+            "owner",
+            "priority",
+            "status",
+            "links"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "attachmentIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "offlineId": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "TaskDelegationState": {
+      "type": "string",
+      "enum": [
+        "acknowledged",
+        "questions",
+        "estimate",
+        "running",
+        "done"
+      ]
+    },
+    "TaskList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/Task"
+      }
+    },
+    "TaskOwner": {
+      "type": "string",
+      "enum": [
+        "josh",
+        "joce",
+        "ea",
+        "dev"
+      ]
+    },
+    "TaskPatch": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "labels": {
+              "$ref": "#/components/schemas/Labels"
+            },
+            "setAt": {
+              "type": "string"
+            },
+            "focus": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "metaParts": {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "type": "string"
+                },
+                "cost": {
+                  "type": "string"
+                },
+                "note": {
+                  "type": "string"
+                }
+              }
+            },
+            "owner": {
+              "$ref": "#/components/schemas/TaskOwner"
+            },
+            "due": {
+              "type": "string"
+            },
+            "dueLabel": {
+              "type": "string"
+            },
+            "priority": {
+              "type": "string",
+              "enum": [
+                "low",
+                "medium",
+                "high"
+              ]
+            },
+            "status": {
+              "$ref": "#/components/schemas/TaskStatus"
+            },
+            "project": {
+              "type": "string"
+            },
+            "links": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "label",
+                  "url"
+                ]
+              }
+            },
+            "repeat": {
+              "type": "object",
+              "properties": {
+                "rule": {
+                  "type": "string"
+                },
+                "nextRun": {
+                  "type": "string"
+                },
+                "lastRunCost": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "rule"
+              ]
+            },
+            "delegated": {
+              "type": "object",
+              "properties": {
+                "to": {
+                  "type": "string",
+                  "enum": [
+                    "ea"
+                  ]
+                },
+                "progressPct": {
+                  "type": "number"
+                },
+                "cost": {
+                  "type": "number"
+                },
+                "state": {
+                  "$ref": "#/components/schemas/TaskDelegationState"
+                }
+              },
+              "required": [
+                "to",
+                "state"
+              ]
+            },
+            "startsAt": {
+              "type": "string"
+            },
+            "endsAt": {
+              "type": "string"
+            },
+            "completedAt": {
+              "type": "string"
+            },
+            "completedBy": {
+              "$ref": "#/components/schemas/TaskOwner"
+            },
+            "delegatedAt": {
+              "type": "string"
+            },
+            "goalId": {
+              "type": "string"
+            },
+            "column": {
+              "type": "string"
+            },
+            "work": {
+              "$ref": "#/components/schemas/Work"
+            },
+            "subtasks": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Subtask"
+              }
+            },
+            "report": {
+              "$ref": "#/components/schemas/TaskReport"
+            },
+            "activity": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "at": {
+                    "type": "string"
+                  },
+                  "actor": {
+                    "type": "string"
+                  },
+                  "text": {
+                    "type": "string"
+                  },
+                  "usageId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "at",
+                  "actor",
+                  "text"
+                ]
+              }
+            },
+            "waitingOn": {
+              "type": "object",
+              "properties": {
+                "who": {
+                  "type": "string"
+                },
+                "what": {
+                  "type": "string"
+                },
+                "days": {
+                  "type": "number"
+                },
+                "note": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "who",
+                "what",
+                "days"
+              ]
+            },
+            "twentyUrl": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "offlineId": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "TaskReport": {
+      "type": "object",
+      "properties": {
+        "summary": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string"
+        },
+        "flagged": {
+          "type": "number"
+        },
+        "sources": {
+          "type": "number"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "open",
+            "accepted",
+            "revise"
+          ]
+        }
+      },
+      "required": [
+        "summary",
+        "body",
+        "flagged",
+        "sources",
+        "state"
+      ]
+    },
+    "TaskReportBody": {
+      "type": "object",
+      "properties": {
+        "verb": {
+          "type": "string",
+          "enum": [
+            "accept",
+            "revise",
+            "teach"
+          ]
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "verb"
+      ]
+    },
+    "TaskStatus": {
+      "type": "string",
+      "enum": [
+        "open",
+        "in_progress",
+        "waiting",
+        "done"
+      ]
+    },
+    "TodayComposite": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/Composite"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "dayName": {
+              "type": "string"
+            },
+            "dateLabel": {
+              "type": "string"
+            },
+            "todayDate": {
+              "type": "string"
+            },
+            "since": {
+              "type": "string"
+            },
+            "health": {
+              "type": "object",
+              "properties": {
+                "ok": {
+                  "type": "boolean"
+                },
+                "spend": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "ok",
+                "spend"
+              ]
+            },
+            "needsYou": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ActionItem"
+              }
+            },
+            "insight": {
+              "$ref": "#/components/schemas/Insight"
+            },
+            "calendar": {
+              "type": "object",
+              "properties": {
+                "events": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CalEvent"
+                  }
+                },
+                "gaps": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FreeGap"
+                  }
+                }
+              },
+              "required": [
+                "events",
+                "gaps"
+              ]
+            },
+            "tasks": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Task"
+              }
+            },
+            "glance": {
+              "type": "object",
+              "properties": {
+                "habits": {
+                  "type": "string"
+                },
+                "people": {
+                  "type": "number"
+                },
+                "money": {
+                  "type": "string"
+                },
+                "goals": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "habits",
+                "people",
+                "money",
+                "goals"
+              ]
+            },
+            "close": {
+              "type": "object",
+              "properties": {
+                "habits": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Habit"
+                  }
+                },
+                "logs": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HabitLog"
+                  }
+                },
+                "journalPrompt": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "habits",
+                "logs"
+              ]
+            },
+            "endLine": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "dayName",
+            "dateLabel",
+            "todayDate",
+            "since",
+            "health",
+            "needsYou",
+            "calendar",
+            "tasks",
+            "glance",
+            "close",
+            "endLine"
+          ]
+        }
+      ]
+    },
+    "TriageProposal": {
+      "type": "object",
+      "properties": {
+        "captureId": {
+          "type": "string"
+        },
+        "routing": {
+          "$ref": "#/components/schemas/CaptureRouting"
+        },
+        "why": {
+          "type": "string"
+        },
+        "extracted": {
+          "type": "object",
+          "properties": {
+            "words": {
+              "type": "number"
+            },
+            "from": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "words",
+            "from"
+          ]
+        }
+      },
+      "required": [
+        "captureId",
+        "routing",
+        "why"
+      ]
+    },
+    "UndoResult": {
+      "type": "object",
+      "properties": {
+        "undone": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "required": [
+        "undone"
+      ]
+    },
+    "Usage": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/LabelledMeta"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "taskId": {
+              "type": "string"
+            },
+            "subtaskId": {
+              "type": "string"
+            },
+            "agentId": {
+              "type": "string"
+            },
+            "runId": {
+              "type": "string"
+            },
+            "model": {
+              "type": "string"
+            },
+            "inputTokens": {
+              "type": "number"
+            },
+            "outputTokens": {
+              "type": "number"
+            },
+            "cacheReadTokens": {
+              "type": "number"
+            },
+            "costAud": {
+              "type": "number"
+            },
+            "at": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "taskId",
+            "agentId",
+            "model",
+            "inputTokens",
+            "outputTokens",
+            "costAud",
+            "at"
+          ]
+        }
+      ]
+    },
+    "UsageSummary": {
+      "type": "object",
+      "properties": {
+        "rows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Usage"
+          }
+        },
+        "totals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/UsageTotal"
+          }
+        },
+        "costAud": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "rows",
+        "totals",
+        "costAud"
+      ]
+    },
+    "UsageTotal": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "type": "string"
+        },
+        "inputTokens": {
+          "type": "number"
+        },
+        "outputTokens": {
+          "type": "number"
+        },
+        "costAud": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "model",
+        "inputTokens",
+        "outputTokens",
+        "costAud"
+      ]
+    },
+    "VoiceSettings": {
+      "type": "object",
+      "properties": {
+        "style": {
+          "type": "string"
+        },
+        "speed": {
+          "type": "number"
+        },
+        "brevity": {
+          "type": "string",
+          "enum": [
+            "brief",
+            "full"
+          ]
+        },
+        "readAloud": {
+          "type": "boolean"
+        },
+        "readBriefAt": {
+          "type": "string",
+          "nullable": true
+        },
+        "cueWord": {
+          "type": "string"
+        },
+        "endPhrases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "silenceTurnSeconds": {
+          "oneOf": [
+            {
+              "type": "number",
+              "enum": [
+                10
+              ]
+            },
+            {
+              "type": "number",
+              "enum": [
+                60
+              ]
+            }
+          ],
+          "nullable": true
+        },
+        "carMode": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "style",
+        "speed",
+        "readBriefAt"
+      ]
+    },
+    "WaitingList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/WaitingRow"
+      }
+    },
+    "WaitingRow": {
+      "type": "object",
+      "properties": {
+        "who": {
+          "type": "string"
+        },
+        "what": {
+          "type": "string"
+        },
+        "days": {
+          "type": "number"
+        },
+        "note": {
+          "type": "string"
+        },
+        "taskId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "who",
+        "what",
+        "days",
+        "taskId"
+      ]
+    },
+    "WebauthnBody": {
+      "$ref": "#/components/schemas/WebauthnCredential"
+    },
+    "WebauthnCredential": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "rawId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "public-key"
+          ]
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "clientDataJSON": {
+              "type": "string"
+            },
+            "attestationObject": {
+              "type": "string"
+            },
+            "authenticatorData": {
+              "type": "string"
+            },
+            "signature": {
+              "type": "string"
+            },
+            "userHandle": {
+              "type": "string"
+            },
+            "transports": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "clientExtensionResults": {
+          "type": "object",
+          "additionalProperties": {}
+        },
+        "authenticatorAttachment": {
+          "type": "string",
+          "enum": [
+            "platform",
+            "cross-platform"
+          ]
+        }
+      }
+    },
+    "WebauthnOptions": {
+      "type": "object",
+      "properties": {
+        "challenge": {
+          "type": "string"
+        },
+        "timeout": {
+          "type": "number"
+        },
+        "rp": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        },
+        "user": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "displayName": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "displayName"
+          ]
+        },
+        "pubKeyCredParams": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "alg": {
+                "type": "number"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "public-key"
+                ]
+              }
+            },
+            "required": [
+              "alg",
+              "type"
+            ]
+          }
+        },
+        "authenticatorSelection": {
+          "type": "object",
+          "properties": {
+            "authenticatorAttachment": {
+              "type": "string",
+              "enum": [
+                "platform",
+                "cross-platform"
+              ]
+            },
+            "userVerification": {
+              "type": "string",
+              "enum": [
+                "required",
+                "preferred",
+                "discouraged"
+              ]
+            }
+          }
+        },
+        "allowCredentials": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "public-key"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "type"
+            ]
+          }
+        },
+        "userVerification": {
+          "type": "string",
+          "enum": [
+            "required",
+            "preferred",
+            "discouraged"
+          ]
+        }
+      },
+      "required": [
+        "challenge"
+      ]
+    },
+    "WebauthnResult": {
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/WebauthnOptions"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "verified": {
+              "type": "boolean",
+              "enum": [
+                true
+              ]
+            }
+          },
+          "required": [
+            "verified"
+          ]
+        }
+      ]
+    },
+    "Work": {
+      "type": "object",
+      "properties": {
+        "agentId": {
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/components/schemas/WorkState"
+        },
+        "since": {
+          "type": "string"
+        },
+        "step": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "agentId",
+        "state",
+        "since"
+      ]
+    },
+    "WorkState": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "running",
+        "blocked",
+        "done"
+      ]
+    }
+  }
+}

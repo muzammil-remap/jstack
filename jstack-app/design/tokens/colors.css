@@ -1,0 +1,78 @@
+/* JSTACK colour tokens · light is the default; dark applies with [data-theme="dark"] or the system preference when data-theme is absent. */
+:root {
+  --js-ground: #EDEBE5;
+  --js-card: rgba(255,255,255,.58);
+  --js-card-border: rgba(255,255,255,.7);
+  --js-bar: rgba(255,255,255,.72);
+  --js-hairline: rgba(43,42,38,.08);
+  --js-ink: #2B2A26;
+  --js-muted: #7A776F;
+  --js-accent: #66798A;
+  --js-accent-soft: rgba(102,121,138,.14);
+  --js-accent-ink: #4A5E70;
+  --js-marker: #4F7FA8;
+  --js-ok: #4F8A6B;
+  --js-warn: #96702E;
+  --js-alert: #B0553F;
+  --js-selected: #2B2A26;
+  --js-on-selected: #F4F3EE;
+  --js-shadow: 0 8px 22px rgba(60,55,45,.07), 0 1px 3px rgba(60,55,45,.04);
+  --js-shadow-seg: 0 1px 3px rgba(60,55,45,.14);
+
+  /* semantic aliases */
+  --js-text-body: var(--js-ink);
+  --js-text-meta: var(--js-muted);
+  --js-text-label: var(--js-accent-ink);
+  --js-text-link: var(--js-accent-ink);
+  --js-text-expiry: var(--js-accent-ink);
+  --js-surface-page: var(--js-ground);
+  --js-surface-card: var(--js-card);
+  --js-surface-inset: var(--js-accent-soft);
+  --js-btn-primary-bg: var(--js-accent-soft);
+  --js-btn-primary-fg: var(--js-accent-ink);
+  --js-badge-bg: var(--js-marker);
+  --js-badge-fg: #FFFFFF;
+  --js-mic-live: var(--js-marker);
+}
+:root[data-theme="dark"] {
+  --js-ground: #191815;
+  --js-card: rgba(255,255,255,.08);
+  --js-card-border: rgba(255,255,255,.1);
+  --js-bar: rgba(40,38,34,.9);
+  --js-hairline: rgba(255,255,255,.08);
+  --js-ink: #ECE9E2;
+  --js-muted: #93908A;
+  --js-accent: #9AAEC0;
+  --js-accent-soft: rgba(154,174,192,.16);
+  --js-accent-ink: #B7C8D8;
+  --js-marker: #7FA9CF;
+  --js-ok: #7DBF9C;
+  --js-warn: #D2B067;
+  --js-alert: #D9785E;
+  --js-selected: #ECE9E2;
+  --js-on-selected: #191815;
+  --js-shadow: 0 12px 30px rgba(0,0,0,.45);
+  --js-shadow-seg: 0 1px 3px rgba(0,0,0,.4);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --js-ground: #191815;
+    --js-card: rgba(255,255,255,.08);
+    --js-card-border: rgba(255,255,255,.1);
+    --js-bar: rgba(40,38,34,.9);
+    --js-hairline: rgba(255,255,255,.08);
+    --js-ink: #ECE9E2;
+    --js-muted: #93908A;
+    --js-accent: #9AAEC0;
+    --js-accent-soft: rgba(154,174,192,.16);
+    --js-accent-ink: #B7C8D8;
+    --js-marker: #7FA9CF;
+    --js-ok: #7DBF9C;
+    --js-warn: #D2B067;
+    --js-alert: #D9785E;
+    --js-selected: #ECE9E2;
+    --js-on-selected: #191815;
+    --js-shadow: 0 12px 30px rgba(0,0,0,.45);
+    --js-shadow-seg: 0 1px 3px rgba(0,0,0,.4);
+  }
+}

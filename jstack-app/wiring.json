@@ -1,0 +1,2686 @@
+{
+  "generatedNote": "gen-wiring.mjs first cut (Q1) — store/section/component links are a source-scan heuristic; acceptance IDs are a text-match lead, not a guarantee",
+  "routes": [
+    {
+      "name": "getAuthNonce",
+      "method": "GET",
+      "path": "/auth/nonce",
+      "marker": "§4.1",
+      "handler": "session.getAuthNonce",
+      "group": "session",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "registerDevice",
+      "method": "POST",
+      "path": "/auth/register-device",
+      "marker": "§4.1",
+      "handler": "session.registerDevice",
+      "group": "session",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "refreshAuth",
+      "method": "POST",
+      "path": "/auth/refresh",
+      "marker": "§4.1",
+      "handler": "session.refreshAuth",
+      "group": "session",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "webauthnCeremony",
+      "method": "POST",
+      "path": "/auth/webauthn/{step}",
+      "marker": "§4.1",
+      "handler": "session.webauthnCeremony",
+      "group": "session",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getSession",
+      "method": "GET",
+      "path": "/session",
+      "marker": "§4.1",
+      "handler": "session.getSession",
+      "group": "session",
+      "storeActions": [
+        "session.loadSession",
+        "settings.loadDevices"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "revokeDevice",
+      "method": "POST",
+      "path": "/devices/{id}/revoke",
+      "marker": "§4.1",
+      "handler": "session.revokeDevice",
+      "group": "session",
+      "storeActions": [
+        "settings.revokeDevice"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postLock",
+      "method": "POST",
+      "path": "/lock",
+      "marker": "§4.1",
+      "handler": "session.postLock",
+      "group": "session",
+      "storeActions": [
+        "session.lock"
+      ],
+      "sections": [
+        "lock"
+      ],
+      "components": [
+        "EmergencyLock"
+      ],
+      "testIds": [
+        "agents-lock-section",
+        "caps-cancel",
+        "caps-dialog",
+        "caps-error-",
+        "caps-input-",
+        "caps-save",
+        "caps-spent-",
+        "emergency-cancel",
+        "emergency-confirm",
+        "emergency-lock-go",
+        "emergency-refused",
+        "hold-hint",
+        "hold-to-lock"
+      ],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postRecover",
+      "method": "POST",
+      "path": "/recover",
+      "marker": "§4.1",
+      "handler": "session.postRecover",
+      "group": "session",
+      "storeActions": [
+        "session.recover"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postPushSubscribe",
+      "method": "POST",
+      "path": "/push/subscribe",
+      "marker": "§4.13",
+      "handler": "session.postPushSubscribe",
+      "group": "session",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "deletePushSubscription",
+      "method": "DELETE",
+      "path": "/push/subscribe/{device}",
+      "marker": "§4.13",
+      "handler": "session.deletePushSubscription",
+      "group": "session",
+      "storeActions": [
+        "settings.revokeDevice"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getToday",
+      "method": "GET",
+      "path": "/today",
+      "marker": "§4.2",
+      "handler": "today.getToday",
+      "group": "today",
+      "storeActions": [
+        "today.load"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getReview",
+      "method": "GET",
+      "path": "/review",
+      "marker": "§4.2",
+      "handler": "today.getReview",
+      "group": "today",
+      "storeActions": [
+        "today.loadReview"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postJournal",
+      "method": "POST",
+      "path": "/journal",
+      "marker": "§4.2",
+      "handler": "today.postJournal",
+      "group": "today",
+      "storeActions": [
+        "today.submitJournal"
+      ],
+      "sections": [
+        "close"
+      ],
+      "components": [
+        "CloseDay"
+      ],
+      "testIds": [
+        "close-day",
+        "close-habit-",
+        "close-journal",
+        "journal-mic"
+      ],
+      "acceptanceIds": [
+        "TD-07"
+      ]
+    },
+    {
+      "name": "getActions",
+      "method": "GET",
+      "path": "/actions",
+      "marker": "§4.3",
+      "handler": "decisions.getActions",
+      "group": "decisions",
+      "storeActions": [
+        "agents.loadHistory",
+        "today.loadHistory"
+      ],
+      "sections": [
+        "history"
+      ],
+      "components": [
+        "History"
+      ],
+      "testIds": [
+        "agents-history-section",
+        "history-row-",
+        "history-search"
+      ],
+      "acceptanceIds": [
+        "CD-06"
+      ]
+    },
+    {
+      "name": "getAction",
+      "method": "GET",
+      "path": "/actions/{id}",
+      "marker": "§4.3",
+      "handler": "decisions.getAction",
+      "group": "decisions",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postActionVerb",
+      "method": "POST",
+      "path": "/actions/{id}",
+      "marker": "§4.3",
+      "handler": "decisions.postActionVerb",
+      "group": "decisions",
+      "storeActions": [
+        "today.answer"
+      ],
+      "sections": [
+        "needs"
+      ],
+      "components": [
+        "NeedsYou"
+      ],
+      "testIds": [
+        "decision-card-",
+        "decision-later-",
+        "decision-menu-",
+        "decision-more-",
+        "decision-never-",
+        "decision-primary-",
+        "decision-revise-",
+        "decision-source-",
+        "decision-teach-",
+        "needs-you",
+        "needs-you-endline",
+        "needs-you-held",
+        "needs-you-history",
+        "needs-you-waiting",
+        "waiting-expiry-",
+        "waiting-open-",
+        "waiting-row-",
+        "waiting-title-",
+        "waiting-type-",
+        "waiting-verb-"
+      ],
+      "acceptanceIds": [
+        "CB-05",
+        "CB-06",
+        "CB-07",
+        "CB-08",
+        "DC-01",
+        "OF-08"
+      ]
+    },
+    {
+      "name": "postActionUndo",
+      "method": "POST",
+      "path": "/actions/{id}/undo",
+      "marker": "§4.3",
+      "handler": "decisions.postActionUndo",
+      "group": "decisions",
+      "storeActions": [
+        "today.answer"
+      ],
+      "sections": [
+        "needs"
+      ],
+      "components": [
+        "NeedsYou"
+      ],
+      "testIds": [
+        "decision-card-",
+        "decision-later-",
+        "decision-menu-",
+        "decision-more-",
+        "decision-never-",
+        "decision-primary-",
+        "decision-revise-",
+        "decision-source-",
+        "decision-teach-",
+        "needs-you",
+        "needs-you-endline",
+        "needs-you-held",
+        "needs-you-history",
+        "needs-you-waiting",
+        "waiting-expiry-",
+        "waiting-open-",
+        "waiting-row-",
+        "waiting-title-",
+        "waiting-type-",
+        "waiting-verb-"
+      ],
+      "acceptanceIds": [
+        "CB-05",
+        "CB-06",
+        "CB-07",
+        "CB-08",
+        "DC-01",
+        "OF-08"
+      ]
+    },
+    {
+      "name": "postActionReopen",
+      "method": "POST",
+      "path": "/actions/{id}/reopen",
+      "marker": "§4.3, A-31",
+      "handler": "decisions.postActionReopen",
+      "group": "decisions",
+      "storeActions": [
+        "agents.reopenAction"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "putActionDraft",
+      "method": "PUT",
+      "path": "/actions/{id}/draft",
+      "marker": "§4.3",
+      "handler": "decisions.putActionDraft",
+      "group": "decisions",
+      "storeActions": [
+        "today.saveDraft"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postInsightAction",
+      "method": "POST",
+      "path": "/insights/{id}",
+      "marker": "§4.3",
+      "handler": "decisions.postInsightAction",
+      "group": "decisions",
+      "storeActions": [
+        "today.answerInsight"
+      ],
+      "sections": [
+        "insights"
+      ],
+      "components": [
+        "Insight"
+      ],
+      "testIds": [
+        "insight",
+        "insight-block",
+        "insight-card",
+        "insight-dictate",
+        "insight-leave",
+        "insight-result",
+        "insight-talk",
+        "reply-card",
+        "reply-card-dismiss",
+        "reply-card-open",
+        "reply-card-text",
+        "reply-card-when"
+      ],
+      "acceptanceIds": [
+        "TD-03"
+      ]
+    },
+    {
+      "name": "getCalendar",
+      "method": "GET",
+      "path": "/calendar",
+      "marker": "§4.4",
+      "handler": "calendar.getCalendar",
+      "group": "calendar",
+      "storeActions": [
+        "today.loadCalendar",
+        "today.loadThreeDay"
+      ],
+      "sections": [
+        "allcal",
+        "calendar"
+      ],
+      "components": [
+        "CalendarGrid",
+        "CalendarList"
+      ],
+      "testIds": [
+        "cal-day-",
+        "cal-event-",
+        "cal-hour-rule-",
+        "cal-legend",
+        "cal-legend-now",
+        "cal-list-3day",
+        "cal-list-google",
+        "cal-list-today",
+        "cal-month",
+        "cal-now-line",
+        "cal-range",
+        "cal-seg",
+        "cal-track-",
+        "calendar-grid",
+        "calendar-list"
+      ],
+      "acceptanceIds": [
+        "CG-01",
+        "TD-04"
+      ]
+    },
+    {
+      "name": "getEvent",
+      "method": "GET",
+      "path": "/events/{id}",
+      "marker": "§4.4",
+      "handler": "calendar.getEvent",
+      "group": "calendar",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "patchEvent",
+      "method": "PATCH",
+      "path": "/events/{id}",
+      "marker": "§4.4",
+      "handler": "calendar.patchEvent",
+      "group": "calendar",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "deleteEvent",
+      "method": "DELETE",
+      "path": "/events/{id}",
+      "marker": "§4.4",
+      "handler": "calendar.deleteEvent",
+      "group": "calendar",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postCalendarPropose",
+      "method": "POST",
+      "path": "/calendar/propose",
+      "marker": "§4.4",
+      "handler": "calendar.postCalendarPropose",
+      "group": "calendar",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getTasksWaiting",
+      "method": "GET",
+      "path": "/tasks/waiting",
+      "marker": "§4.5",
+      "handler": "tasks.getTasksWaiting",
+      "group": "tasks",
+      "storeActions": [
+        "tasks.loadWaiting"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getColumns",
+      "method": "GET",
+      "path": "/tasks/columns",
+      "marker": "§4.15",
+      "handler": "tasks.getColumns",
+      "group": "tasks",
+      "storeActions": [
+        "tasks.loadColumns"
+      ],
+      "sections": [
+        "views"
+      ],
+      "components": [
+        "TaskViews"
+      ],
+      "testIds": [
+        "active-filter-",
+        "active-filter-columns-",
+        "board",
+        "board-card-",
+        "board-card-menu-",
+        "board-columns-twenty",
+        "board-lane-",
+        "board-menu-",
+        "board-meta-",
+        "board-more-lanes",
+        "board-move-",
+        "board-open-",
+        "board-refresh",
+        "board-scroll",
+        "board-tag-",
+        "done-search",
+        "gantt",
+        "gantt-axis",
+        "gantt-bar-",
+        "gantt-card",
+        "gantt-day-",
+        "gantt-fit",
+        "gantt-handle-end-",
+        "gantt-handle-start-",
+        "gantt-lane-",
+        "gantt-lane-unscheduled",
+        "gantt-mini-from",
+        "gantt-mini-to",
+        "gantt-month-",
+        "gantt-open-twenty",
+        "gantt-scroll",
+        "gantt-today",
+        "gantt-unscheduled",
+        "gantt-unscheduled-",
+        "gantt-week-",
+        "gantt-weekend-",
+        "slicer-",
+        "slicer-edit-open",
+        "task-accept-",
+        "task-active-filters",
+        "task-cb-",
+        "task-clear",
+        "task-filter-open",
+        "task-footer",
+        "task-links-sep",
+        "task-list",
+        "task-open-",
+        "task-range",
+        "task-range-hint",
+        "task-row-",
+        "task-seg",
+        "task-slicers",
+        "task-tag-",
+        "task-views",
+        "testID",
+        "work-mark-",
+        "work-pulse-"
+      ],
+      "acceptanceIds": [
+        "FS-02",
+        "MU-03",
+        "OF-03",
+        "TK-01"
+      ]
+    },
+    {
+      "name": "getTasks",
+      "method": "GET",
+      "path": "/tasks",
+      "marker": "§4.5",
+      "handler": "tasks.getTasks",
+      "group": "tasks",
+      "storeActions": [
+        "tasks.load",
+        "tasks.loadOpenCount",
+        "tasks.loadProjects",
+        "usage.load"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getTask",
+      "method": "GET",
+      "path": "/tasks/{id}",
+      "marker": "§4.5",
+      "handler": "tasks.getTask",
+      "group": "tasks",
+      "storeActions": [
+        "taskCard.completeTask",
+        "taskCard.loadDetailTask",
+        "taskEdits.patchSubtask",
+        "taskEdits.patchTask"
+      ],
+      "sections": [
+        "views",
+        "waiting"
+      ],
+      "components": [
+        "TaskViews",
+        "WaitingOn"
+      ],
+      "testIds": [
+        "active-filter-",
+        "active-filter-columns-",
+        "board",
+        "board-card-",
+        "board-card-menu-",
+        "board-columns-twenty",
+        "board-lane-",
+        "board-menu-",
+        "board-meta-",
+        "board-more-lanes",
+        "board-move-",
+        "board-open-",
+        "board-refresh",
+        "board-scroll",
+        "board-tag-",
+        "done-search",
+        "gantt",
+        "gantt-axis",
+        "gantt-bar-",
+        "gantt-card",
+        "gantt-day-",
+        "gantt-fit",
+        "gantt-handle-end-",
+        "gantt-handle-start-",
+        "gantt-lane-",
+        "gantt-lane-unscheduled",
+        "gantt-mini-from",
+        "gantt-mini-to",
+        "gantt-month-",
+        "gantt-open-twenty",
+        "gantt-scroll",
+        "gantt-today",
+        "gantt-unscheduled",
+        "gantt-unscheduled-",
+        "gantt-week-",
+        "gantt-weekend-",
+        "nudge-",
+        "slicer-",
+        "slicer-edit-open",
+        "task-accept-",
+        "task-active-filters",
+        "task-cb-",
+        "task-clear",
+        "task-filter-open",
+        "task-footer",
+        "task-links-sep",
+        "task-list",
+        "task-open-",
+        "task-range",
+        "task-range-hint",
+        "task-row-",
+        "task-seg",
+        "task-slicers",
+        "task-tag-",
+        "task-views",
+        "testID",
+        "waiting-on",
+        "work-mark-",
+        "work-pulse-"
+      ],
+      "acceptanceIds": [
+        "FS-02",
+        "MU-03",
+        "OF-03",
+        "TK-01",
+        "TK-11"
+      ]
+    },
+    {
+      "name": "postTask",
+      "method": "POST",
+      "path": "/tasks",
+      "marker": "§4.5",
+      "handler": "tasks.postTask",
+      "group": "tasks",
+      "storeActions": [
+        "taskCard.createTask"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "patchTask",
+      "method": "PATCH",
+      "path": "/tasks/{id}",
+      "marker": "§4.5",
+      "handler": "tasks.patchTask",
+      "group": "tasks",
+      "storeActions": [
+        "taskEdits.patchTask"
+      ],
+      "sections": [
+        "views",
+        "waiting"
+      ],
+      "components": [
+        "TaskViews",
+        "WaitingOn"
+      ],
+      "testIds": [
+        "active-filter-",
+        "active-filter-columns-",
+        "board",
+        "board-card-",
+        "board-card-menu-",
+        "board-columns-twenty",
+        "board-lane-",
+        "board-menu-",
+        "board-meta-",
+        "board-more-lanes",
+        "board-move-",
+        "board-open-",
+        "board-refresh",
+        "board-scroll",
+        "board-tag-",
+        "done-search",
+        "gantt",
+        "gantt-axis",
+        "gantt-bar-",
+        "gantt-card",
+        "gantt-day-",
+        "gantt-fit",
+        "gantt-handle-end-",
+        "gantt-handle-start-",
+        "gantt-lane-",
+        "gantt-lane-unscheduled",
+        "gantt-mini-from",
+        "gantt-mini-to",
+        "gantt-month-",
+        "gantt-open-twenty",
+        "gantt-scroll",
+        "gantt-today",
+        "gantt-unscheduled",
+        "gantt-unscheduled-",
+        "gantt-week-",
+        "gantt-weekend-",
+        "nudge-",
+        "slicer-",
+        "slicer-edit-open",
+        "task-accept-",
+        "task-active-filters",
+        "task-cb-",
+        "task-clear",
+        "task-filter-open",
+        "task-footer",
+        "task-links-sep",
+        "task-list",
+        "task-open-",
+        "task-range",
+        "task-range-hint",
+        "task-row-",
+        "task-seg",
+        "task-slicers",
+        "task-tag-",
+        "task-views",
+        "testID",
+        "waiting-on",
+        "work-mark-",
+        "work-pulse-"
+      ],
+      "acceptanceIds": [
+        "FS-02",
+        "MU-03",
+        "OF-03",
+        "TK-01",
+        "TK-11"
+      ]
+    },
+    {
+      "name": "putTask",
+      "method": "PUT",
+      "path": "/tasks/{id}",
+      "marker": "§4.5",
+      "handler": "tasks.putTask",
+      "group": "tasks",
+      "storeActions": [
+        "taskCard.completeTask"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postSubtask",
+      "method": "POST",
+      "path": "/tasks/{id}/subtasks",
+      "marker": "§4.5",
+      "handler": "tasks.postSubtask",
+      "group": "tasks",
+      "storeActions": [
+        "taskEdits.addSubtask",
+        "taskEdits.deleteSubtask"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "patchSubtask",
+      "method": "PATCH",
+      "path": "/tasks/{id}/subtasks/{sid}",
+      "marker": "§4.15",
+      "handler": "tasks.patchSubtask",
+      "group": "tasks",
+      "storeActions": [
+        "taskEdits.patchSubtask"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "deleteSubtask",
+      "method": "DELETE",
+      "path": "/tasks/{id}/subtasks/{sid}",
+      "marker": "§4.15",
+      "handler": "tasks.deleteSubtask",
+      "group": "tasks",
+      "storeActions": [
+        "taskEdits.deleteSubtask"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postTaskDelegate",
+      "method": "POST",
+      "path": "/tasks/{id}/delegate",
+      "marker": "§4.5",
+      "handler": "tasks.postTaskDelegate",
+      "group": "tasks",
+      "storeActions": [
+        "taskCard.delegate"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postTaskReport",
+      "method": "POST",
+      "path": "/tasks/{id}/report",
+      "marker": "§4.5",
+      "handler": "tasks.postTaskReport",
+      "group": "tasks",
+      "storeActions": [
+        "taskCard.submitReport"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postTaskComplete",
+      "method": "POST",
+      "path": "/tasks/{id}/complete",
+      "marker": "§4.15",
+      "handler": "tasks.postTaskComplete",
+      "group": "tasks",
+      "storeActions": [
+        "taskCard.completeTask"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postTaskAccept",
+      "method": "POST",
+      "path": "/tasks/{id}/accept",
+      "marker": "§4.5",
+      "handler": "tasks.postTaskAccept",
+      "group": "tasks",
+      "storeActions": [
+        "taskCard.acceptTask"
+      ],
+      "sections": [
+        "views"
+      ],
+      "components": [
+        "TaskViews"
+      ],
+      "testIds": [
+        "active-filter-",
+        "active-filter-columns-",
+        "board",
+        "board-card-",
+        "board-card-menu-",
+        "board-columns-twenty",
+        "board-lane-",
+        "board-menu-",
+        "board-meta-",
+        "board-more-lanes",
+        "board-move-",
+        "board-open-",
+        "board-refresh",
+        "board-scroll",
+        "board-tag-",
+        "done-search",
+        "gantt",
+        "gantt-axis",
+        "gantt-bar-",
+        "gantt-card",
+        "gantt-day-",
+        "gantt-fit",
+        "gantt-handle-end-",
+        "gantt-handle-start-",
+        "gantt-lane-",
+        "gantt-lane-unscheduled",
+        "gantt-mini-from",
+        "gantt-mini-to",
+        "gantt-month-",
+        "gantt-open-twenty",
+        "gantt-scroll",
+        "gantt-today",
+        "gantt-unscheduled",
+        "gantt-unscheduled-",
+        "gantt-week-",
+        "gantt-weekend-",
+        "slicer-",
+        "slicer-edit-open",
+        "task-accept-",
+        "task-active-filters",
+        "task-cb-",
+        "task-clear",
+        "task-filter-open",
+        "task-footer",
+        "task-links-sep",
+        "task-list",
+        "task-open-",
+        "task-range",
+        "task-range-hint",
+        "task-row-",
+        "task-seg",
+        "task-slicers",
+        "task-tag-",
+        "task-views",
+        "testID",
+        "work-mark-",
+        "work-pulse-"
+      ],
+      "acceptanceIds": [
+        "FS-02",
+        "MU-03",
+        "OF-03",
+        "TK-01"
+      ]
+    },
+    {
+      "name": "postTaskNudge",
+      "method": "POST",
+      "path": "/tasks/{id}/nudge",
+      "marker": "§4.5",
+      "handler": "tasks.postTaskNudge",
+      "group": "tasks",
+      "storeActions": [
+        "tasks.nudge"
+      ],
+      "sections": [
+        "waiting"
+      ],
+      "components": [
+        "WaitingOn"
+      ],
+      "testIds": [
+        "gantt",
+        "gantt-axis",
+        "gantt-bar-",
+        "gantt-day-",
+        "gantt-fit",
+        "gantt-handle-end-",
+        "gantt-handle-start-",
+        "gantt-lane-",
+        "gantt-lane-unscheduled",
+        "gantt-mini-from",
+        "gantt-mini-to",
+        "gantt-month-",
+        "gantt-open-twenty",
+        "gantt-scroll",
+        "gantt-today",
+        "gantt-unscheduled",
+        "gantt-unscheduled-",
+        "gantt-week-",
+        "gantt-weekend-",
+        "nudge-",
+        "waiting-on",
+        "work-mark-",
+        "work-pulse-"
+      ],
+      "acceptanceIds": [
+        "TK-11"
+      ]
+    },
+    {
+      "name": "getSlicers",
+      "method": "GET",
+      "path": "/slicers",
+      "marker": "§4.15",
+      "handler": "tasks.getSlicers",
+      "group": "tasks",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "putSlicers",
+      "method": "PUT",
+      "path": "/slicers",
+      "marker": "§4.15",
+      "handler": "tasks.putSlicers",
+      "group": "tasks",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getTaskUsage",
+      "method": "GET",
+      "path": "/tasks/{id}/usage",
+      "marker": "§4.15",
+      "handler": "usage.getTaskUsage",
+      "group": "tasks",
+      "storeActions": [
+        "usage.loadTask"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getTaskFiles",
+      "method": "GET",
+      "path": "/tasks/{id}/files",
+      "marker": "§4.15",
+      "handler": "files.getTaskFiles",
+      "group": "tasks",
+      "storeActions": [
+        "files.loadTaskFiles"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postUndo",
+      "method": "POST",
+      "path": "/undo",
+      "marker": "§4.5",
+      "handler": "tasks.postUndo",
+      "group": "tasks",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "putLabels",
+      "method": "PUT",
+      "path": "/{noun}/{id}/labels",
+      "marker": "§4.5",
+      "handler": "tasks.putLabels",
+      "group": "tasks",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postBrainDump",
+      "method": "POST",
+      "path": "/brain/dump",
+      "marker": "§4.6",
+      "handler": "brain.postBrainDump",
+      "group": "brain",
+      "storeActions": [
+        "brain.dump"
+      ],
+      "sections": [
+        "entry"
+      ],
+      "components": [
+        "Entry"
+      ],
+      "testIds": [
+        "brain-dictate",
+        "brain-entry",
+        "brain-entry-section",
+        "dump-attach",
+        "dump-attachments",
+        "dump-input",
+        "dump-mic",
+        "dump-mic-error",
+        "dump-mic-notice",
+        "dump-send",
+        "talk-with-ea"
+      ],
+      "acceptanceIds": [
+        "FS-02",
+        "OF-02",
+        "TD-02",
+        "UN-03"
+      ]
+    },
+    {
+      "name": "getBrainLatest",
+      "method": "GET",
+      "path": "/brain/latest",
+      "marker": "§4.6",
+      "handler": "brain.getBrainLatest",
+      "group": "brain",
+      "storeActions": [
+        "brain.load"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "putBrainItem",
+      "method": "PUT",
+      "path": "/brain/items/{id}",
+      "marker": "§4.6",
+      "handler": "brain.putBrainItem",
+      "group": "brain",
+      "storeActions": [
+        "brain.saveItemEdit"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getBrainItemVersions",
+      "method": "GET",
+      "path": "/brain/items/{id}/versions",
+      "marker": "§4.6",
+      "handler": "brain.getBrainItemVersions",
+      "group": "brain",
+      "storeActions": [
+        "brain.openItemEditor"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getBrainItem",
+      "method": "GET",
+      "path": "/brain/items/{id}",
+      "marker": "§4.18",
+      "handler": "brain.getBrainItem",
+      "group": "brain",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getBrainSearch",
+      "method": "GET",
+      "path": "/brain/search",
+      "marker": "§4.6",
+      "handler": "brain.getBrainSearch",
+      "group": "brain",
+      "storeActions": [
+        "brain.find"
+      ],
+      "sections": [
+        "find"
+      ],
+      "components": [
+        "Find"
+      ],
+      "testIds": [
+        "brain-find",
+        "find-answer",
+        "find-input",
+        "find-results",
+        "find-row-",
+        "find-sens-",
+        "testID"
+      ],
+      "acceptanceIds": [
+        "BR-04"
+      ]
+    },
+    {
+      "name": "getSearch",
+      "method": "GET",
+      "path": "/search",
+      "marker": "§4.19",
+      "handler": "search.getSearch",
+      "group": "search",
+      "storeActions": [
+        "search.run"
+      ],
+      "sections": [
+        "find"
+      ],
+      "components": [
+        "Find"
+      ],
+      "testIds": [
+        "brain-find",
+        "find-answer",
+        "find-input",
+        "find-results",
+        "find-row-",
+        "find-sens-",
+        "testID"
+      ],
+      "acceptanceIds": [
+        "BR-04"
+      ]
+    },
+    {
+      "name": "getMemoryHistory",
+      "method": "GET",
+      "path": "/memory/history",
+      "marker": "§4.18",
+      "handler": "brain.getMemoryHistory",
+      "group": "brain",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getReplies",
+      "method": "GET",
+      "path": "/brain/replies",
+      "marker": "§4.18",
+      "handler": "brain.getReplies",
+      "group": "brain",
+      "storeActions": [
+        "replies.load"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "patchReply",
+      "method": "PATCH",
+      "path": "/brain/replies/{id}",
+      "marker": "§4.18",
+      "handler": "brain.patchReply",
+      "group": "brain",
+      "storeActions": [
+        "replies.markRead"
+      ],
+      "sections": [
+        "insights"
+      ],
+      "components": [
+        "Insight"
+      ],
+      "testIds": [
+        "insight",
+        "insight-block",
+        "insight-card",
+        "insight-dictate",
+        "insight-leave",
+        "insight-result",
+        "insight-talk",
+        "reply-card",
+        "reply-card-dismiss",
+        "reply-card-open",
+        "reply-card-text",
+        "reply-card-when"
+      ],
+      "acceptanceIds": [
+        "TD-03"
+      ]
+    },
+    {
+      "name": "getChatThread",
+      "method": "GET",
+      "path": "/chat/thread",
+      "marker": "§4.18",
+      "handler": "brain.getChatThread",
+      "group": "brain",
+      "storeActions": [
+        "dictate.loadChatThread"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postChat",
+      "method": "POST",
+      "path": "/chat",
+      "marker": "§4.6",
+      "handler": "brain.postChat",
+      "group": "brain",
+      "storeActions": [
+        "dictate.sendChat"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getMemoryProposals",
+      "method": "GET",
+      "path": "/memory/proposals",
+      "marker": "§4.6",
+      "handler": "brain.getMemoryProposals",
+      "group": "brain",
+      "storeActions": [
+        "brain.load"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postMemoryProposal",
+      "method": "POST",
+      "path": "/memory/proposals/{id}",
+      "marker": "§4.6",
+      "handler": "brain.postMemoryProposal",
+      "group": "brain",
+      "storeActions": [
+        "brain.resolveProposal"
+      ],
+      "sections": [
+        "memory"
+      ],
+      "components": [
+        "Memory"
+      ],
+      "testIds": [
+        "brain-memory-section",
+        "hitrate-fix",
+        "memory-all",
+        "memory-empty",
+        "memory-hitrate",
+        "proposal-",
+        "proposal-edit-",
+        "proposal-ok-"
+      ],
+      "acceptanceIds": [
+        "BR-06",
+        "BR-07",
+        "BR-08",
+        "BR-09"
+      ]
+    },
+    {
+      "name": "undoMemoryProposal",
+      "method": "POST",
+      "path": "/memory/proposals/{id}/undo",
+      "marker": "§4.6, A-26",
+      "handler": "brain.undoMemoryProposal",
+      "group": "brain",
+      "storeActions": [
+        "brain.resolveProposal"
+      ],
+      "sections": [
+        "memory"
+      ],
+      "components": [
+        "Memory"
+      ],
+      "testIds": [
+        "brain-memory-section",
+        "hitrate-fix",
+        "memory-all",
+        "memory-empty",
+        "memory-hitrate",
+        "proposal-",
+        "proposal-edit-",
+        "proposal-ok-"
+      ],
+      "acceptanceIds": [
+        "BR-06",
+        "BR-07",
+        "BR-08",
+        "BR-09"
+      ]
+    },
+    {
+      "name": "getMemoryHitRate",
+      "method": "GET",
+      "path": "/memory/hitrate",
+      "marker": "§4.6",
+      "handler": "brain.getMemoryHitRate",
+      "group": "brain",
+      "storeActions": [
+        "brain.load"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getLife",
+      "method": "GET",
+      "path": "/life",
+      "marker": "§4.7",
+      "handler": "life.getLife",
+      "group": "life",
+      "storeActions": [
+        "life.load"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getGoals",
+      "method": "GET",
+      "path": "/goals",
+      "marker": "§4.20",
+      "handler": "life.getGoals",
+      "group": "life",
+      "storeActions": [
+        "lifeEdits.archiveGoal",
+        "lifeEdits.saveGoals"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "putGoals",
+      "method": "PUT",
+      "path": "/goals",
+      "marker": "§4.20",
+      "handler": "life.putGoals",
+      "group": "life",
+      "storeActions": [
+        "lifeEdits.putGoals"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getGoalsHistory",
+      "method": "GET",
+      "path": "/goals/history",
+      "marker": "§4.20",
+      "handler": "life.getGoalsHistory",
+      "group": "life",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getGoal",
+      "method": "GET",
+      "path": "/goals/{id}",
+      "marker": "§4.20",
+      "handler": "life.getGoal",
+      "group": "life",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getHabits",
+      "method": "GET",
+      "path": "/habits",
+      "marker": "§4.7",
+      "handler": "life.getHabits",
+      "group": "life",
+      "storeActions": [
+        "life.load",
+        "life.loadArchivedHabits",
+        "lifeEdits.saveHabits"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "putHabits",
+      "method": "PUT",
+      "path": "/habits",
+      "marker": "§4.20",
+      "handler": "life.putHabits",
+      "group": "life",
+      "storeActions": [
+        "lifeEdits.saveHabits"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postHabitLog",
+      "method": "POST",
+      "path": "/habits/{id}/log",
+      "marker": "§4.7",
+      "handler": "life.postHabitLog",
+      "group": "life",
+      "storeActions": [
+        "life.logHabit"
+      ],
+      "sections": [
+        "close",
+        "habits"
+      ],
+      "components": [
+        "CloseDay",
+        "Habits"
+      ],
+      "testIds": [
+        "close-day",
+        "close-habit-",
+        "close-journal",
+        "habits-edit",
+        "habits-queued",
+        "habits-trends",
+        "journal-mic",
+        "life-habit-",
+        "life-habit-row-",
+        "life-habits-section",
+        "life-week-",
+        "testID"
+      ],
+      "acceptanceIds": [
+        "LF-02",
+        "TD-07"
+      ]
+    },
+    {
+      "name": "getHabitStats",
+      "method": "GET",
+      "path": "/habits/stats",
+      "marker": "§4.7",
+      "handler": "life.getHabitStats",
+      "group": "life",
+      "storeActions": [
+        "life.loadHabitStats"
+      ],
+      "sections": [
+        "habits"
+      ],
+      "components": [
+        "Habits"
+      ],
+      "testIds": [
+        "habits-edit",
+        "habits-queued",
+        "habits-trends",
+        "life-habit-",
+        "life-habit-row-",
+        "life-habits-section",
+        "life-week-",
+        "testID"
+      ],
+      "acceptanceIds": [
+        "LF-02"
+      ]
+    },
+    {
+      "name": "getPeople",
+      "method": "GET",
+      "path": "/people",
+      "marker": "§4.7",
+      "handler": "life.getPeople",
+      "group": "life",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postPersonAct",
+      "method": "POST",
+      "path": "/people/{id}/act",
+      "marker": "§4.7",
+      "handler": "life.postPersonAct",
+      "group": "life",
+      "storeActions": [
+        "life.actPerson"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getMoney",
+      "method": "GET",
+      "path": "/money",
+      "marker": "§4.7",
+      "handler": "life.getMoney",
+      "group": "life",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getHealth",
+      "method": "GET",
+      "path": "/health",
+      "marker": "§4.7",
+      "handler": "life.getHealth",
+      "group": "life",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getLearning",
+      "method": "GET",
+      "path": "/learning",
+      "marker": "§4.7",
+      "handler": "life.getLearning",
+      "group": "life",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getLearningItem",
+      "method": "GET",
+      "path": "/learning/{id}",
+      "marker": "§4.20",
+      "handler": "life.getLearningItem",
+      "group": "life",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getLifeSectionConfig",
+      "method": "GET",
+      "path": "/life/sections/{id}/config",
+      "marker": "§4.7",
+      "handler": "life.getLifeSectionConfig",
+      "group": "life",
+      "storeActions": [
+        "life.loadSectionConfig"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "putLifeSectionConfig",
+      "method": "PUT",
+      "path": "/life/sections/{id}/config",
+      "marker": "§4.7",
+      "handler": "life.putLifeSectionConfig",
+      "group": "life",
+      "storeActions": [
+        "life.saveSectionConfig"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "revertLifeSectionConfig",
+      "method": "POST",
+      "path": "/life/sections/{id}/config/revert",
+      "marker": "§4.7",
+      "handler": "life.revertLifeSectionConfig",
+      "group": "life",
+      "storeActions": [
+        "life.revertSectionConfig"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getAgents",
+      "method": "GET",
+      "path": "/agents",
+      "marker": "§4.15",
+      "handler": "agents.getAgents",
+      "group": "agents",
+      "storeActions": [
+        "tasks.loadRoster"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getAgentSummary",
+      "method": "GET",
+      "path": "/agents/summary",
+      "marker": "§4.8",
+      "handler": "agents.getAgentSummary",
+      "group": "agents",
+      "storeActions": [
+        "agents.load",
+        "agents.loadDerived"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getAgentSpend",
+      "method": "GET",
+      "path": "/agents/spend",
+      "marker": "§4.8",
+      "handler": "agents.getAgentSpend",
+      "group": "agents",
+      "storeActions": [
+        "agents.load"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "putAgentCaps",
+      "method": "PUT",
+      "path": "/agents/caps",
+      "marker": "§4.8",
+      "handler": "agents.putAgentCaps",
+      "group": "agents",
+      "storeActions": [
+        "agents.putCaps"
+      ],
+      "sections": [
+        "lock"
+      ],
+      "components": [
+        "EmergencyLock"
+      ],
+      "testIds": [
+        "agents-lock-section",
+        "caps-cancel",
+        "caps-dialog",
+        "caps-error-",
+        "caps-input-",
+        "caps-save",
+        "caps-spent-",
+        "emergency-cancel",
+        "emergency-confirm",
+        "emergency-lock-go",
+        "emergency-refused",
+        "hold-hint",
+        "hold-to-lock"
+      ],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getPortals",
+      "method": "GET",
+      "path": "/portals",
+      "marker": "§4.8",
+      "handler": "agents.getPortals",
+      "group": "agents",
+      "storeActions": [
+        "agents.load"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getAgentIssues",
+      "method": "GET",
+      "path": "/agents/issues",
+      "marker": "§4.8",
+      "handler": "agents.getAgentIssues",
+      "group": "agents",
+      "storeActions": [
+        "agents.load"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getAgentIssue",
+      "method": "GET",
+      "path": "/agents/issues/{id}",
+      "marker": "§4.21",
+      "handler": "agents.getAgentIssue",
+      "group": "agents",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postAgentIssueAction",
+      "method": "POST",
+      "path": "/agents/issues/{id}",
+      "marker": "§4.8",
+      "handler": "agents.postAgentIssueAction",
+      "group": "agents",
+      "storeActions": [
+        "agents.actIssue"
+      ],
+      "sections": [
+        "needseyes",
+        "feed"
+      ],
+      "components": [
+        "Issues",
+        "Feed"
+      ],
+      "testIds": [
+        "agents-feed-section",
+        "agents-issues-section",
+        "feed-",
+        "feed-renew-",
+        "issue-",
+        "issue-act-",
+        "issues-all",
+        "issues-empty"
+      ],
+      "acceptanceIds": [
+        "AG-04"
+      ]
+    },
+    {
+      "name": "undoAgentIssueAction",
+      "method": "POST",
+      "path": "/agents/issues/{id}/undo",
+      "marker": "§4.8, A-32",
+      "handler": "agents.undoAgentIssueAction",
+      "group": "agents",
+      "storeActions": [
+        "agents.actIssue"
+      ],
+      "sections": [
+        "needseyes",
+        "feed"
+      ],
+      "components": [
+        "Issues",
+        "Feed"
+      ],
+      "testIds": [
+        "agents-feed-section",
+        "agents-issues-section",
+        "feed-",
+        "feed-renew-",
+        "issue-",
+        "issue-act-",
+        "issues-all",
+        "issues-empty"
+      ],
+      "acceptanceIds": [
+        "AG-04"
+      ]
+    },
+    {
+      "name": "getAgentFeed",
+      "method": "GET",
+      "path": "/agents/feed",
+      "marker": "§4.8",
+      "handler": "agents.getAgentFeed",
+      "group": "agents",
+      "storeActions": [
+        "agents.load",
+        "agents.loadDerived"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getSecurityChecks",
+      "method": "GET",
+      "path": "/security/checks",
+      "marker": "§4.8",
+      "handler": "agents.getSecurityChecks",
+      "group": "agents",
+      "storeActions": [
+        "agents.load",
+        "agents.loadDerived"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postSecurityCheckRun",
+      "method": "POST",
+      "path": "/security/checks/{id}/run",
+      "marker": "§4.8",
+      "handler": "agents.postSecurityCheckRun",
+      "group": "agents",
+      "storeActions": [
+        "agents.runCheck"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getAgentRuns",
+      "method": "GET",
+      "path": "/agents/runs",
+      "marker": "§4.8",
+      "handler": "agents.getAgentRuns",
+      "group": "agents",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getUsage",
+      "method": "GET",
+      "path": "/usage",
+      "marker": "§4.16",
+      "handler": "usage.getUsage",
+      "group": "agents",
+      "storeActions": [
+        "usage.load"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getFiles",
+      "method": "GET",
+      "path": "/files",
+      "marker": "§4.17",
+      "handler": "files.getFiles",
+      "group": "files",
+      "storeActions": [
+        "files.loadArchive",
+        "files.loadRecent"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getFile",
+      "method": "GET",
+      "path": "/files/{id}",
+      "marker": "§4.17",
+      "handler": "files.getFile",
+      "group": "files",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postFile",
+      "method": "POST",
+      "path": "/files",
+      "marker": "§4.17",
+      "handler": "files.postFile",
+      "group": "files",
+      "storeActions": [
+        "files.upload"
+      ],
+      "sections": [
+        "entry"
+      ],
+      "components": [
+        "Entry"
+      ],
+      "testIds": [
+        "brain-dictate",
+        "brain-entry",
+        "brain-entry-section",
+        "dump-attach",
+        "dump-attachments",
+        "dump-input",
+        "dump-mic",
+        "dump-mic-error",
+        "dump-mic-notice",
+        "dump-send",
+        "talk-with-ea"
+      ],
+      "acceptanceIds": [
+        "FS-02",
+        "OF-02",
+        "TD-02",
+        "UN-03"
+      ]
+    },
+    {
+      "name": "getNotificationGroups",
+      "method": "GET",
+      "path": "/settings/notifications",
+      "marker": "§4.9",
+      "handler": "settings.getNotificationGroups",
+      "group": "settings",
+      "storeActions": [
+        "settings.load"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "putNotificationGroup",
+      "method": "PUT",
+      "path": "/settings/notifications/{id}",
+      "marker": "§4.9",
+      "handler": "settings.putNotificationGroup",
+      "group": "settings",
+      "storeActions": [
+        "settings.putNotificationGroup"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getQuietHours",
+      "method": "GET",
+      "path": "/settings/quiet-hours",
+      "marker": "§4.9",
+      "handler": "settings.getQuietHours",
+      "group": "settings",
+      "storeActions": [
+        "settings.load"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "putQuietHours",
+      "method": "PUT",
+      "path": "/settings/quiet-hours",
+      "marker": "§4.9",
+      "handler": "settings.putQuietHours",
+      "group": "settings",
+      "storeActions": [
+        "settings.putQuietHours"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getSchedules",
+      "method": "GET",
+      "path": "/schedules",
+      "marker": "§4.9",
+      "handler": "settings.getSchedules",
+      "group": "settings",
+      "storeActions": [
+        "agents.load",
+        "agents.loadSchedules"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postScheduleRun",
+      "method": "POST",
+      "path": "/schedules/{id}/run",
+      "marker": "§4.9",
+      "handler": "settings.postScheduleRun",
+      "group": "settings",
+      "storeActions": [
+        "agents.runSchedule"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postSchedulePause",
+      "method": "POST",
+      "path": "/schedules/{id}/pause",
+      "marker": "§4.9",
+      "handler": "settings.postSchedulePause",
+      "group": "settings",
+      "storeActions": [
+        "agents.pauseSchedule"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postScheduleResume",
+      "method": "POST",
+      "path": "/schedules/{id}/resume",
+      "marker": "§4.9",
+      "handler": "settings.postScheduleResume",
+      "group": "settings",
+      "storeActions": [
+        "agents.resumeSchedule"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getAutonomy",
+      "method": "GET",
+      "path": "/settings/autonomy",
+      "marker": "§4.9",
+      "handler": "settings.getAutonomy",
+      "group": "settings",
+      "storeActions": [
+        "settings.load"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "putAutonomy",
+      "method": "PUT",
+      "path": "/settings/autonomy",
+      "marker": "§4.9",
+      "handler": "settings.putAutonomy",
+      "group": "settings",
+      "storeActions": [
+        "settings.putAutonomy"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getAutonomyRules",
+      "method": "GET",
+      "path": "/settings/autonomy/rules",
+      "marker": "§4.22",
+      "handler": "settings.getAutonomyRules",
+      "group": "settings",
+      "storeActions": [
+        "rules.load"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "putAutonomyRules",
+      "method": "PUT",
+      "path": "/settings/autonomy/rules",
+      "marker": "§4.22",
+      "handler": "settings.putAutonomyRules",
+      "group": "settings",
+      "storeActions": [
+        "rules.put"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postAutonomyPropose",
+      "method": "POST",
+      "path": "/settings/autonomy/propose",
+      "marker": "§4.22",
+      "handler": "settings.postAutonomyPropose",
+      "group": "settings",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getVoiceSettings",
+      "method": "GET",
+      "path": "/settings/voice",
+      "marker": "§4.22",
+      "handler": "settings.getVoiceSettings",
+      "group": "settings",
+      "storeActions": [
+        "settings.load"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "putVoiceSettings",
+      "method": "PUT",
+      "path": "/settings/voice",
+      "marker": "§4.9",
+      "handler": "settings.putVoiceSettings",
+      "group": "settings",
+      "storeActions": [
+        "settings.putVoice"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getFocuses",
+      "method": "GET",
+      "path": "/focuses",
+      "marker": "§4.9",
+      "handler": "settings.getFocuses",
+      "group": "settings",
+      "storeActions": [
+        "settings.load"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "putFocuses",
+      "method": "PUT",
+      "path": "/focuses",
+      "marker": "§4.9",
+      "handler": "settings.putFocuses",
+      "group": "settings",
+      "storeActions": [
+        "settings.putFocuses"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getAppLayout",
+      "method": "GET",
+      "path": "/layout/app",
+      "marker": "§4.9",
+      "handler": "settings.getAppLayout",
+      "group": "settings",
+      "storeActions": [
+        "settings.load"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "putAppLayout",
+      "method": "PUT",
+      "path": "/layout/app",
+      "marker": "§4.9",
+      "handler": "settings.putAppLayout",
+      "group": "settings",
+      "storeActions": [
+        "settings.putAppLayout"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "revertLayout",
+      "method": "POST",
+      "path": "/layout/{tab}/revert",
+      "marker": "§4.9",
+      "handler": "settings.revertLayout",
+      "group": "settings",
+      "storeActions": [
+        "settings.revertLayout"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postLayoutEa",
+      "method": "POST",
+      "path": "/layout/{tab}/ea",
+      "marker": "§4.9",
+      "handler": "settings.postLayoutEa",
+      "group": "settings",
+      "storeActions": [
+        "settings.postLayoutEa"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getLayout",
+      "method": "GET",
+      "path": "/layout/{tab}",
+      "marker": "§4.9",
+      "handler": "settings.getLayout",
+      "group": "settings",
+      "storeActions": [
+        "settings.loadLayout"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "putLayout",
+      "method": "PUT",
+      "path": "/layout/{tab}",
+      "marker": "§4.9",
+      "handler": "settings.putLayout",
+      "group": "settings",
+      "storeActions": [
+        "settings.putLayout"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getParameters",
+      "method": "GET",
+      "path": "/parameters",
+      "marker": "§4.14",
+      "handler": "parameters.getParameters",
+      "group": "settings",
+      "storeActions": [
+        "parameters.load"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "proposeParameter",
+      "method": "POST",
+      "path": "/parameters/propose",
+      "marker": "§4.14",
+      "handler": "parameters.proposeParameter",
+      "group": "settings",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "putParameter",
+      "method": "PUT",
+      "path": "/parameters/{key}",
+      "marker": "§4.14",
+      "handler": "parameters.putParameter",
+      "group": "settings",
+      "storeActions": [
+        "parameters.setParameter"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getSyncStatus",
+      "method": "GET",
+      "path": "/sync/status",
+      "marker": "§4.12",
+      "handler": "settings.getSyncStatus",
+      "group": "settings",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getCapabilities",
+      "method": "GET",
+      "path": "/capabilities",
+      "marker": "§4.9",
+      "handler": "settings.getCapabilities",
+      "group": "settings",
+      "storeActions": [
+        "settings.load",
+        "sync.probe"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "postExport",
+      "method": "POST",
+      "path": "/export",
+      "marker": "§4.9",
+      "handler": "settings.postExport",
+      "group": "settings",
+      "storeActions": [
+        "settings.exportAll"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getLabelsScheme",
+      "method": "GET",
+      "path": "/labels/scheme",
+      "marker": "§4.9",
+      "handler": "settings.getLabelsScheme",
+      "group": "settings",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getLabelAudit",
+      "method": "GET",
+      "path": "/labels/audit",
+      "marker": "§4.9",
+      "handler": "settings.getLabelAudit",
+      "group": "settings",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getSectionCatalogue",
+      "method": "GET",
+      "path": "/sections/catalogue",
+      "marker": "§4.10",
+      "handler": "sections.getSectionCatalogue",
+      "group": "sections",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getSections",
+      "method": "GET",
+      "path": "/sections",
+      "marker": "§4.10",
+      "handler": "sections.getSections",
+      "group": "sections",
+      "storeActions": [
+        "sections.load"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "getSection",
+      "method": "GET",
+      "path": "/sections/{id}",
+      "marker": "§4.10",
+      "handler": "sections.getSection",
+      "group": "sections",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "putSection",
+      "method": "PUT",
+      "path": "/sections/{id}",
+      "marker": "§4.10",
+      "handler": "sections.putSection",
+      "group": "sections",
+      "storeActions": [
+        "sections.save"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "revertSection",
+      "method": "POST",
+      "path": "/sections/{id}/revert",
+      "marker": "§4.10",
+      "handler": "sections.revertSection",
+      "group": "sections",
+      "storeActions": [
+        "sections.revert"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "deleteSection",
+      "method": "DELETE",
+      "path": "/sections/{id}",
+      "marker": "§4.10",
+      "handler": "sections.deleteSection",
+      "group": "sections",
+      "storeActions": [],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    },
+    {
+      "name": "proposeSection",
+      "method": "POST",
+      "path": "/sections/propose",
+      "marker": "§4.10",
+      "handler": "sections.proposeSection",
+      "group": "sections",
+      "storeActions": [
+        "sections.propose"
+      ],
+      "sections": [],
+      "components": [],
+      "testIds": [],
+      "acceptanceIds": []
+    }
+  ],
+  "orphans": [
+    "getAuthNonce",
+    "registerDevice",
+    "refreshAuth",
+    "webauthnCeremony",
+    "postPushSubscribe",
+    "getAction",
+    "getEvent",
+    "patchEvent",
+    "deleteEvent",
+    "postCalendarPropose",
+    "getSlicers",
+    "putSlicers",
+    "postUndo",
+    "putLabels",
+    "getBrainItem",
+    "getMemoryHistory",
+    "getGoalsHistory",
+    "getGoal",
+    "getPeople",
+    "getMoney",
+    "getHealth",
+    "getLearning",
+    "getLearningItem",
+    "getAgentIssue",
+    "getAgentRuns",
+    "getFile",
+    "postAutonomyPropose",
+    "proposeParameter",
+    "getSyncStatus",
+    "getLabelsScheme",
+    "getLabelAudit",
+    "getSectionCatalogue",
+    "getSection",
+    "deleteSection"
+  ]
+}

@@ -1,0 +1,65 @@
+{
+ "id": "LV-02",
+ "note": "The committed decomposition of wiring.json's `orphans` list, written at row T2-1. `orphans` means one thing only: no STORE ACTION calls this adapter method. That is not the same as 'nothing calls it', and LV-02 is written against the second claim. `tools/orphan-callers.mjs` splits the list; `tests/unit/wiringOrphans.test.ts` compares the split to this file, so a route that loses its last caller becomes a red test rather than a line nobody reads.",
+ "reading": "READ orphanCount AS: the size of wiring.json's `orphans` list, which means 'no STORE ACTION calls this adapter method' and NOT 'nothing calls it'. Of the 34: 14 are called by a component directly, 2 are reached only by the test rig, and 18 have no caller anywhere. EIGHTEEN is the number `HANDOVER.md` §2, `KNOWN_GAPS.md` and `QA_REPORT_v22.md` quote, and all eighteen predate tag v2.1 — V2.2 added 26 routes and wired all 26. Added at A-6 because a reader opens this file on 34 and the documents said nineteen, and nothing at the top said why both were right (planner, 13 Sep); the count moved to eighteen at WP-G (LL-03): `components/life/LearningAllDialog.tsx` calls `getLearning` directly for the section's 'all' archive, moving it from uncalled into componentCalled.",
+ "measuredAt": "2026-09-14T00:00:00.000Z",
+ "orphanCount": 34,
+ "componentCalled": {
+  "count": 14,
+  "why": "A real caller outside the definition sites, but not a store action. Not a gap. Worth knowing, because a route reached only from a component bypasses the store's cache, its optimistic update and its queue handling — O-1's detail dialogs are the reason most of these exist.",
+  "methods": [
+   "getAuthNonce",
+   "refreshAuth",
+   "postPushSubscribe",
+   "getAction",
+   "getSlicers",
+   "putSlicers",
+   "getBrainItem",
+   "getMemoryHistory",
+   "getGoalsHistory",
+   "getGoal",
+   "getLearning",
+   "getLearningItem",
+   "getAgentIssue",
+   "getFile"
+  ]
+ },
+ "rigOnly": {
+  "count": 2,
+  "why": "Reachable only from lib/testHook.ts. Both are PROPOSE routes: the app never calls them because the proposal originates server-side (the EA proposes; the person approves). The rig is how the e2e drives a proposal into existence. Named here rather than left to look like an oversight.",
+  "methods": [
+   "postAutonomyPropose",
+   "proposeParameter"
+  ]
+ },
+ "uncalled": {
+  "count": 18,
+  "why": "No caller anywhere in app/ components/ layout/ lib/ stores/ data/. These are the KNOWN_GAPS.md rows for Stage 6 A-5. EVERY ONE PREDATES TAG v2.1 — checked with `git show v2.1:jstack-app/data/routes.ts`. V2.2 added 26 routes and not one of them is here, which is the LV-02 claim that matters: this build wired what it added.",
+  "methods": [
+   "registerDevice",
+   "webauthnCeremony",
+   "getEvent",
+   "patchEvent",
+   "deleteEvent",
+   "postCalendarPropose",
+   "postUndo",
+   "putLabels",
+   "getPeople",
+   "getMoney",
+   "getHealth",
+   "getAgentRuns",
+   "getSyncStatus",
+   "getLabelsScheme",
+   "getLabelAudit",
+   "getSectionCatalogue",
+   "getSection",
+   "deleteSection"
+  ],
+  "notesWorthCarrying": {
+   "getGoals": "LG-1's tree anchor said the row would give `GET /goals` its callers. It gave them to `GET /goals/{id}` (the detail) and `GET /goals/history` (the all-goals list); `/goals` itself still has none, because the tab reads goals through the `/life` composite. The row's outcome and its plan differ, and nothing said so until this measurement.",
+   "getSyncStatus": "SY-1 built the dot on `lib/syncStatus.ts`, a PURE SELECTOR over state the app already holds (seam 9). It never needed the server's own status, so the route stayed uncalled by design rather than by omission.",
+   "getAgentRuns": "T-4 derives `AgentRun.cost` from the `Usage` rows so there is one cost record (rule 16); the runs list is fed from that composite.",
+   "calendarCrud": "getEvent, patchEvent, deleteEvent and postCalendarPropose are the V2.1 calendar write surface. Today's calendar is read-only in the app."
+  }
+ }
+}

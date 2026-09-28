@@ -1,0 +1,271 @@
+{
+  "note": "DM-02 per BUGLOG A-11: text pairs + component cues are hard bars; decorative separators reported at true values (DM-01 pins token values).",
+  "renderedPairs": [
+    {
+      "pair": "rgb(238, 241, 233) on rgb(37, 43, 31)",
+      "sample": "today:needs-n1",
+      "count": 85,
+      "ratio": 12.74,
+      "bar": 7,
+      "pass": true
+    },
+    {
+      "pair": "rgb(166, 174, 155) on rgb(37, 43, 31)",
+      "sample": "today:status-pill",
+      "count": 70,
+      "ratio": 6.34,
+      "bar": 4.5,
+      "pass": true
+    },
+    {
+      "pair": "rgb(187, 219, 197) on rgb(47, 64, 52)",
+      "sample": "today:needs-n1",
+      "count": 50,
+      "ratio": 7.38,
+      "bar": 4.5,
+      "pass": true
+    },
+    {
+      "pair": "rgb(238, 241, 233) on rgb(50, 57, 40)",
+      "sample": "today:secondary-n1",
+      "count": 50,
+      "ratio": 10.5,
+      "bar": 7,
+      "pass": true
+    },
+    {
+      "pair": "rgb(21, 24, 15) on rgb(159, 205, 172)",
+      "sample": "today:approve-n1",
+      "count": 45,
+      "ratio": 10.09,
+      "bar": null,
+      "pass": null
+    },
+    {
+      "pair": "rgb(166, 174, 155) on rgb(27, 31, 23)",
+      "sample": "today:greeting-sub",
+      "count": 40,
+      "ratio": 7.29,
+      "bar": 4.5,
+      "pass": true
+    },
+    {
+      "pair": "rgb(166, 174, 155) on rgb(50, 57, 40)",
+      "sample": "today:needs-n1",
+      "count": 35,
+      "ratio": 5.22,
+      "bar": 4.5,
+      "pass": true
+    },
+    {
+      "pair": "rgb(154, 160, 145) on rgb(37, 43, 31)",
+      "sample": "today:cal-today",
+      "count": 30,
+      "ratio": 5.41,
+      "bar": null,
+      "pass": null
+    },
+    {
+      "pair": "rgb(226, 178, 98) on rgb(27, 31, 23)",
+      "sample": "today:needs-eyebrow",
+      "count": 15,
+      "ratio": 8.59,
+      "bar": 4.5,
+      "pass": true
+    },
+    {
+      "pair": "rgb(27, 31, 23) on rgb(238, 241, 233)",
+      "sample": "today:talk-ea",
+      "count": 10,
+      "ratio": 14.66,
+      "bar": null,
+      "pass": null
+    },
+    {
+      "pair": "rgb(195, 168, 206) on rgb(51, 42, 56)",
+      "sample": "today:insight-i1",
+      "count": 10,
+      "ratio": 6.42,
+      "bar": null,
+      "pass": null
+    },
+    {
+      "pair": "rgb(159, 205, 172) on rgb(37, 43, 31)",
+      "sample": "today:schedule-ev1",
+      "count": 10,
+      "ratio": 8.17,
+      "bar": 4.5,
+      "pass": true
+    },
+    {
+      "pair": "rgb(154, 160, 145) on rgb(27, 31, 23)",
+      "sample": "today:news-footline",
+      "count": 10,
+      "ratio": 6.22,
+      "bar": null,
+      "pass": null
+    },
+    {
+      "pair": "rgb(238, 241, 233) on rgb(27, 31, 23)",
+      "sample": "today:greeting-day",
+      "count": 5,
+      "ratio": 14.66,
+      "bar": 7,
+      "pass": true
+    },
+    {
+      "pair": "rgb(166, 174, 155) on rgb(44, 50, 37)",
+      "sample": "today:needs-n1",
+      "count": 5,
+      "ratio": 5.75,
+      "bar": 4.5,
+      "pass": true
+    },
+    {
+      "pair": "rgb(144, 184, 206) on rgb(37, 49, 58)",
+      "sample": "today:needs-n3",
+      "count": 5,
+      "ratio": 6.29,
+      "bar": null,
+      "pass": null
+    },
+    {
+      "pair": "rgb(226, 178, 98) on rgb(63, 54, 32)",
+      "sample": "today:needs-n4",
+      "count": 5,
+      "ratio": 6.12,
+      "bar": 4.5,
+      "pass": true
+    },
+    {
+      "pair": "rgb(0, 0, 0) on rgb(37, 43, 31)",
+      "sample": "today:memory-button",
+      "count": 5,
+      "ratio": 1.44,
+      "bar": null,
+      "pass": null
+    },
+    {
+      "pair": "rgb(226, 178, 98) on rgb(37, 43, 31)",
+      "sample": "today:memory-state",
+      "count": 5,
+      "ratio": 7.46,
+      "bar": 4.5,
+      "pass": true
+    },
+    {
+      "pair": "rgb(185, 191, 175) on rgb(37, 43, 31)",
+      "sample": "today:memory-button",
+      "count": 5,
+      "ratio": 7.71,
+      "bar": null,
+      "pass": null
+    },
+    {
+      "pair": "rgb(216, 144, 120) on rgb(37, 43, 31)",
+      "sample": "today:prep-ev3",
+      "count": 5,
+      "ratio": 5.67,
+      "bar": null,
+      "pass": null
+    },
+    {
+      "pair": "rgb(255, 255, 255) on rgb(159, 205, 172)",
+      "sample": "today:tl-ev1",
+      "count": 5,
+      "ratio": 1.78,
+      "bar": null,
+      "pass": null
+    },
+    {
+      "pair": "rgba(255, 255, 255, 0.85) on rgb(159, 205, 172)",
+      "sample": "today:tl-ev1",
+      "count": 5,
+      "ratio": 1.78,
+      "bar": null,
+      "pass": null
+    },
+    {
+      "pair": "rgb(255, 255, 255) on rgb(192, 138, 62)",
+      "sample": "today:tl-ev2",
+      "count": 5,
+      "ratio": 3.02,
+      "bar": null,
+      "pass": null
+    },
+    {
+      "pair": "rgba(255, 255, 255, 0.85) on rgb(192, 138, 62)",
+      "sample": "today:tl-ev2",
+      "count": 5,
+      "ratio": 3.02,
+      "bar": null,
+      "pass": null
+    },
+    {
+      "pair": "rgb(255, 255, 255) on rgb(144, 184, 206)",
+      "sample": "today:tl-ev3",
+      "count": 5,
+      "ratio": 2.11,
+      "bar": null,
+      "pass": null
+    },
+    {
+      "pair": "rgba(255, 255, 255, 0.85) on rgb(144, 184, 206)",
+      "sample": "today:tl-ev3",
+      "count": 5,
+      "ratio": 2.11,
+      "bar": null,
+      "pass": null
+    },
+    {
+      "pair": "rgb(187, 219, 197) on rgb(27, 31, 23)",
+      "sample": "today:arrange-link",
+      "count": 5,
+      "ratio": 11.2,
+      "bar": 4.5,
+      "pass": true
+    }
+  ],
+  "tokenCues": [
+    {
+      "pair": "boxBorder on card (checkbox outline)",
+      "sample": "token",
+      "count": 1,
+      "ratio": 8.6,
+      "bar": 3,
+      "pass": true
+    },
+    {
+      "pair": "accent on card (active controls/fills)",
+      "sample": "token",
+      "count": 1,
+      "ratio": 8.17,
+      "bar": 3,
+      "pass": true
+    },
+    {
+      "pair": "line on card (decorative separator)",
+      "sample": "token",
+      "count": 1,
+      "ratio": 1.29,
+      "bar": null,
+      "pass": null
+    },
+    {
+      "pair": "chipbg on card (chip fill; text carries identity)",
+      "sample": "token",
+      "count": 1,
+      "ratio": 1.21,
+      "bar": null,
+      "pass": null
+    },
+    {
+      "pair": "rowline on card (decorative separator)",
+      "sample": "token",
+      "count": 1,
+      "ratio": 1.21,
+      "bar": null,
+      "pass": null
+    }
+  ]
+}
