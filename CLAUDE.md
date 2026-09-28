@@ -96,7 +96,7 @@ tests/fixtures/n8n/*.json  real webhook samples (redacted)
 We have **no GitHub access** to the client's repo. This repo was assembled from a download of his server (`remap/SETUP-PROMPT.md`). The app's `CLAUDE.md` mentions a check ending in `JStack/App/App`; that's his original path, so ignore it.
 
 **Known gaps in the download:** root `.github/`, `.githooks/`, `history/`, `appendix/` and `diagrams/`, and the original `jstack-app/.npmrc` (reconstructed as `node-linker=hoisted` + `minimum-release-age=4320`). So:
-- `pnpm test` has a **baseline of 18 failing suites**, all documentation/CI checks that read those missing paths, plus the codemap freshness check. The exact list is in `remap/PROGRESS.md`.
+- `pnpm test` has a **baseline of 16 failing suites** (measured at setup, 2026-09-28, identical in both time zones; the earlier Linux dry run saw 18), all documentation/CI checks that read those missing paths, plus the codemap freshness check. The exact list is in `remap/PROGRESS.md`.
 - **A change is only "green" if it adds no new failure to that baseline.** Never fix a baseline failure by editing its test or inventing the missing document.
 - There's no pre-commit hook in this copy, so run `pnpm codemap` yourself before committing.
 
