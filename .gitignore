@@ -1,0 +1,40 @@
+# Root .gitignore — REMAP's copy. The client's original .gitignore was not in the
+# download (hidden files were lost), so this one is rebuilt from what the project's
+# own code and docs say is ignored. `tools/codemap-check.mjs` and
+# `tests/unit/hooks.test.ts` ask `git check-ignore` about runtime paths, so the
+# rules below are load-bearing, not just tidiness.
+
+# dependencies and Expo / Metro caches
+node_modules/
+.expo/
+.expo-shared/
+.metro-health-check*
+
+# build output (tools/build-web.mjs writes to ~/.jstack-dist by default, but
+# `expo export` and older scripts write here)
+dist/
+web-build/
+*.tsbuildinfo
+
+# Playwright scratch (playwright.config.ts outputDir; CODEMAP.md §10)
+jstack-app/e2e/.artifacts/
+jstack-app/evidence/.e2e-raw/
+playwright-report/
+test-results/
+
+# connect-check verdicts are the deploying team's evidence (WPD-15)
+jstack-app/evidence/connect/
+
+# scratch dirs the unit tests mkdtemp and remove (lint-guards, B-41 probe)
+jstack-app/tests/lint-guard-scratch-*/
+
+# local environment and secrets
+.env
+.env.*
+!.env.example
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
