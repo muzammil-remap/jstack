@@ -181,7 +181,7 @@ do today) would not be found. Acceptance IDs are a best-effort text match agains
 - store actions: `today.loadCalendar`, `today.loadThreeDay`
 - sections: `allcal`, `calendar`
 - components: CalendarGrid, CalendarList
-- testIDs: `cal-day-`, `cal-event-`, `cal-hour-rule-`, `cal-legend`, `cal-legend-now`, `cal-list-3day`, `cal-list-google`, `cal-list-today`, `cal-month`, `cal-now-line`, `cal-range`, `cal-seg`, `cal-track-`, `calendar-grid`, `calendar-list`
+- testIDs: `cal-allday-`, `cal-allday-event-`, `cal-day-`, `cal-event-`, `cal-hour-rule-`, `cal-legend`, `cal-legend-now`, `cal-list-3day`, `cal-list-google`, `cal-list-today`, `cal-month`, `cal-now-line`, `cal-range`, `cal-seg`, `cal-track-`, `calendar-grid`, `calendar-list`
 - acceptance IDs (lead): CG-01, TD-04
 
 ### `GET /events/{id}` — `getEvent` (§4.4)

@@ -433,6 +433,8 @@
         "CalendarList"
       ],
       "testIds": [
+        "cal-allday-",
+        "cal-allday-event-",
         "cal-day-",
         "cal-event-",
         "cal-hour-rule-",
