@@ -593,3 +593,77 @@ Screenshots in `remap/screens/private/checkpoint-3b/` (gitignored, real data).
 | Calendar card, 3 days | shared the grid's 3-day call | "all day" | "16:00" |
 
 Console: 0 messages.
+
+## Phase 4 — Tasks, live (30 Sep 2026)
+
+`GET /tasks`, `GET /tasks/{id}`, `GET /tasks/waiting` and `GET /tasks/columns` answer from the
+`tasks` webhook through `data/n8n/adapters/tasks.ts`: every page with Twenty's cursor (60 at a
+time, ten pages at most, one warning if capped), each record guarded and mapped, then the mock's
+list rules applied on the device — focus, slicer, view, the date range, filters, search
+(`data/n8n/taskRules.ts`, copied from `data/mock/predicates.ts`). Every page call goes through
+`callWebhook`'s 30-second sharing, so the four routes on a page load run the workflow once per
+page. The registry now takes a second adapter form (`answer`, making its own calls) and derived
+rows with an `answer`; reachability is still reported around every webhook call.
+
+### The mapping, as built — each one line in the adapter
+
+| Task field | From Twenty | Note |
+|---|---|---|
+| `status` | `DONE` → done; a non-empty `waitingOn` on a task not done → **waiting**; `TODO` → open; `IN_PROGRESS` → in_progress; anything else → open, one warning naming it | answer 2; `status` decides done-ness over `bucket` (answer 3) |
+| `owner` | `josh`; `OWNER_BY_MEMBER` (empty) for when `assigneeId` is used | answer 4; `createdBy` is not read |
+| `priority` | Twenty's `priority` SELECT **behind `EXPO_PUBLIC_TWENTY_PRIORITY_FIELD`**, off; off, `medium` is sent (the contract requires a value) and **nothing is printed** | answer 1, see below |
+| `labels` / `focus` | Twenty's `area` SELECT **behind `EXPO_PUBLIC_TWENTY_AREA_FIELD`**, off; off, `personal:josh` / `personal` (the mock's focus for that silo) | answer 5 |
+| `due` | **the local day of `dueAt`** (a day key) | a correction to the prompt's "ISO UTC": `Task.due` is a day key to every reader — `lib/taskMeta.ts`'s `formatDate`, the Gantt's `scheduleOnDay`, the filters' `dueBucket`. An instant there would print nonsense. The clock part (e.g. `12:00Z`) is dropped, which also retires Checkpoint 2's question 8 |
+| `column` | `bucket-<bucket>`; a done task goes to the done column whatever its bucket | answer 3 |
+| `waitingOn` | `{ who: waitingOn, what: title, days }` on a waiting task | `days` is required by the contract; it is **days since `createdAt`** — the earliest the wait can have begun, since Twenty holds no start. It can only overstate. See below |
+| `links`, `twentyUrl` | `<TWENTY_APP_URL>/object/task/<id>` when set, else none | |
+| `completedAt`, `completedBy` | unset | answer 6: optional in the contract, and Twenty holds none |
+| `metaParts`, `subtasks`, `activity`, `setAt` | `{ source: "Twenty" }`, `[]`, `[]`, `updatedAt` | nothing composed that Twenty does not hold |
+| order | Twenty's `position`, ascending | |
+
+`GET /tasks/columns`: one column per `bucket` value, the done one last and statuses
+`["done"]`, the others alphabetical with `["open","in_progress","waiting"]` — Twenty's own option
+list and order are not in the webhook's reply. With no bucket on any task, the default five, so no
+task falls off the Board.
+
+**Priority, the one edit to Josh's code**: `lib/taskMeta.ts` prints "`<priority>` priority" only
+where `TASK_PRIORITY_KNOWN` (`data/config.ts`): always on the mock and a real backend, on n8n
+only with the priority switch on. No contract change. Its limit: once the switch is on, a task
+whose `priority` is empty in Twenty still has to send a value and would print it — so the field
+should be **required with a default** in Twenty, or `Task.priority` made optional (a contract
+change, Josh's).
+
+### Live, against the running proxy (Chromium, Brisbane, 30 Sep)
+
+Screenshots in `remap/screens/private/checkpoint-4/` (gitignored — real task titles). The Twenty
+connector is not authorised here, so "next to Twenty" is the webhook's own reply.
+
+| | Twenty (the webhook) | The app |
+|---|---|---|
+| Tasks | 29: TODO 6, DONE 23; buckets INBOX 8, DONE 20, none 1 | header "6 open · 2 waiting" |
+| List | the 6 open | 6 rows, 2 with a due date ("Wed 30 Sep", "Wed 7 Oct"), **no "medium priority" anywhere** |
+| Waiting on | 2 with `waitingOn` | 2 rows, 4 and 6 days |
+| Board | — | columns **Inbox** (6) and **Done** (8 of the 23 — see below) |
+| Gantt | — | 2 bars (the dated ones), 4 unscheduled |
+| Done | 23 | 23 rows |
+| Webhook calls for the whole session | — | `tasks` once, `calendar` once |
+
+Console: 0 messages.
+
+### What does not match yet, or is worth a decision
+
+1. **The Board's Done lane shows 8 of 23.** The mock's default range — the next 90 days — applies
+   to the Board and the Gantt as well as the List, so a done (or overdue) task whose due date is
+   past leaves them; Done itself defaults to all time. Mock-exact, as the spec; the "Next 90 days"
+   chip says so. Same rule: **an overdue open task drops off the default List.**
+2. **Board columns' order**: Twenty's option order is not in the reply. Proposed DASH change —
+   `JSTACK-DASH-tasks-read` answers `{ "op": "columns" }` with the `bucket` field's options
+   (`value`, `label`, `position`) from Twenty's metadata API (`/rest/metadata/fields`), so the
+   Board shows every stage, empty ones included, in Twenty's order and with Twenty's labels.
+3. **Waiting days** overstate when the wait began after the task was filed. The honest fixes are
+   both Josh's: a `waitingSince` date on the Twenty task (set by the EA), or `days` made optional
+   in the contract and hidden when absent (`components/tasks/WaitingOn.tsx` prints `{days} days`).
+4. **Today's "Your tasks"** still reads the `/today` composite, which is Phase 5.
+5. **Links to people/companies** (`taskTargets`) need Twenty's `depth=1` — a DASH change, not made.
+   **Bodies** (`bodyV2`, on 11 tasks) have no field on `Task` and are not shown.
+6. Data, not the app: Twenty holds several duplicate titles (e.g. four identical done tasks).

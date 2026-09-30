@@ -4,6 +4,25 @@ One line per file. Newest phase first. Josh's own files are named with what was 
 
 **Generated files** are marked **regenerate in the target repo, don't port**: `jstack-mock-v15.html` (re-packaged from the source) and `REMAP_HANDOVER.html` (never committed changed; `remap/codemap.sh` restores it). Port the source and rebuild them there.
 
+## Phase 4 — Tasks, live (30 Sep 2026)
+
+| File | Change | Why |
+|---|---|---|
+| `jstack-app/data/n8n/adapters/tasks.ts` | new: paging, the guard, the map (one line per Checkpoint 2 answer), the four answers | `GET /tasks`, `/tasks/{id}`, `/tasks/waiting`, `/tasks/columns` from Twenty |
+| `jstack-app/data/n8n/taskRules.ts` | new: slicers, range, filters, copied from `data/mock/predicates.ts` | the mock's list rules (CT-03) |
+| `jstack-app/data/n8n/registry.ts` | a second adapter form (`answer`) and derived rows with an `answer`; the four tasks rows live | paging needs several calls per answer |
+| `jstack-app/data/transport/n8n.ts` | `reached()` reports the connection around any answer that goes out | the same reachability rule for both adapter forms |
+| `jstack-app/data/n8n/adapters/calendar.ts` | `satisfies WebhookAdapter` instead of the annotation | keeps its precise type under the union |
+| `jstack-app/data/config.ts`, `jstack-app/data/config.swap.ts` | `TWENTY_PRIORITY_FIELD`, `TWENTY_AREA_FIELD` (off), `TASK_PRIORITY_KNOWN` | answers 1 and 5, as switches |
+| `jstack-app/lib/taskMeta.ts` | **edit to an existing file (Josh's):** the priority phrase only where `TASK_PRIORITY_KNOWN`; the high-priority split guarded | answer 1 — no "medium priority" on every task |
+| `CONTRIBUTING.md` | the two switch variables | RM-03 |
+| `jstack-app/tests/unit/n8nTasks.test.ts` | new | the adapter, both zones |
+| `jstack-app/tests/unit/n8nRoutes.test.ts`, `n8nReachability.test.ts`, `n8nConfig.test.ts` | the stub and the provider cases answer the `tasks` key; a derived row with an answer may reach the keys it names | expectations changed on purpose: tasks are live |
+| `jstack-app/CODEMAP.md` | §4 row for the new test; maps regenerated | a guard is named in §4 |
+| `KNOWN_GAPS.md` | N8N-6 (waiting days), N8N-7 (the Board's columns), N8N-8 (priority) | what Phase 4 could not state |
+| `jstack-mock-v15.html` | re-packaged (own commit). **Generated — regenerate in the target repo, don't port** | QA-06 |
+| `remap/PROGRESS.md` | Phase 4 section | Checkpoint 4 |
+
 ## Phase 3 follow-ups — all-day, overlap, the grid's window (30 Sep 2026)
 
 | File | Change | Why |
