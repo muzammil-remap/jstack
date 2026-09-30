@@ -38,7 +38,7 @@ Every new workflow follows the same pattern as the existing ones: a webhook (POS
 | 2.14 | **DASH agent-health**: security checks, agent issues, last-24-hours feed | ⏳ depends on whether a watchdog exists yet | `agent-health` | `GET /security/checks`, `/agents/issues`, `/agents/feed` |
 | 2.15 | Files upload | ⏳ later (binary through the proxy) | — | `POST /files` |
 
-Habit logging no longer needs its own workflow: it's records keys like `habitlog:<habitId>:<YYYY-MM-DD>`, and the app computes the stats.
+Habit logging no longer needs its own workflow: it's records keys `habitlog:<YYYY-MM-DD>:<habitId>` with `{ done }` — **date first** (ADR-87), so a day or a month of every habit is one `list` — and the app computes the stats. The EA writes a habit log the same way.
 
 ### The EA card contract (for the colleague who runs OpenClaw)
 

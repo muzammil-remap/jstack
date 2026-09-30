@@ -951,3 +951,44 @@ sorts first in Twenty (`position` -49), so until it was DONE it led Today's "You
 A Board move between stages could not be tried live: Twenty's tasks have two buckets (Inbox,
 Done) and the test task, having none, stands in Inbox; the unit test covers the refusal. Console:
 0 messages.
+
+## Phase 6 · `records` — live (30 Sep 2026)
+
+Every settings route, the goals, the habits and their logs and stats, the sections' edits and an
+email card's revised draft read and write JSTACK-DASH-records through
+`data/n8n/adapters/records.ts` (ADR-87); Today's glance and close-the-day and `GET /life` are
+built from the same records. Before this, the store held one key (`test:hello`, not ours) — Josh
+has no records yet, so every key answers the default the build already had until he saves. No
+capability gates any of it.
+
+**The test records** — every one under `dashtest-p6/`, written with the build's test namespace
+(`EXPO_PUBLIC_N8N_RECORDS_NAMESPACE=dashtest-p6`) or by curl; **delete every row whose key starts
+with `dashtest-p6/`** from the records data table:
+
+| Key | Versions | What |
+|---|---|---|
+| `dashtest-p6/settings:quietHours` | 2 | the curl samples (absent → put → stale 409 → put) |
+| `dashtest-p6/habitlog:2026-09-30:dashtest-habit` | 1 | a curl sample |
+| `dashtest-p6/habits` | 2 | one test habit, "DASH test habit — REMAP" (seeded by curl) |
+| `dashtest-p6/goals` | 2 | one test goal, "DASH test goal — REMAP" (seeded by curl) |
+| `dashtest-p6/habitlog:2026-09-30:dashtest-habit-1` | 2 | ticked, then unticked, in the app |
+| `dashtest-p6/settings:voice` | 1 | the voice style set to Clear in the app |
+| `dashtest-p6/layout:today` | 2 | saved reversed, then reverted |
+
+**The store's replies** (`tests/fixtures/n8n/records.*`): an absent key `version: 0, value: null`; a
+put appends `version + 1`; a put with a stale `expectedVersion` 409 `CONFLICT`; `history` newest
+first; `list` the latest of each key with `truncated`; a bad key 400 `VALIDATION_ERROR` (the app's 422).
+
+**Live in the app** (the test namespace; `remap/screens/private/checkpoint-6-records/`):
+
+| Step | Records calls | Then |
+|---|---|---|
+| Cold load at 1440 | 12 reads, one per key (goals, habits, today's logs, seven settings, a layout, the sections' overrides) beside `tasks`, `calendar`, `actions` | the glance counts the test habit and the test goal (behind) |
+| Tick the habit's chip on Today | the day's key read, then put | logged |
+| Life | the goals, habits, the week's stats | the test goal and habit, the week's strip |
+| Settings › Voice › style Clear | read, put | saved |
+| A fresh context at 390 | — | the voice style reads back Clear |
+| A layout reversed, then reverted (through the adapter) | read, put, read, put | Josh's, then the tab's own order |
+
+Console: 0 messages. Found and fixed on the way: the glance counted a log of a habit no longer
+tracked ("2/1"); it counts the tracked ones now.

@@ -4,6 +4,27 @@ One line per file. Newest phase first. Josh's own files are named with what was 
 
 **Generated files** are marked **regenerate in the target repo, don't port**: `jstack-mock-v15.html` (re-packaged from the source) and `REMAP_HANDOVER.html` (never committed changed; `remap/codemap.sh` restores it). Port the source and rebuild them there.
 
+## Phase 6 · `records` (30 Sep 2026)
+
+| File | Change | Why |
+|---|---|---|
+| `jstack-app/data/n8n/adapters/records.ts` | new: the records store, key by key — the settings, layouts, parameters, slicers, goals, habits, a day's log, the stats, sections, a card's draft | ADR-87 |
+| `jstack-app/data/n8n/adapters/today.ts` | Today's glance and close-the-day from the records; `lifeAnswer` for `GET /life` | the composites |
+| `jstack-app/data/n8n/adapters/actions.ts` | `PUT /actions/{id}/draft`: the draft as a record, the answer the card with it | the revise dialog's save |
+| `jstack-app/data/n8n/registry.ts` | the records reads and writes; `getToday`, `getLife` and `getGoal` derived from them | wires them |
+| `jstack-app/data/config.ts`, `jstack-app/data/config.swap.ts` | `N8N_RECORDS_NAMESPACE` | ADR-87: test runs never write Josh's records |
+| `CONTRIBUTING.md` | `EXPO_PUBLIC_N8N_RECORDS_NAMESPACE` | RM-03 |
+| `jstack-app/tests/fixtures/n8n/records.*.json` | new: the store's real replies about `dashtest-p6/` keys | the tests |
+| `jstack-app/tests/unit/n8nRecords.test.ts` | new | the adapter, both zones |
+| `jstack-app/tests/unit/n8nContract.ts` | `emptyRecordsReply`: the store's real answer where nothing is saved yet | the tests that read Today |
+| `jstack-app/tests/unit/n8nRoutes.test.ts`, `n8nToday.test.ts`, `n8nConfig.test.ts`, `n8nLocked.test.ts`, `n8nActions.test.ts` | `records` answered and counted; the glance's habits "0/0"; a 404 that answers before its second source is not a stray; the draft is wired | expectations changed on purpose: the records are live |
+| `jstack-app/CODEMAP.md` | §4 row; maps regenerated | a guard is named in §4 |
+| `DECISIONS.md` | ADR-87 | the decision |
+| `KNOWN_GAPS.md` | N8N-16 | what the store does differently |
+| `remap/WORKFLOWS-NEEDED.md` | the habit-log key, date first | ADR-87 |
+| `jstack-mock-v15.html` | re-packaged (own commit). **Generated — regenerate in the target repo, don't port** | QA-06 |
+| `remap/PROGRESS.md` | the section, with every `dashtest-p6/` key | the record |
+
 ## Phase 6 · `calendar-edit` and `tasks-write` (30 Sep 2026)
 
 | File | Change | Why |
