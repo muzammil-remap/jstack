@@ -50,8 +50,8 @@ by the outbox as HTTP is. It reports reachability itself, around its webhook cal
 its answers are made on the device, and `withReachability` would read a local default as the
 server answering (ADR-78). It is a dispatcher, not a server: it
 matches each request against `data/routes.ts` in table order and answers it by its row in
-`data/n8n/registry.ts` — `wired` (one webhook, through an adapter of its own under
-data/n8n/adapters, whose output must validate against `openapi.yaml`), `derived` (a composite
+`data/n8n/registry.ts` — `wired` (one webhook, through an adapter of its own in
+`data/n8n/adapters/`, whose output must validate against `openapi.yaml`), `derived` (a composite
 assembled from wired rows, sharing one in-flight call per webhook), `default` (configuration,
 `data/n8n/defaults.ts`), `empty` (the contract's empty value, `data/n8n/empty.ts`) or
 `unavailable` (`501`, where the empty value would claim activity, ADR-78). A write with
@@ -79,7 +79,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 
 ## 2. The map of the territory
 
-<!-- generated:start section=2 sha=e5d218f date=2026-09-30 -->
+<!-- generated:start section=2 sha=2ab26b2 date=2026-09-30 -->
 
 ### `app/`
 
@@ -287,16 +287,16 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `ApiAdapter.ts` | 340 | ApiAdapter — the only DataProvider implementation (ADR-02). | 11 files |
 | `DataProvider.ts` | 279 | DataProvider — the app ↔ backend contract, 1:1 with CONTRACT_v2.md §4. | 6 files |
 | `capabilities.ts` | 43 | Capabilities (CONTRACT_v2.md §4.9 `GET /capabilities`, ADR-16). | `stores/settings.ts` |
-| `config.swap.ts` | 30 | Swap-proof flavour of data/config.ts (BS-05). | — |
-| `config.ts` | 94 | Backend config — THE one file that changes at go-live. | 9 files |
+| `config.swap.ts` | 31 | Swap-proof flavour of data/config.ts (BS-05). | — |
+| `config.ts` | 101 | Backend config — THE one file that changes at go-live. | 10 files |
 | `files.ts` | 132 | The files vocabulary (X-1, §4.17) — one declaration the archive's filters, the mock's handler and the tests all read. | 10 files |
-| `labels.ts` | 135 | Data labels — silos and types on every record (spec §15.10, `DATA_LABELS.md`, contract §12.1). | 16 files |
+| `labels.ts` | 135 | Data labels — silos and types on every record (spec §15.10, `DATA_LABELS.md`, contract §12.1). | 18 files |
 | `parameters.ts` | 148 | The parameter registry (ADR-41, L-1) — six tunables, in one typed table. | 4 files |
 | `pins.ts` | 52 | Certificate-pinning scaffold (spec §14.9 — SEC-08, contract §9): the SPKI pins arrive with the completed BACKEND_HANDSHAKE (30-day rotation overlap). | `data/n8n/client.ts`, `data/transport/http.ts` |
 | `provider.ts` | 87 | Provider swap point (ADR-02). | 29 files |
 | `routes.ts` | 329 | routes.ts — the one table (ADR-33, S-1): every endpoint, once. | 6 files |
 | `taskFilters.ts` | 135 | The task filter shape, declared ONCE (TK-14, S-2, F-1). | 12 files |
-| `types.ts` | 1553 | Wire shapes — 1:1 with CONTRACT_v2.md §3 (camelCase, ISO 8601 UTC, money as strings with `sensitivity: sens`). | 126 files |
+| `types.ts` | 1553 | Wire shapes — 1:1 with CONTRACT_v2.md §3 (camelCase, ISO 8601 UTC, money as strings with `sensitivity: sens`). | 128 files |
 
 ### `data/mock/`
 
@@ -343,15 +343,22 @@ stacking order. And a green test you have not seen fail is not evidence.
 | file | lines | purpose | imported by |
 |---|---|---|---|
 | `client.ts` | 157 | `callWebhook(key, body)` — the one way the app reaches n8n (ADR-76): a JSON POST to the proxy at `<N8N_BASE_URL>/<key>`, answered `{ ok: true, data }` or `{ ok: false, error: { code, message } }`. | `data/transport/n8n.ts` |
-| `defaults.ts` | 222 | The configuration routes, answered on the device while n8n has no store for them (ADR-76): who is signed in, what this build can do, the layouts, focuses, parameters and section configs. | `data/n8n/registry.ts` |
+| `defaults.ts` | 212 | The configuration routes, answered on the device while n8n has no store for them (ADR-76): who is signed in, what this build can do, the layouts, focuses, parameters and section configs. | `data/n8n/registry.ts` |
 | `empty.ts` | 97 | The contract's empty value for every GET response shape the n8n transport answers without a source yet (ADR-76) — a list with nothing in it, a composite with nothing counted — so a section shows its own empty state and never the mock's demo content. | `data/transport/n8n.ts` |
-| `registry.ts` | 145 | The n8n dispatcher's route table (ADR-76): which of the app's routes are answered by a webhook, which are assembled from other routes, which are configuration, and which are honestly empty. | 4 files |
+| `focus.ts` | 30 | Who may see what, and what a focus narrows to, on the n8n build (ADR-76) — the rule the mock's `inFocus` applies (`data/mock/util.ts`), copied because `data/n8n/` may not import `data/mock/` (CT-03). | `data/n8n/adapters/calendar.ts`, `data/n8n/defaults.ts` |
+| `registry.ts` | 146 | The n8n dispatcher's route table (ADR-76): which of the app's routes are answered by a webhook, which are assembled from other routes, which are configuration, and which are honestly empty. | 5 files |
+
+### `data/n8n/adapters/`
+
+| file | lines | purpose | imported by |
+|---|---|---|---|
+| `calendar.ts` | 128 | `GET /calendar` from Google Calendar, through the `calendar` webhook (JSTACK-DASH-calendar-read) — the request built, and the reply guarded and mapped into the contract's `CalendarWindow`. | `data/n8n/registry.ts` |
 
 ### `data/transport/`
 
 | file | lines | purpose | imported by |
 |---|---|---|---|
-| `Transport.ts` | 43 | The one boundary between ApiAdapter and "how a request actually travels" (ADR-02). | 33 files |
+| `Transport.ts` | 43 | The one boundary between ApiAdapter and "how a request actually travels" (ADR-02). | 34 files |
 | `http.ts` | 142 | The real transport (ADR-02): fetch, the auth header and the pinning guard (SEC-08). | `data/n8n/client.ts`, `data/provider.ts` |
 | `mock.ts` | 21 | The in-process mock transport (ADR-02): routes straight into data/mock/server.ts's router — no network, no serialisation round trip, but the same request/response shape as httpTransport so ApiAdapter (and every test built against it) is oblivious to which one is live. | `data/provider.ts`, `lib/serverEvents.ts` |
 | `n8n.ts` | 110 | The n8n transport (ADR-76): the third implementation of the one boundary, beside `httpTransport` and `mockTransport`, answering every route from Josh's n8n webhooks or honestly without them. | `data/provider.ts` |
@@ -444,7 +451,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `testBuild.prod.ts` | 10 | Production flavour of the test-build gateway (see testBuild.ts). | — |
 | `testBuild.ts` | 13 | Test-build gateway — the ONLY door to test-only capability (SEC-01, TM-01). | `components/chrome/ErrorBoundary.tsx`, `lib/boot.ts`, `lib/pwa.ts` |
 | `testHook.ts` | 484 | e2e state hook (web only): Playwright asserts on STORE STATE, never logs. | `lib/testBuild.ts` |
-| `time.ts` | 428 | One time library, one basis: **the device's own time zone** (ADR-47, D-1). | 65 files |
+| `time.ts` | 428 | One time library, one basis: **the device's own time zone** (ADR-47, D-1). | 66 files |
 | `timeGrid.ts` | 75 | The calendar time grid's geometry (S-8). | `components/today/CalendarGrid.tsx`, `stores/today.ts` |
 | `unlockCopy.ts` | 68 | The words for the unlock mechanism, in one place, because they differ by platform and are shown on four surfaces. | 5 files |
 | `usage.ts` | 122 | The lines the app draws about what an agent run cost (T-4, ADR-43). | 6 files |
@@ -582,7 +589,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 Endpoint → store action → component → testIDs, one block per contract group, from
 `wiring.json`.
 
-<!-- generated:start section=3 sha=e5d218f date=2026-09-30 -->
+<!-- generated:start section=3 sha=2ab26b2 date=2026-09-30 -->
 
 ### agents
 
@@ -906,6 +913,7 @@ them; `tools/gen-codemap.mjs` lists any that this section does not name.
 | `tests/unit/n8nRoutes.test.ts` | ADR-76: every GET the n8n transport answers validates against its `openapi.yaml` response schema (or is an honest 404/501), every write with no key answers 501 without a call, the registry has exactly one row per GET, and no answer carries the fixtures' personal content |
 | `tests/unit/n8nClient.test.ts` | ADR-76: `callWebhook` POSTs JSON to `<base>/<key>` with no auth header, maps a DASH refusal to the contract's status (VALIDATION_ERROR → 422), retries once on a network failure or 5xx and never on a 4xx, times out as a network failure, and shares one request per key and body for 30 s — never for a write |
 | `tests/unit/n8nAllowList.test.ts` | ADR-76: the registry's webhook keys and the dev proxy's `ALLOW` are one set, no key or proxy path is a workflow that sends or returns file bytes, and no app source names a webhook path |
+| `tests/unit/n8nCalendar.test.ts` | Phase 3: `GET /calendar` from the `calendar` webhook — each view's window is `rangeFor`'s (literal instants for both board zones, turning over at the device's midnight), the redacted real replies map to a valid `CalendarWindow`, an all-day event runs midnight to midnight with Google's exclusive end, a missing end is half an hour, the mock's start-in-window, gaps and focus rules hold, and any other reply is the section's 502 |
 | `tests/unit/n8nReachability.test.ts` | ADR-78: on n8n a local answer and a `501` leave the session's `online` as it was and queue nothing, `GET /usage` is the Usage section's error, and a real webhook call reports offline on a network failure and online on any answer, a refusal included |
 | `tests/unit/n8nConfig.test.ts` | ADR-76: `EXPO_PUBLIC_DATA_SOURCE` defaults to the mock, `n8n` turns `USE_API_ADAPTER` on, and on n8n the provider routes through the n8n transport — no fixtures, a keyless write refused with 501, a voice socket that closes |
 | `tests/unit/useLayout.test.ts` | The three breakpoints, and that nothing else reads the window size |
@@ -1125,12 +1133,13 @@ sends, pays, books, revokes or returns file bytes.
 1. The key goes in three places that must agree: `WEBHOOK_KEYS` in `data/n8n/registry.ts`, `ALLOW`
    in `remap/dev-proxy.mjs`, and the nginx config. `tests/unit/n8nAllowList.test.ts` holds the
    first two to one set.
-2. Call it through the proxy and save a redacted sample, plus an empty one, as JSON fixtures
-   under tests/fixtures/n8n (the folder arrives with the first sample).
-3. Write the adapter, data/n8n/adapters/<key>.ts: `body()` builds the request exactly as the
-   route's mock handler reads its query, and `toContract()` guards the raw reply and maps it into
+2. Call it through the proxy and save a redacted sample, plus an empty one, in
+   `tests/fixtures/n8n/` — `remap/redact-samples.mjs` redacts them and refuses to write on a leak.
+3. Write the adapter in `data/n8n/adapters/` (`data/n8n/adapters/calendar.ts` is the first):
+   `body()` builds the request exactly as the route's mock handler reads its query, and `toContract()` guards the raw reply and maps it into
    the `data/types.ts` shape — dates through `lib/time.ts`, enums mapped member by member.
-4. Test the adapter against both samples, validating its output against `openapi.yaml`.
+4. Test the adapter against both samples, validating its output against `openapi.yaml`
+   (`tests/unit/n8nContract.ts` loads the schemas and the samples).
 5. Give the route's row in `data/n8n/registry.ts` its adapter (a read) or add it to `WRITES` (a
    write); `tests/unit/n8nRoutes.test.ts` then sweeps it with the rest.
 
@@ -1156,7 +1165,8 @@ it. Each of these is a family `tools/gen-codemap.mjs` checks section 5 for by na
 | `./lib/` | Framework-free helpers with one job each: time, auth tokens, the outbox queue, push, voice, the lock gate, the test hook |
 | `./data/` | The route table, the shapes, the adapter, the provider and the capabilities fallback — the contract's app-side half |
 | `./data/transport/` | The transport interface and its implementations — http, mock and n8n (ADR-76) — and the outbox and reachability layers that wrap them |
-| `./data/n8n/` | REMAP's n8n build (ADR-76): the route registry, the one webhook client, the configuration defaults, the contract's empty values, and one adapter per webhook in its adapters folder |
+| `./data/n8n/` | REMAP's n8n build (ADR-76): the route registry, the one webhook client, the configuration defaults, the contract's empty values, and the owner's silo and focus rule |
+| `./data/n8n/adapters/` | One adapter per webhook: the request its route's mock handler would read, and the guard and map from the raw reply to the contract's shape |
 | `./data/mock/` | The in-process SERVER: the db, its fixtures, the router and the shared handler helpers |
 | `./data/mock/handlers/` | One file per contract section, exported under the names `data/routes.ts` gives |
 | `./theme/` | Generated tokens, the provider, the layout hook and the reduced-motion hook |
@@ -1382,7 +1392,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 
 ## 7. The decision index
 
-<!-- generated:start section=7 sha=e5d218f date=2026-09-30 -->
+<!-- generated:start section=7 sha=2ab26b2 date=2026-09-30 -->
 
 `DECISIONS.md` — ADR-01..75, each with its status; the versioned decision files hold the full reasoning.
 
@@ -1467,7 +1477,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 
 ## 8. The test map
 
-<!-- generated:start section=8 sha=e5d218f date=2026-09-30 -->
+<!-- generated:start section=8 sha=2ab26b2 date=2026-09-30 -->
 
 ### Specs
 
@@ -1590,6 +1600,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 | `tests/unit/mic.test.ts` | ADR-49, MC-01, MC-06, MC-07, MC-08, MC-09, TD-05 |
 | `tests/unit/micAwake.test.ts` | MC-01, VP-07 |
 | `tests/unit/n8nAllowList.test.ts` | ADR-76 |
+| `tests/unit/n8nCalendar.test.ts` | ADR-47, ADR-76 |
 | `tests/unit/n8nClient.test.ts` | ADR-76 |
 | `tests/unit/n8nConfig.test.ts` | ADR-76, CD-14 |
 | `tests/unit/n8nReachability.test.ts` | ADR-78 |
@@ -1701,7 +1712,7 @@ the codebase that the hand-written judgement has not caught up with. A release r
 empty — Stage 3c's `P-1` adds the release workflow and that gate with it. Until then they are
 advisory, and Stage 4 curates them.
 
-<!-- generated:start section=11 sha=e5d218f date=2026-09-30 -->
+<!-- generated:start section=11 sha=2ab26b2 date=2026-09-30 -->
 
 ### New since section 6 was curated
 

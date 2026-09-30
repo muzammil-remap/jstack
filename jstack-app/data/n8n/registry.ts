@@ -14,6 +14,7 @@
 import type { DataProvider } from "@/data/DataProvider";
 import type { TransportRequest, TransportResponse } from "@/data/transport/Transport";
 import { DEFAULTS } from "./defaults";
+import { calendarAdapter } from "./adapters/calendar";
 
 /** `remap/WEBHOOKS.md` §C. Nothing that sends, pays, books, revokes or returns file bytes is here. */
 export const WEBHOOK_KEYS = ["calendar", "tasks", "people", "files", "memory", "tasks-write", "calendar-edit", "gmail-draft", "records", "actions"] as const;
@@ -65,7 +66,7 @@ export const READS: Partial<Record<RouteName, ReadRow>> = {
   getActions: EMPTY,
   getAction: EMPTY,
   // §4.4 calendar
-  getCalendar: { kind: "wired", key: "calendar" },
+  getCalendar: { kind: "wired", key: "calendar", adapter: calendarAdapter },
   getEvent: EMPTY,
   // §4.5 tasks
   getTasksWaiting: { kind: "derived", uses: ["tasks"] },

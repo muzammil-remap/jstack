@@ -10,13 +10,14 @@
  * (Phase 6), or stay empty.
  */
 import { Platform } from "react-native";
-import { SILO_META, TYPE_META, type Silo } from "@/data/labels";
+import { SILO_META, TYPE_META } from "@/data/labels";
 import { defaultParameters } from "@/data/parameters";
 import { TWENTY_APP_URL } from "@/data/config";
 import { now } from "@/lib/time";
-import type { AgentRoster, AppLayout, AutonomySettings, Capabilities, Column, Device, Focus, Layout, LifeSectionConfig, Portal, QuietHours, SectionConfig, Session, Slicer, SyncStatus, VoiceSettings } from "@/data/types";
+import type { AgentRoster, AppLayout, AutonomySettings, Capabilities, Column, Device, Layout, LifeSectionConfig, Portal, QuietHours, SectionConfig, Session, Slicer, SyncStatus, VoiceSettings } from "@/data/types";
 import type { TransportResponse } from "@/data/transport/Transport";
 import type { Asked } from "./registry";
+import { FOCUSES, OWNER_SILOS } from "./focus";
 
 const ok = (json: unknown): TransportResponse => ({ status: 200, json });
 const notFound = (): TransportResponse => ({ status: 404, json: { reason: "not found" } });
@@ -25,20 +26,9 @@ const notFound = (): TransportResponse => ({ status: 404, json: { reason: "not f
  * saved still needs a `changedAt`, and one fixed value says so more plainly than today's date. */
 const DEFAULTS_AT = "2026-09-29T00:00:00.000Z";
 
-/** `data/mock/db.ts` `USERS.josh` — the owner, and every silo the owner may see. */
-const OWNER_SILOS: Silo[] = ["personal:josh", "family1", "family2", "work"];
-
 function thisDevice(): Device {
   return { id: "this-device", name: "This device", lastSeen: now().toISOString(), current: true };
 }
-
-/** `data/mock/fixtures/focuses.json` — the four focuses, Everything fixed. */
-const FOCUSES: Focus[] = [
-  { id: "all", name: "Everything", fixed: true, filter: {} },
-  { id: "personal", name: "Personal", filter: { silos: ["personal:josh", "personal:joce"] } },
-  { id: "family", name: "Family", filter: { silos: ["family1", "family2"] } },
-  { id: "work", name: "Work", filter: { silos: ["work"] } },
-];
 
 /** `data/mock/fixtures/layouts.json` — each tab's sections in their designed order, none hidden. */
 const LAYOUT_ORDER: Record<string, string[]> = {

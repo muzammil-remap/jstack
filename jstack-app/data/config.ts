@@ -43,6 +43,13 @@ export const USE_API_ADAPTER = DATA_SOURCE !== "mock";
  */
 export const N8N_BASE_URL: string = (process.env.EXPO_PUBLIC_N8N_BASE_URL ?? "/n8n").replace(/\/+$/, "");
 
+/** ADR-76: which of the app's calendar sources Google's primary calendar is shown as — V2 reads
+ * the one calendar (HANDOVER §1 Q7). Anything that is not a `CalendarSource` falls back to the
+ * default rather than reaching an event. */
+const rawCalendarSource = process.env.EXPO_PUBLIC_N8N_CALENDAR_SOURCE;
+export const N8N_CALENDAR_SOURCE: "personal" | "work" | "family" =
+  rawCalendarSource === "work" || rawCalendarSource === "family" ? rawCalendarSource : "personal";
+
 /** ADR-76: Twenty's own web address, for "open in Twenty" links and the
  * Agents portal. Empty means no link is drawn, rather than a guessed one. */
 export const TWENTY_APP_URL: string = (process.env.EXPO_PUBLIC_TWENTY_APP_URL ?? "").replace(/\/+$/, "");

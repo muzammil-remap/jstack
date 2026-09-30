@@ -17,6 +17,7 @@ export const USE_API_ADAPTER = true;
 // every name data/config.ts exports resolves here too, never as undefined.
 export const DATA_SOURCE: "mock" | "http" | "n8n" = "http";
 export const N8N_BASE_URL = "/n8n";
+export const N8N_CALENDAR_SOURCE: "personal" | "work" | "family" = "personal";
 export const TWENTY_APP_URL = "";
 
 // D-4, D-5, D-13, D-13b: kept equal to data/config.ts's defaults — this file

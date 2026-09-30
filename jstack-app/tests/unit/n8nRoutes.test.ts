@@ -6,62 +6,33 @@
  * own validator (`data/mock/schemaValidate.ts`) — a schema derived from a different file than the
  * one that wrote the answer (CODEMAP §6, B-16).
  *
- * `callWebhook` is stubbed: a unit test never makes an outbound call (B-17). While a route has no
- * adapter, nothing may reach it at all, so the stub records every call and the tests assert on it.
+ * `callWebhook` is stubbed: a unit test never makes an outbound call (B-17). A wired key answers with
+ * its redacted real reply (`tests/fixtures/n8n/<key>.json`); every other key refuses, and the tests
+ * assert that only a wired route with an adapter reached one.
  */
-import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { pathToFileURL } from "node:url";
 import { buildPath, ROUTES } from "@/data/routes";
 import { validate } from "@/data/mock/schemaValidate";
 import { READS, WRITES } from "@/data/n8n/registry";
+import { openapi, responseSchema } from "./n8nContract";
 import { n8nTransport } from "@/data/transport/n8n";
 import type { TransportRequest } from "@/data/transport/Transport";
 
 jest.mock("@/data/n8n/client", () => {
   const actual = jest.requireActual("@/data/n8n/client");
-  return { ...actual, callWebhook: jest.fn(async (key: string) => Promise.reject(new Error(`unit test: callWebhook("${key}") is not stubbed`))) };
+  const { sample: fixture } = jest.requireActual("./n8nContract");
+  const SAMPLES: Record<string, string> = { calendar: "calendar" };
+  return {
+    ...actual,
+    callWebhook: jest.fn(async (key: string) => (SAMPLES[key] != null ? fixture(SAMPLES[key]).data : Promise.reject(new Error(`unit test: callWebhook("${key}") is not stubbed`)))),
+  };
 });
 // eslint-disable-next-line @typescript-eslint/no-require-imports -- the jest.mock above replaces this module
 const { callWebhook } = require("@/data/n8n/client") as { callWebhook: jest.Mock };
 
 const root = join(__dirname, "..", "..");
-
-type Doc = { paths: Record<string, Record<string, { responses: Record<string, { content?: Record<string, { schema?: unknown }> }> }>>; components: { schemas: Record<string, unknown> } };
-
-/**
- * `{ $ref, nullable: true }` → `{ nullable: true, oneOf: [{ $ref }] }`, which means the same thing.
- * Both copies of the validator resolve a `$ref` before they look at its `nullable` sibling, so they
- * refuse the `null` the contract allows (`BrainSearchResult.answer`, `FindAnswer | null` in
- * `data/types.ts`). That is a defect in the validator, recorded in `remap/PROGRESS.md` rather than
- * fixed here; this rewrite lets the check below test the answer instead of the defect.
- */
-function nullableRefs(node: unknown): unknown {
-  if (Array.isArray(node)) return node.map(nullableRefs);
-  if (node == null || typeof node !== "object") return node;
-  const o = node as Record<string, unknown>;
-  if (typeof o.$ref === "string" && o.nullable === true) {
-    const { $ref, nullable, ...rest } = o;
-    return { ...rest, nullable, oneOf: [{ $ref }] };
-  }
-  return Object.fromEntries(Object.entries(o).map(([k, v]) => [k, nullableRefs(v)]));
-}
-
-let cached: Doc | null = null;
-function doc(): Doc {
-  if (cached != null) return cached;
-  const yamlUrl = pathToFileURL(join(root, "tools", "yaml.mjs")).href;
-  const target = join(root, "openapi.yaml");
-  const script = [`const Y = await import(${JSON.stringify(yamlUrl)});`, `const fs = await import("node:fs");`, `console.log(JSON.stringify(Y.parse(fs.readFileSync(${JSON.stringify(target)}, "utf8"))));`].join("");
-  cached = nullableRefs(JSON.parse(execFileSync(process.execPath, ["--input-type=module", "-e", script], { cwd: root, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 }))) as Doc;
-  return cached;
-}
-
-function responseSchema(path: string, method: string): unknown {
-  const responses = doc().paths[path]?.[method.toLowerCase()]?.responses ?? {};
-  return Object.values(responses)[0]?.content?.["application/json"]?.schema;
-}
+const doc = openapi;
 
 /** The queries the app sends on each route, so a query-reading answer is exercised as the app uses it. */
 const QUERY: Record<string, Record<string, string>> = {
@@ -87,6 +58,8 @@ const NOT_FOUND = ["getAction", "getEvent", "getTask", "getBrainItem", "getGoal"
 const NOT_CONNECTED = ["getSectionCatalogue", "getUsage"];
 
 const GETS = ROUTES.filter((r) => r.method === "GET");
+/** every key the GET sweep reached, across its tests */
+const reached = new Set<string>();
 const WRITE_ROUTES = ROUTES.filter((r) => r.method !== "GET");
 
 beforeEach(() => callWebhook.mockClear());
@@ -107,6 +80,11 @@ describe("ADR-76 · every GET the n8n transport answers is the contract's", () =
 
   it.each(GETS.map((r) => [r.name, r] as const))("GET %s", async (name, route) => {
     const res = await n8nTransport({ method: "GET", path: pathFor(route.path), query: QUERY[name] });
+    // only a wired row with an adapter goes out, and only through its own key
+    const row = READS[name];
+    const keys = callWebhook.mock.calls.map(([key]) => key as string);
+    expect({ name, keys }).toEqual({ name, keys: row?.kind === "wired" && row.adapter != null ? [row.key] : [] });
+    for (const key of keys) reached.add(key);
     if (NOT_FOUND.includes(name)) {
       expect(res.status).toBe(404);
       return;
@@ -136,8 +114,10 @@ describe("ADR-76 · every GET the n8n transport answers is the contract's", () =
     }
   });
 
-  it("no GET reached a webhook: no route has an adapter yet", () => {
-    expect(callWebhook).not.toHaveBeenCalled();
+  it("only a wired route with an adapter reached a webhook, each through its own key", () => {
+    const live = Object.values(READS).flatMap((row) => (row?.kind === "wired" && row.adapter != null ? [row.key] : []));
+    expect(live).toEqual(["calendar"]);
+    expect([...reached]).toEqual(["calendar"]);
   });
 });
 
