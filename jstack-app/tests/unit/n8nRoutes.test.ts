@@ -22,7 +22,7 @@ import type { TransportRequest } from "@/data/transport/Transport";
 jest.mock("@/data/n8n/client", () => {
   const actual = jest.requireActual("@/data/n8n/client");
   const { sample: fixture } = jest.requireActual("./n8nContract");
-  const SAMPLES: Record<string, string> = { calendar: "calendar" };
+  const SAMPLES: Record<string, string> = { calendar: "calendar", tasks: "tasks.page1" };
   return {
     ...actual,
     callWebhook: jest.fn(async (key: string) => (SAMPLES[key] != null ? fixture(SAMPLES[key]).data : Promise.reject(new Error(`unit test: callWebhook("${key}") is not stubbed`)))),
@@ -80,10 +80,13 @@ describe("ADR-76 · every GET the n8n transport answers is the contract's", () =
 
   it.each(GETS.map((r) => [r.name, r] as const))("GET %s", async (name, route) => {
     const res = await n8nTransport({ method: "GET", path: pathFor(route.path), query: QUERY[name] });
-    // only a wired row with an adapter goes out, and only through its own key
+    // only a live row goes out: a wired row with an adapter through its own key, a derived row with
+    // an answer through the keys it names; every other row makes no call at all
     const row = READS[name];
-    const keys = callWebhook.mock.calls.map(([key]) => key as string);
-    expect({ name, keys }).toEqual({ name, keys: row?.kind === "wired" && row.adapter != null ? [row.key] : [] });
+    const allowed = row?.kind === "wired" && row.adapter != null ? [row.key] : row?.kind === "derived" && row.answer != null ? [...row.uses] : [];
+    const keys = [...new Set(callWebhook.mock.calls.map(([key]) => key as string))];
+    expect({ name, stray: keys.filter((k) => !allowed.includes(k as never)) }).toEqual({ name, stray: [] });
+    if (allowed.length > 0) expect({ name, calls: keys.length }).toEqual({ name, calls: allowed.length });
     for (const key of keys) reached.add(key);
     if (NOT_FOUND.includes(name)) {
       expect(res.status).toBe(404);
@@ -114,10 +117,10 @@ describe("ADR-76 · every GET the n8n transport answers is the contract's", () =
     }
   });
 
-  it("only a wired route with an adapter reached a webhook, each through its own key", () => {
+  it("only live rows reached a webhook: calendar and tasks", () => {
     const live = Object.values(READS).flatMap((row) => (row?.kind === "wired" && row.adapter != null ? [row.key] : []));
-    expect(live).toEqual(["calendar"]);
-    expect([...reached]).toEqual(["calendar"]);
+    expect(live).toEqual(["calendar", "tasks"]);
+    expect([...reached].sort()).toEqual(["calendar", "tasks"]);
   });
 });
 

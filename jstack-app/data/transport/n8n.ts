@@ -36,10 +36,12 @@ type Report = (online: boolean) => void;
 
 const TABLE = ROUTES.map((route) => ({ route, pattern: pathToPattern(route.path) }));
 
-async function viaWebhook(key: WebhookKey, adapter: WebhookAdapter, asked: Asked, write: boolean, report: Report): Promise<TransportResponse> {
-  let data: unknown;
+/** Runs an answer that goes out to n8n, reporting the connection around it: any answer from the
+ * proxy (a refusal included) says online, a network failure says offline. */
+async function reached(run: () => Promise<TransportResponse>, report: Report): Promise<TransportResponse> {
+  let res: TransportResponse;
   try {
-    data = await callWebhook(key, adapter.body(asked), { write });
+    res = await run();
   } catch (error) {
     if (error instanceof N8nError) {
       report(true); // the proxy had to be reached to refuse
@@ -49,7 +51,12 @@ async function viaWebhook(key: WebhookKey, adapter: WebhookAdapter, asked: Asked
     throw error;
   }
   report(true);
-  return adapter.toContract(data, asked);
+  return res;
+}
+
+function viaWebhook(key: WebhookKey, adapter: WebhookAdapter, asked: Asked, write: boolean, report: Report): Promise<TransportResponse> {
+  if ("answer" in adapter) return reached(() => adapter.answer(asked), report);
+  return reached(async () => adapter.toContract(await callWebhook(key, adapter.body(asked), { write }), asked), report);
 }
 
 async function read(route: Route, asked: Asked, report: Report): Promise<TransportResponse> {
@@ -62,6 +69,8 @@ async function read(route: Route, asked: Asked, report: Report): Promise<Transpo
       // a row whose adapter has not been written yet is a stub: its empty value, never a call
       return row.adapter == null ? emptyFor(route.response, asked) : viaWebhook(row.key, row.adapter, asked, false, report);
     case "derived":
+      // assembled from the webhooks it uses; until its answer is written, the empty value
+      return row.answer == null ? emptyFor(route.response, asked) : reached(() => row.answer!(asked), report);
     case "empty":
       return emptyFor(route.response, asked);
     case "unavailable":

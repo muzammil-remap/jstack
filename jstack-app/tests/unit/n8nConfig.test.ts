@@ -86,7 +86,9 @@ describe("ADR-76 · the provider on n8n", () => {
   }
 
   it("answers from the n8n transport, not the mock: the fixture tasks and Needs-you cards are absent", async () => {
-    const fetchSpy = jest.fn(async () => Promise.reject(new Error("unit test: no network")));
+    // tasks are live (Phase 4): Twenty answers its real empty reply, and nothing else goes out
+    const empty = JSON.stringify(jest.requireActual("./n8nContract").sample("tasks.empty"));
+    const fetchSpy = jest.fn(async (url: string) => (String(url).endsWith("/tasks") ? { status: 200, text: async () => empty } : Promise.reject(new Error("unit test: no network"))));
     globalThis.fetch = fetchSpy as unknown as typeof fetch;
     const { provider } = n8nProvider();
     const a = provider.getAdapter();
@@ -94,7 +96,7 @@ describe("ADR-76 · the provider on n8n", () => {
     const today = await a.getToday();
     expect({ needsYou: today.needsYou, tasks: today.tasks, events: today.calendar.events }).toEqual({ needsYou: [], tasks: [], events: [] });
     expect((await a.getSession()).user).toEqual({ id: "josh", name: "Josh", role: "owner" });
-    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(fetchSpy.mock.calls.map(([url]) => String(url).split("/").pop())).toEqual(["tasks"]);
   });
 
   it("a write with no key is refused with the contract's error, and nothing is queued or sent", async () => {

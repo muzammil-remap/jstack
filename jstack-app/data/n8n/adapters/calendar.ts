@@ -126,13 +126,13 @@ function toEvent(r: RawEvent): CalEvent {
 
 const unexpected = (why: string): TransportResponse => ({ status: 502, json: { reason: `the calendar answered in an unexpected shape: ${why}` } });
 
-export const calendarAdapter: WebhookAdapter = {
-  body: (a) => {
+export const calendarAdapter = {
+  body: (a: Asked): Record<string, unknown> => {
     const { view, anchor } = asked(a);
     const { start, end } = rangeFor(view, anchor);
     return { timeMin: start.toISOString(), timeMax: end.toISOString(), maxResults: view === "month" ? 500 : 250 };
   },
-  toContract: (data, a) => {
+  toContract: (data: unknown, a: Asked): TransportResponse => {
     const events = (data as { events?: unknown } | null)?.events;
     if (!Array.isArray(events)) return unexpected("no events list");
     const bad = events.findIndex((e) => !isRawEvent(e));
@@ -145,4 +145,4 @@ export const calendarAdapter: WebhookAdapter = {
     const busy = new Set(inWindow.filter((p) => p.busy).map((p) => p.event));
     return { status: 200, json: { events: shown, gaps: view === "today" ? gapsFor(anchor, shown.filter((e) => busy.has(e))) : [] } };
   },
-};
+} satisfies WebhookAdapter;

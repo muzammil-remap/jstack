@@ -14,6 +14,12 @@ type Adapter = typeof import("@/data/ApiAdapter");
 type Session = typeof import("@/stores/session");
 type Usage = typeof import("@/stores/usage");
 type N8n = typeof import("@/data/transport/n8n");
+import { sample } from "./n8nContract";
+
+/** the proxy, as the tests need it: the tasks webhook answers its real empty reply, anything else is unreachable */
+const TASKS_EMPTY = JSON.stringify(sample("tasks.empty"));
+const tasksOnly = async (url: string) => (String(url).endsWith("/tasks") ? { status: 200, text: async () => TASKS_EMPTY } : Promise.reject(new TypeError("Failed to fetch")));
+const keysCalled = (spy: jest.Mock) => spy.mock.calls.map(([url]) => String(url).split("/").pop());
 
 const N8N_CONFIG = { DATA_SOURCE: "n8n", USE_API_ADAPTER: true, API_BASE_URL: null, N8N_BASE_URL: "http://127.0.0.1:9/n8n" };
 
@@ -41,6 +47,8 @@ beforeEach(() => {
 
 describe("ADR-78 · a route that is not connected is its section's error", () => {
   it("GET /usage answers 501 through the provider, the Usage store keeps nothing, and the session stays online", async () => {
+    // the Usage store also reads the tasks, which are live now (Phase 4): the one call that goes out
+    fetchSpy.mockImplementation(tasksOnly);
     const { provider, adapter, session, usage } = onN8n();
     session.useSessionStore.setState({ online: true });
     const error = await provider
@@ -53,7 +61,7 @@ describe("ADR-78 · a route that is not connected is its section's error", () =>
     expect(usage.useUsageStore.getState().summary).toBeNull();
     expect(session.useSessionStore.getState().online).toBe(true);
     expect(await provider.getOutbox().entries()).toEqual([]);
-    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(keysCalled(fetchSpy)).toEqual(["tasks"]);
   });
 
   it("a local answer says nothing about the connection: offline stays offline, whatever the probe route answers", async () => {

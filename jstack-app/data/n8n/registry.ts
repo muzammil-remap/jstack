@@ -15,6 +15,7 @@ import type { DataProvider } from "@/data/DataProvider";
 import type { TransportRequest, TransportResponse } from "@/data/transport/Transport";
 import { DEFAULTS } from "./defaults";
 import { calendarAdapter } from "./adapters/calendar";
+import { tasksAnswers } from "./adapters/tasks";
 
 /** `remap/WEBHOOKS.md` §C. Nothing that sends, pays, books, revokes or returns file bytes is here. */
 export const WEBHOOK_KEYS = ["calendar", "tasks", "people", "files", "memory", "tasks-write", "calendar-edit", "gmail-draft", "records", "actions"] as const;
@@ -24,12 +25,15 @@ export type WebhookKey = (typeof WEBHOOK_KEYS)[number];
 /** A route's request, with its `{param}` segments already pulled out of the path. */
 export type Asked = { req: TransportRequest; params: string[] };
 
-/** Turns one webhook's reply into the route's contract shape. Raw n8n JSON goes in; only the
- * contract's shape (or a contract error status) comes out, so nothing raw can reach a store. */
-export type WebhookAdapter = {
-  body: (asked: Asked) => Record<string, unknown>;
-  toContract: (data: unknown, asked: Asked) => TransportResponse;
-};
+/** Turns a webhook's reply into the route's contract shape. Raw n8n JSON goes in; only the
+ * contract's shape (or a contract error status) comes out, so nothing raw can reach a store.
+ *
+ * Two forms. One call: `body` builds the request, `toContract` maps its reply. Or an `answer` that
+ * makes its own calls through `callWebhook` — the tasks source pages with a cursor — and returns
+ * the contract's answer. Either way the transport reports reachability around the calls. */
+export type WebhookAdapter =
+  | { body: (asked: Asked) => Record<string, unknown>; toContract: (data: unknown, asked: Asked) => TransportResponse }
+  | { answer: (asked: Asked) => Promise<TransportResponse> };
 
 type ReadRow =
   /** A webhook answers it. Until its adapter exists (Phase 3/4 of `remap/N8N-INTEGRATION-PROMPT.md`)
@@ -37,7 +41,7 @@ type ReadRow =
   | { kind: "wired"; key: WebhookKey; adapter?: WebhookAdapter }
   /** Assembled from the webhooks it names, sharing one in-flight call per webhook. Until every one
    * of them is live the route answers empty. */
-  | { kind: "derived"; uses: readonly WebhookKey[] }
+  | { kind: "derived"; uses: readonly WebhookKey[]; answer?: (asked: Asked) => Promise<TransportResponse> }
   /** App configuration — the same answer for every caller, and nothing in Josh's voice. */
   | { kind: "default"; answer: (asked: Asked) => TransportResponse }
   /** No source yet: the contract's empty value for the route's response shape (`data/n8n/empty.ts`). */
@@ -69,10 +73,11 @@ export const READS: Partial<Record<RouteName, ReadRow>> = {
   getCalendar: { kind: "wired", key: "calendar", adapter: calendarAdapter },
   getEvent: EMPTY,
   // §4.5 tasks
-  getTasksWaiting: { kind: "derived", uses: ["tasks"] },
-  getColumns: deflt("getColumns"),
-  getTasks: { kind: "wired", key: "tasks" },
-  getTask: { kind: "derived", uses: ["tasks"] },
+  getTasksWaiting: { kind: "derived", uses: ["tasks"], answer: tasksAnswers.waiting },
+  // the Board mirrors Twenty's `bucket` (Checkpoint 2, answer 3)
+  getColumns: { kind: "derived", uses: ["tasks"], answer: tasksAnswers.columns },
+  getTasks: { kind: "wired", key: "tasks", adapter: { answer: tasksAnswers.list } },
+  getTask: { kind: "derived", uses: ["tasks"], answer: tasksAnswers.byId },
   getSlicers: deflt("getSlicers"),
   getTaskUsage: EMPTY,
   getTaskFiles: EMPTY,
