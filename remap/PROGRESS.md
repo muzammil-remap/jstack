@@ -1196,3 +1196,36 @@ starting `dashtest-p6c/`.
 | Close the day | **works**: the habit chips (records store), "How was today?" (brain `journal`); its mic is the device's own dictation |
 | The floating mic | **coming soon** (toast) |
 | The header: Review the week, focus chips, Arrange, Help, Theme | **works** (Arrange and focuses save to the records store) |
+
+## Phase 7 — deploying with Dokploy (30 Sep 2026)
+
+JSTACK goes out as one container from the repo's `Dockerfile`: the production export, and
+`remap/deploy/server.mjs` doing what nginx was to do (ADR-93). Dokploy's Traefik gives it
+`jstack.josh.useprivate.ai` and HTTPS. The handover is `remap/DEPLOY_N8N.md`.
+
+**Checked here** (Windows, Node 24; no Docker on this machine):
+- **The production build** (`build:web:prod` with `EXPO_PUBLIC_DATA_SOURCE=n8n`,
+  `EXPO_PUBLIC_N8N_BASE_URL=/n8n` and the `dashtest-p7` records namespace): the bundle check is
+  clean, including a search for the real n8n auth value.
+- **The server in front of Josh's live n8n**, with curl:
+  - `401` without the password, or with a wrong one.
+  - `/healthz`, the manifest and the icons open without it; everything else needs it.
+  - The CSP, HSTS and X-Frame-Options headers; gzip on the bundle.
+  - A `404` for `../` paths and dotfiles.
+  - Refused: `memory` and `gmail-compose` (`404`), `GET` (`405`), `text/plain` (`415`), another
+    origin, `Origin: null` and `Sec-Fetch-Site: cross-site` (`403`).
+  - A real `actions list` goes through.
+- **The app through it**, at 1440 and 390: every tab on live data. Today had its date and calendar,
+  Tasks "6 open · 2 waiting", Agents "not connected yet". Every `/n8n` call answered 200, the console
+  stayed empty, the test hook was absent and the service worker registered.
+- **`tests/unit/n8nServe.test.ts`**: 15 cases.
+
+**Found on the way:** Git Bash rewrites an environment value that starts with `/`. So
+`EXPO_PUBLIC_N8N_BASE_URL=/n8n` became `C:/Program Files/Git/n8n` in the bundle, and every call was
+refused by the app's own cleartext guard (SEC-08). A Linux build (the Dockerfile) doesn't do this. On
+Windows, `MSYS_NO_PATHCONV=1` stops it, and the bundle check now fails any build that lacks `/n8n`.
+
+**Not checked:** the image itself was never built, because there's no Docker here. The first Dokploy
+build is its first build.
+
+**Test records:** keys starting `dashtest-p7/` (none were written: the check was read-only).

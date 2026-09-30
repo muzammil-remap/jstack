@@ -73,8 +73,8 @@ All JSTACK webhooks are `POST` + JSON and share **one header-auth credential**. 
 
 - **The browser never holds the n8n secret or an n8n path.** It calls `POST <EXPO_PUBLIC_N8N_BASE_URL>/<key>` with a JSON body, where `<key>` is a short allow-listed name (`calendar`, `tasks`). A proxy maps the key to the webhook path and adds the auth header.
   - **Local dev:** `node remap/dev-proxy.mjs` on `http://127.0.0.1:8787`, configured from `remap/.env.local` (gitignored). `EXPO_PUBLIC_N8N_BASE_URL=http://127.0.0.1:8787/n8n`. Loopback is exempt from the app's HTTPS check, and the proxy answers CORS for loopback origins only.
-  - **Production:** nginx on the same host as the app, with one `location = /n8n/<key>` per allow-listed key, `proxy_set_header <auth header>`, and HTTP Basic Auth on the whole site. `EXPO_PUBLIC_N8N_BASE_URL=/n8n`, so it's same-origin and the CSP (`connect-src 'self'`) stays as it is.
-- **Allow-list, in three places that must agree:** `remap/dev-proxy.mjs` `ALLOW`, the nginx config, and `data/n8n/registry.ts`. **Workflows that send (gmail-compose, gmail-reply, SEND-OR-QUEUE) or return file bytes (the original dropbox-fetch) never get a key.** `remap/WEBHOOKS.md` §C is the list.
+  - **Production (ADR-93):** Dokploy builds the repo's `Dockerfile` into one container: `remap/deploy/server.mjs` serves the production build, puts HTTP Basic Auth on the whole site and forwards `POST /n8n/<key>` with the auth header; Traefik gives it the domain and HTTPS. `EXPO_PUBLIC_N8N_BASE_URL=/n8n`, so it's same-origin and the CSP (`connect-src 'self'`) stays as it is. Handover: `remap/DEPLOY_N8N.md`. (This replaced the earlier plan of nginx on the host.)
+- **Allow-list, in three places that must agree:** `remap/dev-proxy.mjs` `ALLOW`, `PROD_ALLOW` in `remap/deploy/server.mjs` (the same list without the keys the app never calls), and `data/n8n/registry.ts`; `tests/unit/n8nAllowList.test.ts` and `n8nServe.test.ts` hold them together. **Workflows that send (gmail-compose, gmail-reply, SEND-OR-QUEUE) or return file bytes (the original dropbox-fetch) never get a key.** `remap/WEBHOOKS.md` §C is the list.
 - The passkey lock screen runs only on the device (`lib/webauthnGate.ts`). The site password is the real access control. The documents want server-verified passkeys and sessions (`SECURITY.md`); with n8n only, that's a stand-in **Josh must agree to**. Record it as an ADR and in `KNOWN_GAPS.md`.
 - The app refuses to call APIs from a non-HTTPS origin, except localhost. Serve production over HTTPS.
 
@@ -89,7 +89,7 @@ All JSTACK webhooks are `POST` + JSON and share **one header-auth credential**. 
   remap/PROGRESS.md         setup results and progress log
   remap/WORKFLOWS-NEEDED.md which n8n workflow serves which app route, what's done, what's left
   remap/n8n/                the JSTACK-DASH-* workflows as deployed (record only; the app never reads them)
-  remap/dev-proxy.mjs       local stand-in for the production nginx proxy
+  remap/dev-proxy.mjs       the local proxy (production: remap/deploy/server.mjs, in the Dockerfile's image)
   HANDOVER.md … (Josh's docs, reference only)
   jstack-mock-v15.html      the app on fixture data
   jstack-app/               the app (pnpm commands run from here)

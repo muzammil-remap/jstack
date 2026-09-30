@@ -1,7 +1,7 @@
 # Running JSTACK locally on Josh's real data
 
 This page shows how to run the app on your own machine, talking to Josh's n8n through the local proxy. Nothing
-here is for production (that's nginx; see `CLAUDE.md` §5).
+here is for production: that's the Dokploy container, see `remap/DEPLOY_N8N.md`.
 
 **This is live data.** Anything you approve, tick, edit, capture or block really goes to Josh's
 systems: Twenty, Google Calendar, Gmail Drafts, and the EA's inbox. See "What not to click" at the

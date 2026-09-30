@@ -4,6 +4,23 @@ One line per file. Newest phase first. Josh's own files are named with what was 
 
 **Generated files** are marked **regenerate in the target repo, don't port**: `jstack-mock-v15.html` (re-packaged from the source) and `REMAP_HANDOVER.html` (never committed changed; `remap/codemap.sh` restores it). Port the source and rebuild them there.
 
+## Deploying with Dokploy — Phase 7 (30 Sep 2026)
+
+| File | Change | Why |
+|---|---|---|
+| `Dockerfile` | new: builds the production n8n export, runs the bundle check, runs the server on 8080 | Dokploy builds the repo (ADR-93) |
+| `.dockerignore` | new: keeps `.git`, dependencies, every `.env*` and the private screenshots out of the build context | nothing secret in an image |
+| `remap/deploy/server.mjs` | new: Basic Auth, the export with `_headers`, the n8n proxy for the keys the app calls | the three jobs nginx had (ADR-93) |
+| `remap/deploy/bundle-check.mjs` | new: fails an export that names an n8n path, a workflow, the test hook, the dev proxy or the auth value, or lacks `/n8n` | Phase 7's bundle check |
+| `jstack-app/tests/unit/n8nServe.test.ts` | new (15 cases) | the server, its allow-list and the bundle check |
+| `jstack-app/CODEMAP.md` | the allow-list paragraph; the §4 row | the third place is the server now |
+| `remap/DEPLOY_N8N.md` | new: the handover for whoever deploys it | Phase 7 |
+| `CLAUDE.md` | §5: production is the Dokploy container; the allow-list's three places | it said nginx |
+| `remap/RUN-LOCAL.md` | points at DEPLOY_N8N for production | it said nginx |
+| `DECISIONS.md` | ADR-93 | the decision |
+| `KNOWN_GAPS.md` | N8N-22 (no lockout after wrong site passwords) | found writing the server |
+| `remap/PROGRESS.md` | Phase 7 | the record |
+
 ## The final check, the Agents heading, RUN-LOCAL (30 Sep 2026)
 
 | File | Change | Why |
