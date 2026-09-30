@@ -134,8 +134,8 @@ function capabilities(): Capabilities {
   return { liveRouting: false, liveVoice: false, speech, fileStore: false, calendarWrite: false, moneyFeed: false, healthFeed: false, export: false, calendarViews: true };
 }
 
-/** Settings › Autonomy's six categories (`data/mock/fixtures/settings.json`), every one at `ask`:
- * nothing on n8n enforces a level yet, so the default is the one that claims the least. */
+/** ADR-79: Settings › Autonomy's six categories (`data/mock/fixtures/settings.json`), every one at
+ * `ask` — nothing automatic until Josh changes it. */
 const AUTONOMY: AutonomySettings = {
   "Email drafts": "ask",
   "Calendar proposals": "ask",
@@ -145,9 +145,15 @@ const AUTONOMY: AutonomySettings = {
   "Memory writes": "ask",
 };
 
-/** The fixture's hours and exception, without its Needs-you schedule: with no schedule stored, the
- * cards come as they arrive (`lib/needsYouSchedule.ts`). */
-const QUIET_HOURS: QuietHours = { start: "21:30", end: "07:00", exceptions: ["Security"] };
+/** ADR-79: 23:00–07:00, the window `JSTACK-SEND-OR-QUEUE` holds Telegram messages in today (it reads
+ * the hour in Australia/Brisbane), so the app and Telegram agree. The Security exception and the
+ * Needs-you schedule are the mock's. Once `records` is wired, Josh's saved value replaces this. */
+const QUIET_HOURS: QuietHours = {
+  start: "23:00",
+  end: "07:00",
+  exceptions: ["Security"],
+  needsYou: { windows: [{ start: "08:00", end: "09:00" }, { start: "16:00", end: "17:00" }], respectsQuietHours: true, paused: true },
+};
 
 /** The documented defaults (ADR-24, TS-02, TS-03, ST-06): brief replies, read aloud, no turn
  * timer, no car mode, no morning read time chosen. The end phrases are the fixture's. */
