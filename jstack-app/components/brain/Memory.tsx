@@ -15,6 +15,7 @@ import { packPayload } from "@/layout/dialogKit";
 import { RichText } from "@/lib/richText";
 import { space } from "@/theme/tokens";
 import { sayRefused } from "@/lib/optimistic";
+import { NotConnected } from "@/components/chrome/NotConnected";
 
 /** "1 rule" / "2 rules", and an explicit plural where -s is wrong ("misses"). */
 function plural(n: number, one: string, many = `${one}s`): string {
@@ -25,6 +26,7 @@ export function Memory() {
   const bodyStyle = useTxtStyle("body");
   const proposals = useBrainStore((s) => s.proposals);
   const hitRate = useBrainStore((s) => s.hitRate);
+  const notConnected = useBrainStore((s) => s.memoryNotConnected);
   const resolveProposal = useBrainStore((s) => s.resolveProposal);
   const openModal = useSessionStore((s) => s.openModal);
 
@@ -53,7 +55,12 @@ export function Memory() {
       }
     >
       <ListCard style={{ marginTop: space[2] }}>
-        {proposals.length === 0 ? (
+        {/* N8N-2: no source — said, never "All caught up" or "0 of 0 test questions" */}
+        {notConnected ? (
+          <Row testID="memory-empty">
+            <NotConnected testID="memory-not-connected" />
+          </Row>
+        ) : proposals.length === 0 ? (
           <Row testID="memory-empty">
             <Meta>All caught up. The Librarian runs again at 2:00.</Meta>
           </Row>

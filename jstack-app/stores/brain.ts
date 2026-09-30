@@ -6,7 +6,7 @@
  */
 import { create } from "zustand";
 import { getAdapter } from "@/data/provider";
-import { recordLoad } from "@/lib/loadError";
+import { NOT_CONNECTED, orNotConnected, recordLoad } from "@/lib/loadError";
 import { attempt, REFUSED } from "@/lib/optimistic";
 import { offlineCopy, rememberLastSeen } from "@/lib/lastSeen";
 import { keptShare, shareKey } from "@/lib/shareDraft";
@@ -42,6 +42,7 @@ type BrainState = {
   latestIn: BrainItem[];
   proposals: MemoryProposal[];
   hitRate: MemoryHitRate | null;
+  memoryNotConnected: boolean; // N8N-2: the Librarian's queue and hit rate have no source yet
   findQuery: string;
   findAnswer: FindAnswer | null;
   findResults: FindResult[];
@@ -75,6 +76,7 @@ export const useBrainStore = create<BrainState>((set, get) => ({
   latestIn: [],
   proposals: [],
   hitRate: null,
+  memoryNotConnected: false,
   findQuery: "",
   findAnswer: null,
   findResults: [],
@@ -87,10 +89,10 @@ export const useBrainStore = create<BrainState>((set, get) => ({
     const adapter = getAdapter();
     const [latestIn, proposals, hitRate] = await Promise.all([
       adapter.getBrainLatest(focus, opts?.since),
-      adapter.getMemoryProposals(focus),
-      adapter.getMemoryHitRate(),
+      orNotConnected(adapter.getMemoryProposals(focus)),
+      orNotConnected(adapter.getMemoryHitRate()),
     ]);
-    set({ latestIn, proposals, hitRate, staleAt: null });
+    set({ latestIn, proposals: proposals === NOT_CONNECTED ? [] : proposals, hitRate: hitRate === NOT_CONNECTED ? null : hitRate, memoryNotConnected: proposals === NOT_CONNECTED || hitRate === NOT_CONNECTED, staleAt: null });
     void rememberLastSeen("brain", focus ?? "", latestIn);
   }, async () => {
     const copy = await offlineCopy<BrainItem[]>("brain", focus ?? "");

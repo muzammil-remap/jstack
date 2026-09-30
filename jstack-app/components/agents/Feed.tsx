@@ -13,15 +13,22 @@ import { View } from "react-native";
 import { BtnSm, Dot, ListCard, Meta, Row, Section, Txt } from "@/theme/ui";
 import { formatWhen } from "@/lib/time";
 import { useAgentsStore } from "@/stores/agents";
+import { NotConnected } from "@/components/chrome/NotConnected";
 
 export function Feed() {
   const feed = useAgentsStore((s) => s.feed);
+  const notConnected = useAgentsStore((s) => s.notConnected.feed === true);
   const issues = useAgentsStore((s) => s.issues);
   const actIssue = useAgentsStore((s) => s.actIssue);
 
   return (
     <Section testID="agents-feed-section" sectionId="agents-feed" title={"Last 24 hours"}>
       <ListCard style={{ marginTop: 8 }}>
+        {notConnected && (
+          <Row testID="feed-not-connected-row" last>
+            <NotConnected testID="feed-not-connected" />
+          </Row>
+        )}
         {feed.map((f, i) => {
           const issue = f.issueId != null ? issues.find((x) => x.id === f.issueId) : undefined;
           return (

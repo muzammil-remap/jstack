@@ -7,7 +7,7 @@ import { create } from "zustand";
 import { ContractError } from "@/data/ApiAdapter";
 import { getAdapter } from "@/data/provider";
 import { attempt, REFUSED } from "@/lib/optimistic";
-import { recordLoad } from "@/lib/loadError";
+import { NOT_CONNECTED, orNotConnected, recordLoad } from "@/lib/loadError";
 import { useSessionStore } from "@/stores/session";
 import { refetchFor } from "@/stores/today";
 import type { ActionItem, AgentIssue, AgentSummary, FeedEvent, Portal, Schedule, SecurityCheck, Spend } from "@/data/types";
@@ -23,6 +23,8 @@ type AgentsState = {
   schedules: Schedule[];
   /** A-2: why the last load failed, or null once one gets through (`lib/loadError.ts`) */
   loadError: string | null;
+  /** N8N-2: the sections whose source is not connected yet — each says so instead of its empty value */
+  notConnected: Partial<Record<"summary" | "spend" | "issues" | "feed" | "checks", true>>;
 
   load: () => Promise<void>;
   /** the aggregates an issue's verb changes — the summary (health, count), the checks (`run` runs the linked one) and the feed (it records the run) — re-read together, not with the other four */
@@ -55,19 +57,31 @@ export const useAgentsStore = create<AgentsState>((set, get) => ({
   history: [],
   schedules: [],
   loadError: null,
+  notConnected: {},
 
   load: () => recordLoad(set, async () => {
     const adapter = getAdapter();
+    // N8N-2: a section whose source is not connected is recorded as such; it no longer takes the tab down
     const [summary, spend, portals, issues, feed, checks, schedules] = await Promise.all([
-      adapter.getAgentSummary(),
-      adapter.getAgentSpend(),
+      orNotConnected(adapter.getAgentSummary()),
+      orNotConnected(adapter.getAgentSpend()),
       adapter.getPortals(),
-      adapter.getAgentIssues(),
-      adapter.getAgentFeed(24),
-      adapter.getSecurityChecks(),
+      orNotConnected(adapter.getAgentIssues()),
+      orNotConnected(adapter.getAgentFeed(24)),
+      orNotConnected(adapter.getSecurityChecks()),
       adapter.getSchedules(),
     ]);
-    set({ summary, spend, portals, issues, feed, checks, schedules });
+    const nc = <T,>(v: T | typeof NOT_CONNECTED) => v === NOT_CONNECTED;
+    set({
+      summary: nc(summary) ? null : (summary as AgentSummary),
+      spend: nc(spend) ? null : (spend as Spend),
+      portals,
+      issues: nc(issues) ? [] : (issues as AgentIssue[]),
+      feed: nc(feed) ? [] : (feed as FeedEvent[]),
+      checks: nc(checks) ? [] : (checks as SecurityCheck[]),
+      schedules,
+      notConnected: { ...(nc(summary) ? { summary: true } : {}), ...(nc(spend) ? { spend: true } : {}), ...(nc(issues) ? { issues: true } : {}), ...(nc(feed) ? { feed: true } : {}), ...(nc(checks) ? { checks: true } : {}) },
+    });
   }),
 
   loadDerived: async () => {

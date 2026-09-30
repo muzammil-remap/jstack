@@ -130,3 +130,30 @@ describe("ADR-76 · the provider on n8n", () => {
     expect(opened).not.toHaveBeenCalled();
   });
 });
+
+describe("N8N-2 · on n8n the Agents and Brain stores load section by section", () => {
+  it("the reads with no source are recorded as not connected; the tab still loads and says nothing failed", async () => {
+    globalThis.fetch = jest.fn(async () => Promise.reject(new Error("unit test: no network"))) as unknown as typeof fetch;
+    let agents!: typeof import("@/stores/agents");
+    let brain!: typeof import("@/stores/brain");
+    jest.isolateModules(() => {
+      jest.doMock("@/data/config", () => ({ ...jest.requireActual("@/data/config"), DATA_SOURCE: "n8n", USE_API_ADAPTER: true, API_BASE_URL: null, N8N_BASE_URL: "http://127.0.0.1:9/n8n" }));
+      /* eslint-disable @typescript-eslint/no-require-imports -- loaded inside the isolated registry, after its config mock */
+      (require("@/stores/session") as typeof import("@/stores/session")).useSessionStore.setState({ locked: false });
+      agents = require("@/stores/agents");
+      brain = require("@/stores/brain");
+      /* eslint-enable @typescript-eslint/no-require-imports */
+    });
+    await agents.useAgentsStore.getState().load();
+    const a = agents.useAgentsStore.getState();
+    expect({ loadError: a.loadError, notConnected: a.notConnected, summary: a.summary, portals: a.portals.length > 0 }).toEqual({
+      loadError: null,
+      notConnected: { summary: true, spend: true, issues: true, feed: true, checks: true },
+      summary: null,
+      portals: a.portals.length > 0,
+    });
+    await brain.useBrainStore.getState().load();
+    const b = brain.useBrainStore.getState();
+    expect({ loadError: b.loadError, memoryNotConnected: b.memoryNotConnected, hitRate: b.hitRate }).toEqual({ loadError: null, memoryNotConnected: true, hitRate: null });
+  });
+});

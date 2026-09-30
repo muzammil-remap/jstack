@@ -41,3 +41,20 @@ export async function recordLoadAs<K extends string>(key: K, set: (partial: Reco
   }
   set({ [key]: null } as Record<K, string | null>);
 }
+
+/** What `orNotConnected` answers for a read the backend does not connect yet (a `501`). */
+export const NOT_CONNECTED: unique symbol = Symbol("not connected");
+
+/**
+ * N8N-2: a section whose source the backend does not connect says so, rather than showing the empty
+ * value as a fact ("all healthy", "Nothing failing"). The read's `501` becomes `NOT_CONNECTED` for
+ * the store to record against that section alone; any other failure still fails the load, as A-2 has it.
+ */
+export async function orNotConnected<T>(read: Promise<T>): Promise<T | typeof NOT_CONNECTED> {
+  try {
+    return await read;
+  } catch (error) {
+    if ((error as { status?: unknown } | null)?.status === 501) return NOT_CONNECTED;
+    throw error;
+  }
+}

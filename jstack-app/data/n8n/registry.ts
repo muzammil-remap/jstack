@@ -95,8 +95,9 @@ export const READS: Partial<Record<RouteName, ReadRow>> = {
   getMemoryHistory: EMPTY,
   getReplies: EMPTY,
   getChatThread: EMPTY,
-  getMemoryProposals: EMPTY,
-  getMemoryHitRate: EMPTY,
+  // N8N-2: no source, and the empty value would be a claim ("All caught up", "0 of 0") — 501, said per section
+  getMemoryProposals: UNAVAILABLE,
+  getMemoryHitRate: UNAVAILABLE,
   // §4.7 life
   getLife: { kind: "derived", uses: ["records"], answer: lifeAnswer },
   // §4.7 the Life records (JSTACK-DASH-records); a goal's detail also reads its tasks from Twenty
@@ -113,13 +114,14 @@ export const READS: Partial<Record<RouteName, ReadRow>> = {
   getLifeSectionConfig: deflt("getLifeSectionConfig"),
   // §4.8 agents
   getAgents: deflt("getAgents"),
-  getAgentSummary: EMPTY,
-  getAgentSpend: EMPTY,
+  // N8N-2: no source, and the empty values claim health ("all healthy · $0.00", "100%") — 501, said per section
+  getAgentSummary: UNAVAILABLE,
+  getAgentSpend: UNAVAILABLE,
   getPortals: deflt("getPortals"),
-  getAgentIssues: EMPTY,
+  getAgentIssues: UNAVAILABLE,
   getAgentIssue: EMPTY,
-  getAgentFeed: EMPTY,
-  getSecurityChecks: EMPTY,
+  getAgentFeed: UNAVAILABLE,
+  getSecurityChecks: UNAVAILABLE,
   getAgentRuns: EMPTY,
   // ADR-78: its section (a config record) survives a failed load and shows nothing, where the empty
   // value printed "$0 this month · 0 tokens". The Agents store's other reads stay empty for now: they

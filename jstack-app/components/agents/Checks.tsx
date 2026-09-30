@@ -23,6 +23,7 @@ import { useAgentsStore } from "@/stores/agents";
 import { useSessionStore } from "@/stores/session";
 import { useTokens } from "@/theme/ThemeProvider";
 import type { SecurityCheck } from "@/data/types";
+import { NotConnected } from "@/components/chrome/NotConnected";
 
 /**
  * The check's line: its status, then when it ran — never a server-composed
@@ -57,6 +58,7 @@ function statusLine(check: SecurityCheck): string {
 export function Checks() {
   const c = useTokens();
   const checks = useAgentsStore((s) => s.checks);
+  const notConnected = useAgentsStore((s) => s.notConnected.checks === true);
   const openSettings = useSessionStore((s) => s.openSettings);
 
   return (
@@ -66,6 +68,11 @@ export function Checks() {
           </Txt>
         }>
       <ListCard style={{ marginTop: 8 }}>
+        {notConnected && (
+          <Row testID="checks-not-connected-row" last>
+            <NotConnected testID="checks-not-connected" />
+          </Row>
+        )}
         {checks.map((check, i) => (
           <Row key={check.id} testID={`check-${check.id}`} last={i === checks.length - 1}>
             {/* D22 — handoff.md, Agents Column 3: "dot (ok / alert), name,

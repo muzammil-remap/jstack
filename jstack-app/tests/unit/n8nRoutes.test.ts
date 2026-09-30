@@ -66,7 +66,8 @@ const pathFor = (template: string) => buildPath(template, (template.match(/\{[^}
 const NOT_FOUND = ["getAction", "getEvent", "getTask", "getBrainItem", "getGoal", "getLearningItem", "getAgentIssue", "getFile", "getSection"];
 /** No honest empty form, and nothing in the app asks for it (`data/n8n/empty.ts`); or an empty
  * form that would be a claim — "$0 this month · 0 tokens" (ADR-78, the registry's `unavailable`). */
-const NOT_CONNECTED = ["getSectionCatalogue", "getUsage"];
+// N8N-2: the Agents and Brain reads whose empty value would claim health, each its section's "not connected"
+const NOT_CONNECTED = ["getSectionCatalogue", "getUsage", "getMemoryProposals", "getMemoryHitRate", "getAgentSummary", "getAgentSpend", "getAgentIssues", "getAgentFeed", "getSecurityChecks"];
 
 const GETS = ROUTES.filter((r) => r.method === "GET");
 /** every key the GET sweep reached, across its tests */

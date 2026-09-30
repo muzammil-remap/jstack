@@ -14,6 +14,7 @@ import { useSessionStore } from "@/stores/session";
 import { money } from "@/lib/money";
 import { radius, sizes, space } from "@/theme/tokens";
 import { useTokens } from "@/theme/ThemeProvider";
+import { NotConnected } from "@/components/chrome/NotConnected";
 
 function Ring({ fraction }: { fraction: number }) {
   const c = useTokens();
@@ -52,7 +53,10 @@ export function Spend() {
   const summary = useAgentsStore((s) => s.summary);
   const openModal = useSessionStore((s) => s.openModal);
 
-  if (spend == null) return null;
+  const notConnected = useAgentsStore((s) => s.notConnected.spend === true);
+
+  // N8N-2: no source — said, never "$0 of $0"
+  if (spend == null) return notConnected ? <Section testID="agents-spend-section" sectionId="agents-spend" title={"Spend"}><NotConnected testID="spend-not-connected" /></Section> : null;
   const fraction = spend.month.cap > 0 ? spend.month.spent / spend.month.cap : 0;
 
   return (

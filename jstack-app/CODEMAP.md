@@ -81,7 +81,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 
 ## 2. The map of the territory
 
-<!-- generated:start section=2 sha=798d330 date=2026-09-30 -->
+<!-- generated:start section=2 sha=a8a3e17 date=2026-09-30 -->
 
 ### `app/`
 
@@ -107,16 +107,16 @@ stacking order. And a green test you have not seen fail is not evidence.
 | file | lines | purpose | imported by |
 |---|---|---|---|
 | `CapsDialog.tsx` | 132 | CapsDialog — AG-01/AG-02/SEC-07: the monthly hard stop on what each agent may spend. | `layout/dialogs.tsx` |
-| `Checks.tsx` | 90 | Checks — Agents' "Security checks (cannot be hidden)" card (AG-06/07): the fixed seven; a failing check's status carries an accent-ink "· see agent issues" suffix and an alert dot (AG-06). | `layout/registry.tsx` |
+| `Checks.tsx` | 97 | Checks — Agents' "Security checks (cannot be hidden)" card (AG-06/07): the fixed seven; a failing check's status carries an accent-ink "· see agent issues" suffix and an alert dot (AG-06). | `layout/registry.tsx` |
 | `EmergencyLock.tsx` | 145 | EmergencyLock — Agents' "Emergency" card (AG-11/AG-12): hold the button 1.2s (an early release resets the hint), then a confirm dialog with four rows; confirming needs a fresh biometric assertion (SEC-07) before `session.lock()` calls `POST /lock`. | `layout/dialogs.tsx`, `layout/registry.tsx` |
-| `Feed.tsx` | 47 | Feed — Agents' "Last 24 hours" card (AG-05): ok/muted/alert dots, the time, text, meta. | `layout/registry.tsx` |
+| `Feed.tsx` | 54 | Feed — Agents' "Last 24 hours" card (AG-05): ok/muted/alert dots, the time, text, meta. | `layout/registry.tsx` |
 | `History.tsx` | 46 | History — Agents' "Decision history" card (AG-09): two rows inline (title · verb at 500 · via {channel} — the exact fields Today's own `HistoryDialog.tsx` already renders from `ActionHistoryEntry`; "via door" in the acceptance text doesn't map to any wire field or fixture value, so it isn't reproduced literally — A-33), "search" opens the full searchable dialog with reopen. | `layout/registry.tsx` |
 | `HistoryDialog.tsx` | 58 | HistoryDialog — AG-09's "search" dialog: a search field over every answered card, each row's "reopen" puts it back in Needs you (`postActionReopen`, A-31). | `layout/dialogs.tsx` |
-| `Issues.tsx` | 54 | Issues — Agents' "Agent issues (cannot be hidden)" card (AG-04): badge = open issues, each row's verb posts `POST /agents/issues/{id}` and leaves with a 10s undo toast (A-32, no undo route on the wire). | `layout/registry.tsx` |
+| `Issues.tsx` | 61 | Issues — Agents' "Agent issues (cannot be hidden)" card (AG-04): badge = open issues, each row's verb posts `POST /agents/issues/{id}` and leaves with a 10s undo toast (A-32, no undo route on the wire). | `layout/registry.tsx` |
 | `IssuesAllDialog.tsx` | 45 | IssuesAllDialog (O-1, OP-05) — Agents › Issues "all". | `layout/dialogs.tsx` |
 | `Portals.tsx` | 41 | Portals — Agents' "Portals" card (AG-03/SEC-10): eight tiles, each opening the shared outbound-link confirmation with the real domain — nothing opens without it. | `layout/registry.tsx` |
-| `Spend.tsx` | 96 | Spend — Agents' spend ring and per-agent caps (AG-02): a 56px ring at the spent fraction, "$X of $Y this month", a landing estimate, the heartbeat line, and cap chips. | `layout/registry.tsx` |
-| `Stats.tsx` | 52 | Stats — Agents' "Runs and spend" card (AG-01): four stat cards (18px serif number via `<Stat>`, 11.5 label), equal to `GET /agents/summary`. | `layout/registry.tsx` |
+| `Spend.tsx` | 100 | Spend — Agents' spend ring and per-agent caps (AG-02): a 56px ring at the spent fraction, "$X of $Y this month", a landing estimate, the heartbeat line, and cap chips. | `layout/registry.tsx` |
+| `Stats.tsx` | 55 | Stats — Agents' "Runs and spend" card (AG-01): four stat cards (18px serif number via `<Stat>`, 11.5 label), equal to `GET /agents/summary`. | `layout/registry.tsx` |
 
 ### `components/brain/`
 
@@ -128,7 +128,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `Find.tsx` | 124 | Find — Brain's search field (BR-04, GS-05). | `layout/registry.tsx` |
 | `ItemEditor.tsx` | 56 | ItemEditor — BR-05's "edit" dialog for a Latest-in capture: saving appends a version (`PUT /brain/items/{id}`, `GET /brain/items/{id}/versions` grows). | `layout/dialogs.tsx` |
 | `LatestIn.tsx` | 156 | LatestIn — Brain's "Latest in" (BR-05, RP-06): title, ONE meta line (what the Librarian decided, then the source and the time), then the record's data labels as tags. | `layout/registry.tsx` |
-| `Memory.tsx` | 101 | Memory — Brain's proposals card (BR-06..08) plus the hit-rate row (BR-09), which mock v11 appends inside the SAME card rather than a separate one. | `layout/registry.tsx` |
+| `Memory.tsx` | 108 | Memory — Brain's proposals card (BR-06..08) plus the hit-rate row (BR-09), which mock v11 appends inside the SAME card rather than a separate one. | `layout/registry.tsx` |
 | `MemoryHistoryDialog.tsx` | 50 | MemoryHistoryDialog (O-1, OP-03) — Memory's "all". | `layout/dialogs.tsx` |
 | `ProposalEdit.tsx` | 37 | ProposalEdit — BR-07's "edit" dialog for a Memory proposal: "Save my version" posts `{verb:"edit", text}`, which also teaches the Librarian. | `layout/dialogs.tsx` |
 | `TalkScreen.tsx` | 246 | TalkScreen — "Talk with EA" as a full-screen surface (V-2, VP-04..VP-07). | `layout/dialogs.tsx` |
@@ -157,6 +157,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `LiveMicOrb.tsx` | 132 | The LIVE mic — `.js-mic.is-live` in the pack, `.mic-live` in mock v11: width:42; height:42; border-radius:50%; background: var(--marker); color:#fff; animation: jsPulse 1.4s var(--ease) infinite and README, Components: "Listening: 42px circle, Marker fill, white filled glyph, **pulse ring 1.4s**." AUDIT_v2.md A-05: none of that existed. | `components/brain/TalkScreen.tsx`, `components/tasks/WorkMark.tsx`, `theme/ui/fieldButton.tsx` |
 | `LockedScreen.tsx` | 148 | LockedScreen — the two locked-screen states (mock v11 `#lock`, line 281 default / line 556 emergency), rendered by `<FaceIDGate>` once `locked` is true. | `components/chrome/Gate.tsx` |
 | `MicBanner.tsx` | 74 | MicBanner (V-1, ADR-49 / MC-03) — the microphone you walked away from. | 4 files |
+| `NotConnected.tsx` | 11 | N8N-2: the one line a section shows when its source is not connected yet — where its empty value would have read as a fact ("all healthy", "Nothing failing", "The Librarian runs again at 2:00"). | 6 files |
 | `Orb.tsx` | 169 | `.js-mic` (design/tokens/components.css) — the floating mic, push-to-talk. | `app/(tabs)/_layout.tsx`, `components/brain/DictateDialog.tsx`, `layout/TabScreen.tsx` |
 | `PrivacyShield.tsx` | 23 | PrivacyShield (F-70, P-8 — out of `app/_layout.tsx`, which sat at 99/100). | `app/_layout.tsx` |
 | `Rail.tsx` | 113 | The 200px rail (≥768, RL-02/03/04) — wordmark, the five tabs (filled icon + accent-ink on the active one, GL-07), a separator, Find and Settings, and the health line at the bottom (RL-05). | `app/(tabs)/_layout.tsx`, `components/chrome/DemoWatermark.tsx` |
@@ -349,7 +350,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `defaults.ts` | 215 | The configuration routes, answered on the device while n8n has no store for them (ADR-76): who is signed in, what this build can do, the layouts, focuses, parameters and section configs. | `data/n8n/adapters/records.ts`, `data/n8n/adapters/tasks.ts`, `data/n8n/registry.ts` |
 | `empty.ts` | 104 | The contract's empty value for every GET response shape the n8n transport answers without a source yet (ADR-76) — a list with nothing in it, a composite with nothing counted — so a section shows its own empty state and never the mock's demo content. | `data/n8n/adapters/today.ts`, `data/transport/n8n.ts` |
 | `focus.ts` | 30 | Who may see what, and what a focus narrows to, on the n8n build (ADR-76) — the rule the mock's `inFocus` applies (`data/mock/util.ts`), copied because `data/n8n/` may not import `data/mock/` (CT-03). | 7 files |
-| `registry.ts` | 185 | The n8n dispatcher's route table (ADR-76): which of the app's routes are answered by a webhook, which are assembled from other routes, which are configuration, and which are honestly empty. | 11 files |
+| `registry.ts` | 187 | The n8n dispatcher's route table (ADR-76): which of the app's routes are answered by a webhook, which are assembled from other routes, which are configuration, and which are honestly empty. | 11 files |
 | `taskRules.ts` | 67 | The task list's rules on the n8n build — slicers, the date range and the filter groups — copied from `data/mock/predicates.ts`, the spec, because `data/n8n/` may not import `data/mock/` (CT-03). | `data/n8n/adapters/tasks.ts` |
 
 ### `data/n8n/adapters/`
@@ -435,7 +436,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `keyboard.ts` | 90 | Keyboard listeners (spec §14.2 — KB-01/02/03). | 5 files |
 | `labelColumn.ts` | 53 | The waiting row's type column, sized to the widest type it must actually hold (R-18, rule 20: "a fixed column is sized to the widest word it must hold, measured"; UX-H, row C-5). | 5 files |
 | `lastSeen.ts` | 85 | lastSeen (A-3, WP-A) — the last copy of the three tabs Josh plans from, kept on this device so a load that fails offline still has something to plan from. | 5 files |
-| `loadError.ts` | 43 | recordLoad (A-2, WP-A) — a tab's load that fails is RECORDED, never thrown. | 8 files |
+| `loadError.ts` | 60 | recordLoad (A-2, WP-A) — a tab's load that fails is RECORDED, never thrown. | 8 files |
 | `lockGate.ts` | 57 | The locked-session write gate (H-1 d2, CD-14). | `data/ApiAdapter.ts`, `data/transport/outbox.ts`, `stores/session.ts` |
 | `mic.ts` | 585 | mic.ts (V-1, ADR-49) — the ONLY code in the app that opens a microphone. | 11 files |
 | `money.ts` | 33 | One money formatter, so the same amount cannot read two ways on one screen. | 7 files |
@@ -485,8 +486,8 @@ stacking order. And a green test you have not seen fail is not evidence.
 
 | file | lines | purpose | imported by |
 |---|---|---|---|
-| `agents.ts` | 172 | agents.ts (ADR-04) — summary, spend and caps, portals, agent issues, the feed, security checks, decision history (answered/expired ActionItems), and schedules. | 16 files |
-| `brain.ts` | 197 | brain.ts (ADR-04) — the dump draft, latest-in, memory proposals, hit rate, rules and the Find answer. | 14 files |
+| `agents.ts` | 186 | agents.ts (ADR-04) — summary, spend and caps, portals, agent issues, the feed, security checks, decision history (answered/expired ActionItems), and schedules. | 16 files |
+| `brain.ts` | 199 | brain.ts (ADR-04) — the dump draft, latest-in, memory proposals, hit rate, rules and the Find answer. | 14 files |
 | `device.ts` | 122 | device.ts (S-5, ADR-16) — what this DEVICE remembers, as opposed to what the account is set to. | 10 files |
 | `dictate.ts` | 53 | dictate.ts (W-1) — the Dictate thread, the conversation `DictateDialog` holds with the EA. | `components/brain/DictateDialog.tsx` |
 | `files.ts` | 154 | files.ts (X-1, §4.17) — what the app knows about files. | 7 files |
@@ -516,7 +517,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 |---|---|---|---|
 | `ThemeProvider.tsx` | 68 | Theme mode reads stores/settings.ts (ADR-04), which persists it through lib/encryptedStore.ts (ADR-16: "theme mode and privacy blur are per- device local", never the server). | 81 files |
 | `tokens.ts` | 348 | generated by tools/gen-tokens.mjs from design/tokens — do not edit (see design/DISCREPANCIES.md for the three values this script overrides) | 127 files |
-| `ui.tsx` | 26 | UI primitives — the barrel (S-2, ADR-33). | 126 files |
+| `ui.tsx` | 26 | UI primitives — the barrel (S-2, ADR-33). | 127 files |
 | `useLayout.ts` | 41 | The one hook allowed to read the window width (ADR-07; enforced by eslint-rules/no-window-dimensions.js everywhere else). | 30 files |
 | `useReducedMotion.ts` | 22 | prefers-reduced-motion (GL-06): orb breathing + screen animations disabled. | `components/chrome/LiveMicOrb.tsx`, `components/chrome/Orb.tsx` |
 
@@ -599,7 +600,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 Endpoint → store action → component → testIDs, one block per contract group, from
 `wiring.json`.
 
-<!-- generated:start section=3 sha=798d330 date=2026-09-30 -->
+<!-- generated:start section=3 sha=a8a3e17 date=2026-09-30 -->
 
 ### agents
 
@@ -612,8 +613,8 @@ Endpoint → store action → component → testIDs, one block per contract grou
 | `GET /portals` | `agents.load` | — | — |
 | `GET /agents/issues` | `agents.load` | — | — |
 | `GET /agents/issues/{id}` | — | — | — |
-| `POST /agents/issues/{id}` | `agents.actIssue` | `Issues`, `Feed` | `agents-feed-section`, `agents-issues-section`, `feed-`, `feed-renew-` +4 |
-| `POST /agents/issues/{id}/undo` | `agents.actIssue` | `Issues`, `Feed` | `agents-feed-section`, `agents-issues-section`, `feed-`, `feed-renew-` +4 |
+| `POST /agents/issues/{id}` | `agents.actIssue` | `Issues`, `Feed` | `agents-feed-section`, `agents-issues-section`, `feed-`, `feed-not-connected` +8 |
+| `POST /agents/issues/{id}/undo` | `agents.actIssue` | `Issues`, `Feed` | `agents-feed-section`, `agents-issues-section`, `feed-`, `feed-not-connected` +8 |
 | `GET /agents/feed` | `agents.load`, `agents.loadDerived` | — | — |
 | `GET /security/checks` | `agents.load`, `agents.loadDerived` | — | — |
 | `POST /security/checks/{id}/run` | `agents.runCheck` | — | — |
@@ -636,8 +637,8 @@ Endpoint → store action → component → testIDs, one block per contract grou
 | `GET /chat/thread` | `dictate.loadChatThread` | — | — |
 | `POST /chat` | `dictate.sendChat` | — | — |
 | `GET /memory/proposals` | `brain.load` | — | — |
-| `POST /memory/proposals/{id}` | `brain.resolveProposal` | `Memory` | `brain-memory-section`, `hitrate-fix`, `memory-all`, `memory-empty` +4 |
-| `POST /memory/proposals/{id}/undo` | `brain.resolveProposal` | `Memory` | `brain-memory-section`, `hitrate-fix`, `memory-all`, `memory-empty` +4 |
+| `POST /memory/proposals/{id}` | `brain.resolveProposal` | `Memory` | `brain-memory-section`, `hitrate-fix`, `memory-all`, `memory-empty` +6 |
+| `POST /memory/proposals/{id}/undo` | `brain.resolveProposal` | `Memory` | `brain-memory-section`, `hitrate-fix`, `memory-all`, `memory-empty` +6 |
 | `GET /memory/hitrate` | `brain.load` | — | — |
 
 ### calendar
@@ -930,6 +931,7 @@ them; `tools/gen-codemap.mjs` lists any that this section does not name.
 | `tests/unit/n8nTasksWrite.test.ts` | Phase 6 · `tasks-write` (ADR-86): a title, a due day (local noon, per board zone), open/in progress/done and the completion are written in the writer's words and answered as the list maps a task, valid; the undo of a completion puts a waiting task back to Twenty's own status; a Board stage, a Gantt drag, a priority, waiting and a goal link are refused `422 { field, reason }` with nothing sent; a new task gets its own offlineId and a repeat is the first; 404/422/502 are the writer's; a refusal on the device reports nothing, a real write says online; the list is read again after a write |
 | `tests/unit/n8nRecords.test.ts` | Phase 6 · `records` (ADR-87): the store's real replies read as sent (absent, present, stale, a bad key); every settings route answers the build's default until saved, then the record; a save sends the version it read and a record saved meanwhile is 409; the namespace prefixes every key; the mock's refusals (a rule, a pinned section, a parameter's range, a locked group, a goal's silo, a habit removed); goals dropped with a history line; a day's log as a date-first key and the week's stats and streaks from it; Today's glance and close-the-day and Life from the same records; a section's edit and revert; an email card's revised draft |
 | `tests/unit/n8nFiles.test.ts` | Phase 6 · `files` (ADR-89): every page of Dropbox's /JSTACK listing, newest first, each a valid Attachment held in Dropbox (kind from the name, Josh's in an Inbox folder, a task's in the folder named for it); the app's own file filter on the device; /JSTACK not made yet is an empty list; one file by id, else 404 |
+| `tests/native/notConnected.test.tsx` | N8N-2 (ADR-90), rendered: Runs and spend, Agent issues, the feed, the checks and Brain › Memory say "Not connected yet" and none of their claims ("Nothing failing", "100%", "The Librarian runs again", "test questions"); the rail's health line draws nothing without a summary; a connected empty section keeps its own words |
 | `tests/unit/n8nActions.test.ts` | Phase 6 · `actions`: Needs you from the actions store's real replies — the open list valid, by rank, five at most after the focus; history answered-only, newest first, `?q=` on the title, each card's last history entry the store's answer; a card the contract cannot draw left out and named once, by id a 502; each verb sends only its fields, Approve reads the card first and an email card's approve is 501 with nothing answered; the reload after an answer asks again; a second answer, a late undo and nothing-to-undo are 409, a bad verb 422, an unknown card 404; an email card's approve answered, then drafted to its recipient (ADR-88), refused when it names no one, taken back when the draft fails; reopen 501; Today's Needs you is `GET /actions`'s answer through one call |
 | `tests/unit/n8nLocked.test.ts` | ADR-83: on n8n, while the gate is shut every call waits and nothing reaches the proxy — webhook reads, local answers and keyless writes alike — while the unlocking routes and the emergency lock go through; on unlock each held call is answered and each workflow runs once; through the provider the session's own lock holds Today, `unlock()` releases it and a relock holds the next; the mock still answers under the gate |
 | `tests/unit/n8nToday.test.ts` | Phase 5: `GET /today` from the live sources — a valid TodayComposite whose calendar is exactly `GET /calendar`'s today answer, whose tasks are the first three not done in Twenty's order, with no cards, lines or delta (even when asked), the glance and the close at nothing; a failed source fails the composite; one cold load of Today, the grid and the Tasks tab runs each workflow once, counted at the fetch |
@@ -1412,7 +1414,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 
 ## 7. The decision index
 
-<!-- generated:start section=7 sha=798d330 date=2026-09-30 -->
+<!-- generated:start section=7 sha=a8a3e17 date=2026-09-30 -->
 
 `DECISIONS.md` — ADR-01..75, each with its status; the versioned decision files hold the full reasoning.
 
@@ -1497,7 +1499,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 
 ## 8. The test map
 
-<!-- generated:start section=8 sha=798d330 date=2026-09-30 -->
+<!-- generated:start section=8 sha=a8a3e17 date=2026-09-30 -->
 
 ### Specs
 
@@ -1557,6 +1559,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 | `tests/native/gateMockSignIn.test.tsx` | — |
 | `tests/native/micAwake.test.ts` | — |
 | `tests/native/micNative.test.ts` | MC-01, MC-07, MC-08, WPF-14 |
+| `tests/native/notConnected.test.tsx` | — |
 | `tests/native/people-verb-error.test.tsx` | CD-10 |
 | `tests/native/primitives.test.tsx` | CD-17, GL-05, NR-04, NR-05, TE-05, UX-01 |
 | `tests/native/push-copy.test.tsx` | GL-00, PU-01 |
@@ -1742,7 +1745,7 @@ the codebase that the hand-written judgement has not caught up with. A release r
 empty — Stage 3c's `P-1` adds the release workflow and that gate with it. Until then they are
 advisory, and Stage 4 curates them.
 
-<!-- generated:start section=11 sha=798d330 date=2026-09-30 -->
+<!-- generated:start section=11 sha=a8a3e17 date=2026-09-30 -->
 
 ### New since section 6 was curated
 

@@ -8,9 +8,11 @@ import { View } from "react-native";
 import { BtnSm, Dot, ListCard, Meta, Row, Section, Txt } from "@/theme/ui";
 import { useAgentsStore } from "@/stores/agents";
 import { useSessionStore } from "@/stores/session";
+import { NotConnected } from "@/components/chrome/NotConnected";
 
 export function Issues() {
   const issues = useAgentsStore((s) => s.issues);
+  const notConnected = useAgentsStore((s) => s.notConnected.issues === true);
   const actIssue = useAgentsStore((s) => s.actIssue);
   const openModal = useSessionStore((s) => s.openModal);
 
@@ -29,7 +31,12 @@ export function Issues() {
       }
     >
       <ListCard style={{ marginTop: 8 }}>
-        {issues.length === 0 ? (
+        {/* N8N-2: no source — said, never "Nothing failing" */}
+        {notConnected ? (
+          <Row testID="issues-empty">
+            <NotConnected testID="issues-not-connected" />
+          </Row>
+        ) : issues.length === 0 ? (
           <Row testID="issues-empty">
             <Meta>Nothing failing. Every check ran when it should.</Meta>
           </Row>

@@ -9,11 +9,14 @@ import { Sens } from "@/components/chrome/Sens";
 import { useAgentsStore } from "@/stores/agents";
 import { space } from "@/theme/tokens";
 import { moneyPrecise } from "@/lib/money";
+import { NotConnected } from "@/components/chrome/NotConnected";
 
 export function Stats() {
   const summary = useAgentsStore((s) => s.summary);
+  const notConnected = useAgentsStore((s) => s.notConnected.summary === true);
 
-  if (summary == null) return null;
+  // N8N-2: no source — said, never "0 runs · 100%"
+  if (summary == null) return notConnected ? <Section testID="agents-stats-section" sectionId="agents-stats" title={"Runs and spend"}><NotConnected testID="stats-not-connected" /></Section> : null;
 
   const cells: { id: string; label: string; node: React.ReactNode }[] = [
     { id: "runs", label: "Runs today", node: <Stat testID="stat-runs">{summary.runsToday}</Stat> },
