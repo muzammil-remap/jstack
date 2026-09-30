@@ -86,9 +86,13 @@ describe("ADR-76 · the provider on n8n", () => {
   }
 
   it("answers from the n8n transport, not the mock: the fixture tasks and Needs-you cards are absent", async () => {
-    // tasks are live (Phase 4): Twenty answers its real empty reply, and nothing else goes out
-    const empty = JSON.stringify(jest.requireActual("./n8nContract").sample("tasks.empty"));
-    const fetchSpy = jest.fn(async (url: string) => (String(url).endsWith("/tasks") ? { status: 200, text: async () => empty } : Promise.reject(new Error("unit test: no network"))));
+    // tasks (Phase 4) and the calendar (Phase 3) are live: each answers its real empty reply, nothing else goes out
+    const { sample } = jest.requireActual("./n8nContract");
+    const replies: Record<string, string> = { tasks: JSON.stringify(sample("tasks.empty")), calendar: JSON.stringify(sample("calendar.empty")) };
+    const fetchSpy = jest.fn(async (url: string) => {
+      const key = String(url).split("/").pop() ?? "";
+      return replies[key] != null ? { status: 200, text: async () => replies[key] } : Promise.reject(new Error("unit test: no network"));
+    });
     globalThis.fetch = fetchSpy as unknown as typeof fetch;
     const { provider } = n8nProvider();
     const a = provider.getAdapter();
@@ -96,7 +100,8 @@ describe("ADR-76 · the provider on n8n", () => {
     const today = await a.getToday();
     expect({ needsYou: today.needsYou, tasks: today.tasks, events: today.calendar.events }).toEqual({ needsYou: [], tasks: [], events: [] });
     expect((await a.getSession()).user).toEqual({ id: "josh", name: "Josh", role: "owner" });
-    expect(fetchSpy.mock.calls.map(([url]) => String(url).split("/").pop())).toEqual(["tasks"]);
+    // one call per webhook: Today's tasks shared the list's call (the 30-second sharing)
+    expect(fetchSpy.mock.calls.map(([url]) => String(url).split("/").pop())).toEqual(["tasks", "calendar"]);
   });
 
   it("a write with no key is refused with the contract's error, and nothing is queued or sent", async () => {

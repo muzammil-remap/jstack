@@ -20,14 +20,19 @@ export const NOT_CONNECTED: TransportResponse = { status: 501, json: { reason: "
 
 const PERIODS: HabitPeriod[] = ["week", "month", "year", "all"];
 
-/** Today with nothing in it: the date is real, everything the sources would say is absent. */
-function emptyToday({ req }: Asked): TodayComposite {
+/**
+ * Today with nothing in it: the date is real, everything the sources would say is absent.
+ *
+ * No `delta`, even when the request carries `?since=`: an empty delta is an ANSWER — "Nothing
+ * changed while you were away" (`lib/deltaLine.ts`) — and nothing here knows what changed. Absent,
+ * the app shows the composite's own `since` line, which is empty.
+ */
+function emptyToday(): TodayComposite {
   const today = todayKey();
   const at = now().toISOString();
   return {
     seenAt: at,
     generatedAt: at,
-    ...(req.query?.since != null ? { delta: { added: [], changed: [], removed: [] } } : {}),
     dayName: weekdayLong(today),
     dateLabel: formatMonthDay(today),
     todayDate: today,
@@ -46,6 +51,8 @@ function emptyHabitStats({ req }: Asked): HabitStats {
   const asked = req.query?.period as HabitPeriod | undefined;
   return { period: asked != null && PERIODS.includes(asked) ? asked : "week", earliest: todayKey(), habits: [] };
 }
+
+export const EMPTY_TODAY = emptyToday;
 
 const EMPTY: Partial<Record<ShapeName, (asked: Asked) => unknown>> = {
   TodayComposite: emptyToday,

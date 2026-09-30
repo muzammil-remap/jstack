@@ -16,6 +16,7 @@ import type { TransportRequest, TransportResponse } from "@/data/transport/Trans
 import { DEFAULTS } from "./defaults";
 import { calendarAdapter } from "./adapters/calendar";
 import { tasksAnswers } from "./adapters/tasks";
+import { todayAnswer } from "./adapters/today";
 
 /** `remap/WEBHOOKS.md` §C. Nothing that sends, pays, books, revokes or returns file bytes is here. */
 export const WEBHOOK_KEYS = ["calendar", "tasks", "people", "files", "memory", "tasks-write", "calendar-edit", "gmail-draft", "records", "actions"] as const;
@@ -64,7 +65,7 @@ export const READS: Partial<Record<RouteName, ReadRow>> = {
   getAuthNonce: deflt("getAuthNonce"),
   getSession: deflt("getSession"),
   // §4.2 today
-  getToday: { kind: "derived", uses: ["calendar", "tasks"] },
+  getToday: { kind: "derived", uses: ["calendar", "tasks"], answer: todayAnswer },
   getReview: EMPTY,
   // §4.3 decisions — the Needs-you store arrives with the `actions` key (Phase 6)
   getActions: EMPTY,

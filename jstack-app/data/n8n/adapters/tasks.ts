@@ -205,6 +205,8 @@ function listFor(tasks: Task[], asked: Asked): Task[] {
 }
 
 export const tasksAnswers = {
+  /** every task, mapped and in Twenty's order, with no list rule applied — what `/today` picks from */
+  all: () => answering(({ tasks }) => ({ status: 200, json: tasks })),
   list: (asked: Asked) => answering(({ tasks }) => ({ status: 200, json: listFor(tasks, asked) })),
   byId: (asked: Asked) =>
     answering(({ tasks }) => {
