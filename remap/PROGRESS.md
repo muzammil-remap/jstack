@@ -2,6 +2,25 @@
 
 _(the coding agent fills this in from Phase 0)_
 
+## Must fix before Josh sees the dashboard
+
+| # | What | Where it is recorded | Fix |
+|---|---|---|---|
+| 1 | The Agents tab and the rail claim health with no source: "all healthy · $0.00", 0 runs, 100%, "Nothing failing", "The Librarian runs again at 2:00" | `KNOWN_GAPS.md` N8N-2 | the agent-stats / agent-health workflows (`remap/WORKFLOWS-NEEDED.md` 2.13, 2.14); if they are not live by then, per-section loading in `stores/agents.ts` and `stores/brain.ts` |
+| 2 | The month grid drops the last day of a six-row month — 30 November 2026 is the first, then 31 May 2027 | `KNOWN_GAPS.md` N8N-4 | a 42-day grid in `lib/time.ts` `monthGrid` (Josh's code; the calendar adapter already follows the grid's length) |
+
+## Open decisions for Josh
+
+| Decision | Until then | Recorded |
+|---|---|---|
+| A `priority` SELECT on Twenty tasks (HIGH / MEDIUM / LOW) — **required, with a default** | no priority is printed; `EXPO_PUBLIC_TWENTY_PRIORITY_FIELD` off | N8N-8 |
+| An `area` SELECT on Twenty tasks (PERSONAL / FAMILY / WORK), set by the EA's triage | every task `personal:josh`; `EXPO_PUBLIC_TWENTY_AREA_FIELD` off | Phase 4 |
+| A `waitingSince` date on Twenty tasks | waiting days count from `createdAt` | N8N-6 |
+| `CalEvent.allDay` in the contract | all-day is read from the times (`lib/timeGrid.ts` `isAllDay`) | N8N-5 |
+| The site password as the stand-in for server-verified passkeys | proposed | ADR-77, N8N-1 |
+| The mock's calendar window; the 35-day month grid | the n8n build asks for the grid's days | N8N-3, N8N-4 |
+| Overdue tasks are hidden by the default 90-day range on List, Board and Gantt (TF-01); so the Due › Overdue filter cannot match under it, and the Tasks header's open count leaves them out | as specified — Josh's spec, no change from us | Phase 5 |
+
 ## Setup — 2026-09-28 (Windows 11, Git Bash)
 
 Assembled per `remap/SETUP-PROMPT.md` from the three downloaded folders. Environment only; no
@@ -655,11 +674,12 @@ Console: 0 messages.
 1. **The Board's Done lane shows 8 of 23.** The mock's default range — the next 90 days — applies
    to the Board and the Gantt as well as the List, so a done (or overdue) task whose due date is
    past leaves them; Done itself defaults to all time. Mock-exact, as the spec; the "Next 90 days"
-   chip says so. Same rule: **an overdue open task drops off the default List.**
+   chip says so. Same rule: **an overdue open task drops off the default List** — checked against
+   the spec in Phase 5 (below): TF-01 specifies it, so it stays.
 2. **Board columns' order**: Twenty's option order is not in the reply. Proposed DASH change —
    `JSTACK-DASH-tasks-read` answers `{ "op": "columns" }` with the `bucket` field's options
-   (`value`, `label`, `position`) from Twenty's metadata API (`/rest/metadata/fields`), so the
-   Board shows every stage, empty ones included, in Twenty's order and with Twenty's labels.
+   from Twenty's metadata API, so the Board shows every stage, empty ones included, in Twenty's
+   order and with Twenty's labels. Specified in `remap/WORKFLOWS-NEEDED.md` §2; not deployed.
 3. **Waiting days** overstate when the wait began after the task was filed. The honest fixes are
    both Josh's: a `waitingSince` date on the Twenty task (set by the EA), or `days` made optional
    in the contract and hidden when absent (`components/tasks/WaitingOn.tsx` prints `{days} days`).
@@ -667,3 +687,73 @@ Console: 0 messages.
 5. **Links to people/companies** (`taskTargets`) need Twenty's `depth=1` — a DASH change, not made.
    **Bodies** (`bodyV2`, on 11 tasks) have no field on `Task` and are not shown.
 6. Data, not the app: Twenty holds several duplicate titles (e.g. four identical done tasks).
+
+## Phase 5 — the Today composite, live (30 Sep 2026)
+
+`GET /today` answers from `data/n8n/adapters/today.ts`, assembled as the mock's `getToday` builds
+it from the two live sources:
+
+| Part of the composite | On the n8n build |
+|---|---|
+| `calendar` | exactly `GET /calendar?view=today`'s answer for today — the same adapter and the same request body, so the Today grid and this share one webhook call (`callWebhook`'s 30-second sharing) |
+| `tasks` | the first three tasks not done, in focus, in Twenty's order (the mock's rule; no range applies) |
+| `needsYou`, `insight`, `since`, `endLine`, `glance`, `close` | the contract's empty value — no source yet (Needs-you is the `actions` store, Phase 6) |
+| `delta` | **absent, even with `?since=`**: an empty delta is an answer — "Nothing changed while you were away" (`lib/deltaLine.ts`) — and nothing here knows what changed. A change to `empty.ts`, so every empty Today is the same |
+
+If either source fails, the composite fails with its status (a 502, or the network's error for the
+outbox and the sync dot): an empty half would read as "nothing on the calendar" or "nothing to do".
+
+### Live, against a second dev proxy on 8788 (n8n build, Chromium in Brisbane, 30 Sep)
+
+A proxy of its own so its log holds only these loads. Each load is a fresh browser context, so a
+cold one: nothing cached, the passkey ceremony run, Today opened. Screenshots, `report.json` and the
+proxy log are in `remap/screens/private/checkpoint-5/` (gitignored — real titles).
+
+| Cold load | Proxy log, that load only | Composite |
+|---|---|---|
+| 1440 px | `tasks → 200 1182ms`, `calendar → 200 1616ms` | Wednesday 30 September; 0 events, one gap ("Free until 20:00"); 3 tasks, all open; no cards, no delta |
+| 820 px | `tasks → 200 1115ms`, `calendar → 200 1470ms` | the same |
+| 390 px | `tasks → 200 1267ms`, `calendar → 200 1636ms` | the same |
+
+**Each workflow ran once per cold load.** Console: 0 messages on every load. The first attempt, on
+`127.0.0.1`, never unlocked (a WebAuthn relying party cannot be an IP address; `localhost` works)
+— and the proxy log shows that page still called `calendar` and `tasks` once each: the lock screen
+is an overlay and the tabs beneath it load. On n8n nothing refuses those reads, so the site password
+is the only gate; added to `KNOWN_GAPS.md` N8N-1.
+
+### Overdue tasks — checked against the spec, no change
+
+`02_ACCEPTANCE_TESTS_v22.md` TF-01: default "Next 90 days" on List, Board and Gantt, "a task outside
+the range is absent from the open views", undated tasks always inside. `CONTRACT.md`: the default
+resolves to `next` on List, Board and Gantt. So the n8n build follows it, and there is no ADR and no
+mock defect. Shown with the browser's clock at Thu 1 Oct 10:00, the day after "Stretch" was due
+(`checkpoint-5/overdue-list-default.png`, `overdue-list-all-time.png`):
+
+| Range | List |
+|---|---|
+| Next 90 days (default) | 5 rows; Stretch absent |
+| All time | 6 rows; Stretch first, "Wed 30 Sep" |
+
+Two consequences, both the spec's and listed under **Open decisions for Josh**: the Due › Overdue
+filter can only match under a range that reaches back (the default window starts today), and the
+Tasks header's "5 open" is the default List's length (`stores/tasks.ts`), so it leaves the overdue
+task out and is not recounted under All time. Today's "Your tasks" does show Stretch — no range
+applies there.
+
+### Gates
+
+| Gate | Result |
+|---|---|
+| `sh remap/codemap.sh` | pass (384 source files mapped) |
+| mock rebuild (`build:web:prod` + `tools/build-mock.mjs`), before the tests | pass |
+| `pnpm check`, `pnpm lint` | pass |
+| `pnpm test` (New York) | 16 failed suites, 80 failed tests — the baseline, no new failure; `n8nToday` 9/9. CM-02 passes until the commit, as before |
+| `JSTACK_TZ=Australia/Brisbane pnpm test` | the same |
+| `node tools/build-web.mjs` | pass (`224787a68bcd` over 375 files) |
+| `tools/secret-scan.mjs` | clean |
+
+### Seen, not ours
+
+At 820 px the Calendar card's heading and its links overlap ("CALENDAR" / "today · 3 days ·
+google"). The packaged mock does the same at that width, so it's the layout: `KNOWN_GAPS.md` N8N-9,
+Josh's.

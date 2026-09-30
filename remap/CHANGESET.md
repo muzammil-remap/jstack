@@ -4,6 +4,22 @@ One line per file. Newest phase first. Josh's own files are named with what was 
 
 **Generated files** are marked **regenerate in the target repo, don't port**: `jstack-mock-v15.html` (re-packaged from the source) and `REMAP_HANDOVER.html` (never committed changed; `remap/codemap.sh` restores it). Port the source and rebuild them there.
 
+## Phase 5 — the Today composite, live (30 Sep 2026)
+
+| File | Change | Why |
+|---|---|---|
+| `jstack-app/data/n8n/adapters/today.ts` | new: `GET /today` from the calendar and the tasks, the rest at the contract's empty value | the Today composite, as the mock's `getToday` builds it |
+| `jstack-app/data/n8n/registry.ts` | `getToday` derived with that answer | wires it |
+| `jstack-app/data/n8n/adapters/tasks.ts` | `tasksAnswers.all` — every task with no list rule | what Today picks its three from |
+| `jstack-app/data/n8n/empty.ts` | `EMPTY_TODAY` exported; no `delta` on the empty Today, even with `?since=` | an empty delta prints "Nothing changed while you were away", a claim with no source |
+| `jstack-app/tests/unit/n8nToday.test.ts` | new | the composite, its failures, one call per webhook per load |
+| `jstack-app/tests/unit/n8nConfig.test.ts` | the provider case answers the `calendar` key too, and expects `tasks` then `calendar` | expectation changed on purpose: Today's calendar is live |
+| `jstack-app/CODEMAP.md` | §4 row for the new test; maps regenerated | a guard is named in §4 |
+| `KNOWN_GAPS.md` | N8N-1: reads load beneath the lock screen; N8N-4 marked must-fix; N8N-7 points at the `columns` spec; N8N-9 (the Calendar heading at 820 px) | Checkpoint 4 answers; seen at Checkpoint 5 |
+| `remap/WORKFLOWS-NEEDED.md` | the `columns` op spec for JSTACK-DASH-tasks-read (not deployed, nothing built on it) | Checkpoint 4 answer 2 |
+| `jstack-mock-v15.html` | re-packaged (own commit). **Generated — regenerate in the target repo, don't port** | QA-06 |
+| `remap/PROGRESS.md` | the must-fix list, the open decisions, the overdue finding, the Phase 5 section | Checkpoint 5 |
+
 ## Phase 4 — Tasks, live (30 Sep 2026)
 
 | File | Change | Why |

@@ -54,6 +54,64 @@ The app and Telegram must see **the same** Needs-you card (`CONTRACT.md` §2). S
 3. **If Josh answers on Telegram**, the EA records it the same way: `{ "op": "answer", "id", "verb", …, "via": "telegram" }`.
 4. **Never send, pay or book** as a result of an answer. An approved email is a Gmail draft (DASH gmail-draft) that Josh sends himself.
 
+### Proposed change: JSTACK-DASH-tasks-read, `op: "columns"` (spec — not deployed, nothing built on it)
+
+**Why.** The Board's columns should mirror Twenty's `bucket` SELECT: every option, empty ones
+included, in Twenty's order, with Twenty's labels. Today the app can only see the `bucket` values
+that tasks happen to carry, so an empty stage has no column and the order is a guess (alphabetical,
+done last — `KNOWN_GAPS.md` N8N-7). The options live in Twenty's field metadata, which the tasks
+page read does not return.
+
+**Request** (same webhook path, same header auth; a body without `op` keeps meaning "one page of
+tasks", so nothing that calls the workflow today changes):
+
+```json
+{ "op": "columns", "request_id": "dash-…" }
+```
+
+Validation: `op` absent → the existing page read; `op` = `"columns"` → this; any other `op` →
+`VALIDATION_ERROR` (400). `limit` and `cursor` are ignored with `op: "columns"`.
+
+**What it reads.** Twenty's metadata API with the same "JSTACK Twenty" credential (its API key must
+be allowed to read metadata): `GET http://172.17.0.1:3000/rest/metadata/objects`, the object whose
+`nameSingular` is `task`, and in its `fields` the one whose `name` is `bucket` (`type` `SELECT`).
+Its `options` array holds `{ id, value, label, color, position }` per option. Check the exact path
+against the deployed Twenty version: if REST metadata is not exposed there, the GraphQL metadata
+endpoint (`POST /metadata`, `objects { edges { node { nameSingular fields { edges { node { name
+type options } } } } } }`) returns the same `options`.
+
+**Reply** — the DASH envelope, options sorted by Twenty's `position` ascending, `order` counting
+from 1 in that sort:
+
+```json
+{
+  "ok": true,
+  "request_id": "dash-…",
+  "data": {
+    "field": "bucket",
+    "options": [
+      { "value": "INBOX", "label": "Inbox", "order": 1 },
+      { "value": "NEXT", "label": "Next", "order": 2 },
+      { "value": "DONE", "label": "Done", "order": 3 }
+    ]
+  }
+}
+```
+
+(`value` exactly as it appears on a task's `bucket`; `label` as Twenty shows it; the values above
+are illustrative — only `INBOX` and `DONE` have been seen on tasks.)
+
+**Errors.** No `task` object or no `bucket` SELECT field → `{ "ok": false, "error": { "code":
+"SETUP_ERROR", "message": "…" } }` (500); Twenty unreachable → `UPSTREAM_UNREACHABLE` (502); a
+Twenty error → `UPSTREAM_ERROR` (502).
+
+**What the app will do with it** (once deployed and confirmed — not before): `GET /tasks/columns`
+answers one `Column` per option, in `order`, `id` `bucket-<value>`, `name` = `label`, `statuses`
+`["done"]` for the option whose value is `DONE` and `["open", "in_progress", "waiting"]` for the
+others; tasks keep landing in their bucket's column, and `status` still decides done-ness. Moving a
+card between columns is a write (`tasks-write` `update` of `bucket`) and waits for Phase 6. The
+proxy key is unchanged (`tasks`), so no allow-list change.
+
 ## 3. Not n8n, or later by Josh's own stage plan
 
 | Thing | Why it waits |
