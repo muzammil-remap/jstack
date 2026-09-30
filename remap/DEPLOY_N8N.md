@@ -121,3 +121,56 @@ On REMAP's machine (Windows, Node 24) these were checked:
 
 **The Docker image itself was never built:** that machine has no Docker. So the first Dokploy build is
 the image's first build. If it fails, the build log names the step.
+
+---
+
+## As deployed on Josh's server (nginx, 30 Sep 2026)
+
+In the end it wasn't Dokploy. The server (Ubuntu 24.04, Lightsail, `13.211.65.18`) runs **nginx**,
+and the app runs next to n8n, Twenty and the rest as **one Docker container**. There's no image
+build on the server: the server has about 3 GB of free memory and is busy, so the export is built
+elsewhere and uploaded.
+
+| What | Where |
+|---|---|
+| The release (the export + `server.mjs` + `dev-proxy.mjs` + `RELEASE`) | `/opt/jstack/releases/<commit>/` (first: `52fd76b`) |
+| The secrets: `N8N_BASE=http://n8n:5678`, the n8n header and value, `BASIC_AUTH_USER=josh` and the password | `/etc/jstack/jstack.env`, readable by root only. To see the login: `sudo grep BASIC_AUTH /etc/jstack/jstack.env` |
+| The container | `jstack`, `node:24-alpine`, on the `jstack-shared` network (it reaches n8n at `http://n8n:5678`), published on `127.0.0.1:8080` only, read-only, 256 MB, `--restart unless-stopped` |
+| nginx | `/etc/nginx/sites-available/jstack.josh.useprivate.ai`: its `proxy_pass` is `http://127.0.0.1:8080`. The rest of the file, including Certbot's HTTPS lines, is unchanged. The old version is saved as `….demo-backup` |
+| The old demo | the `jstack-mock` container on `127.0.0.1:8091`, still running, untouched |
+
+**Releasing a new version**
+
+1. **Build it on a PC**, not the server, from a clean clone of the branch. In `jstack-app/`:
+   - `pnpm install --frozen-lockfile`
+   - `MSYS_NO_PATHCONV=1 EXPO_PUBLIC_DATA_SOURCE=n8n EXPO_PUBLIC_N8N_BASE_URL=/n8n EXPO_PUBLIC_TWENTY_APP_URL=https://twenty.josh.useprivate.ai JSTACK_PROD_DIST=<out>/dist node tools/build-web.mjs --prod`
+     (`MSYS_NO_PATHCONV=1` is only for Git Bash on Windows.)
+   - `node ../remap/deploy/bundle-check.mjs <out>/dist`
+2. **Pack it:** put `dist/`, `remap/deploy/server.mjs`, `remap/dev-proxy.mjs` and a `RELEASE` note into `jstack-<commit>.tgz`.
+3. **Upload and unpack:**
+   - upload the file to `/tmp`
+   - `sudo mkdir -p /opt/jstack/releases/<commit>`
+   - `sudo tar -xzf /tmp/jstack-<commit>.tgz -C /opt/jstack/releases/<commit>`
+   - `sudo chown -R root:root /opt/jstack && sudo chmod -R a+rX /opt/jstack/releases/<commit>`
+4. **Swap the container.** The site is down for a few seconds:
+   ```bash
+   sudo docker rm -f jstack
+   sudo docker run -d --name jstack --restart unless-stopped \
+     --network jstack-shared -p 127.0.0.1:8080:8080 \
+     --env-file /etc/jstack/jstack.env -e PORT=8080 -e JSTACK_DIST=/srv/dist -e NODE_ENV=production \
+     -v /opt/jstack/releases/<commit>:/srv:ro -w /srv --user node \
+     --read-only --tmpfs /tmp --memory 256m \
+     node:24-alpine node remap/deploy/server.mjs
+   ```
+5. **Check it:**
+   - `sudo docker logs jstack` shows `jstack on :8080 …`
+   - `curl -s http://127.0.0.1:8080/healthz` answers `ok`
+   - the site opens with the password.
+
+**Rolling back** means the same step 4, with the previous release's folder.
+
+**Going back to the old demo** (all at once):
+```bash
+F=/etc/nginx/sites-available/jstack.josh.useprivate.ai
+sudo cp -p "$F.demo-backup" "$F" && sudo nginx -t && sudo systemctl reload nginx
+```

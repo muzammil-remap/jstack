@@ -1229,3 +1229,25 @@ Windows, `MSYS_NO_PATHCONV=1` stops it, and the bundle check now fails any build
 build is its first build.
 
 **Test records:** keys starting `dashtest-p7/` (none were written: the check was read-only).
+
+## Deployed — https://jstack.josh.useprivate.ai (30 Sep 2026)
+
+The server runs nginx, not Dokploy. The app is now live on the domain the static demo used to have;
+the steps and the undo are in `remap/DEPLOY_N8N.md` › "As deployed on Josh's server".
+
+- **What's running:** release `52fd76b`, built on REMAP's PC from a clean clone of
+  `github.com/muzammil-remap/jstack` (branch `remap/n8n`). Bundle check clean, the n8n auth value
+  included in the search. Uploaded (checksum matched) and unpacked to `/opt/jstack/releases/52fd76b`.
+  Built with Josh's Twenty address and no records namespace (a V1 demo for Josh, so his settings are his).
+- **The container:** `jstack` on `127.0.0.1:8080`, on the `jstack-shared` network, reaching n8n at
+  `http://n8n:5678`. Secrets in `/etc/jstack/jstack.env` (root only; site user `josh`).
+- **nginx:** one line changed in the site file, `proxy_pass` from 8091 (the demo) to 8080. Backup at
+  `….demo-backup`; `nginx -t` passed, then reloaded.
+- **Checked from outside:**
+  - `/healthz` ok; `401` without the password; `200` with it; HTTP redirects to HTTPS; CSP, HSTS
+    and X-Frame-Options present.
+  - n8n's and Twenty's sites still answer 200. Every other container is untouched, and the demo
+    container still runs.
+  - In a browser, at 1440 and 390, every tab on Josh's live data: Today, Tasks "6 open · 2 waiting",
+    Brain, Life, Agents "not connected yet". Every `/n8n` call answered 200, and the console was empty.
+  - The container uses about 20 MB of memory.
