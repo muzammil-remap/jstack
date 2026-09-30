@@ -105,6 +105,13 @@ The five V2.1 rows that stand by decision (CD-10 in `02_ACCEPTANCE_TESTS_v22.md`
 
 Every other V2.1 carried row is closed by a V2.2 row (`02_ACCEPTANCE_TESTS_v22.md` §3, CD-01..CD-15): PF-A (C-1), OF-A (C-2), FX-A (C-3), UX-D (C-4), UX-H (C-5), VO-A and UX-J (V-2), UX-I (B-1), UX-B and UX-F (A-2), PW-A and GL-A (C-6), CB-A (L-1), MP-A (T2-1), and the qa round's A-2..A-9 (R-37..R-41). Of V2's, CD-06 (the history dialog's container) and CD-14 (a synthetic `click()` behind the auto-lock still dispatches; `inert` blocks hit-testing, and the server enforces the lock) stand — `history/v2/CARRIED_DEFECTS_v2.md` §4.
 
+### REMAP's n8n build (`DECISIONS.md` ADR-76, ADR-77)
+
+| ID | What | File | Why open | Whose |
+|---|---|---|---|---|
+| N8N-1 | On the n8n build nothing on a server verifies the passkey, keeps a session or carries out the emergency lock: the passkey runs on the device, the site's HTTP Basic Auth is the access control, the emergency lock is local only, and high-risk writes answer `501` | `jstack-app/lib/webauthnGate.ts`, `jstack-app/data/transport/n8n.ts` | n8n has no session store; `SECURITY.md`'s server half needs a server (ADR-77). Josh's to agree to the stand-in; the server half is REMAP's when there is one | Josh |
+| N8N-2 | Sections with no n8n source yet show the contract's empty value, and a few empties read as facts: the rail says "all healthy · $0.00" and Agents › Runs and spend says 0 runs, 100%, $0.00, 0 issues | `jstack-app/data/n8n/empty.ts` | `AgentSummary` has no empty form that makes no claim; the agent-stats workflow (`remap/WORKFLOWS-NEEDED.md` 2.13) replaces it | REMAP |
+
 ## 2. Deferred to V3
 
 | What | Why | Whose |

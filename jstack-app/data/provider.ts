@@ -1,16 +1,19 @@
 /**
- * Provider swap point (ADR-02). One ApiAdapter, two transports:
- * `httpTransport` (the real backend, go-live) and `mockTransport` (routes
- * into data/mock/server.ts). Flip `USE_API_ADAPTER` in data/config.ts —
- * no other file changes.
+ * Provider swap point (ADR-02). One ApiAdapter, three transports:
+ * `httpTransport` (the real backend, go-live), `mockTransport` (routes
+ * into data/mock/server.ts) and, for REMAP's n8n build (ADR-76),
+ * `n8nTransport` (Josh's n8n webhooks through a proxy). `DATA_SOURCE` in
+ * data/config.ts chooses — no other file changes.
  */
 import { ApiAdapter } from "./ApiAdapter";
-import { API_BASE_URL, USE_API_ADAPTER } from "./config";
+import { API_BASE_URL, DATA_SOURCE, USE_API_ADAPTER } from "./config";
 import { mockVoiceSocket } from "@/data/mock/voice";
 import { webSocket, type Socket } from "@/lib/voice";
 import type { DataProvider } from "./DataProvider";
 import { httpTransport } from "./transport/http";
 import { mockTransport } from "./transport/mock";
+import { n8nTransport, n8nVoiceSocket } from "./transport/n8n";
+import type { Transport } from "./transport/Transport";
 import { withOutbox, type Outbox } from "./transport/outbox";
 import { withReachability } from "./transport/reachability";
 import { createQueueStore } from "@/lib/queueStore";
@@ -34,10 +37,17 @@ let outbox: Outbox | null = null;
  * has, because React Native fires no `online` event. It sits UNDER the outbox,
  * so a queued 202 is never mistaken for the server answering. The mock has no
  * network to lose and reports nothing: there the rig's `goOffline` stays the
- * only word on the connection, which is what the e2e board drives.
+ * only word on the connection, which is what the e2e board drives. The n8n
+ * transport has a network, so it is wrapped exactly as HTTP is (ADR-76).
  */
+function liveTransport(): Transport {
+  // `=== "n8n"`, not a switch: a test that mocks data/config with only the older names leaves DATA_SOURCE undefined
+  if (DATA_SOURCE === "n8n") return withReachability(n8nTransport, reportReachable);
+  return USE_API_ADAPTER ? withReachability(httpTransport, reportReachable) : mockTransport;
+}
+
 function build(): { adapter: DataProvider; outbox: Outbox } {
-  const inner = USE_API_ADAPTER ? withReachability(httpTransport, reportReachable) : mockTransport;
+  const inner = liveTransport();
   // WPA-15: the emergency lock is read the same way — while it is on, the outbox keeps nothing new
   const wrapped = withOutbox(inner, createQueueStore(), () => useSessionStore.getState().online, () => useSessionStore.getState().emergency);
   return { adapter: new ApiAdapter(wrapped.transport), outbox: wrapped };
@@ -68,6 +78,8 @@ export function getOutbox(): Outbox {
  * one place in the app that could tell.
  */
 export function getVoiceSocket(): Socket {
+  // ADR-76: on n8n there is no voice server, and the mock's scripted conversation would be fixture content
+  if (DATA_SOURCE === "n8n") return n8nVoiceSocket();
   if (USE_API_ADAPTER && API_BASE_URL != null) return webSocket(`${API_BASE_URL.replace(/^http/, "ws")}/voice`);
   return mockVoiceSocket();
 }

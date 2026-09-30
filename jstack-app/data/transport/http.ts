@@ -30,9 +30,10 @@ function buildUrl(req: TransportRequest): string {
  * over http:// hands every token it holds to anyone on the network no matter
  * how carefully it talks to the backend, and the honest thing is to stop
  * rather than to work while being unsafe. Loopback is exempt because that is
- * where the app is developed.
+ * where the app is developed. Exported for the n8n client (ADR-76), which
+ * obeys the same rule rather than keeping a second copy of it.
  */
-function assertSecureOrigin(): void {
+export function assertSecureOrigin(): void {
   const loc = (globalThis as { location?: { protocol: string; hostname: string } }).location;
   if (loc == null) return; // native: there is no page origin to check
   const loopback = loc.hostname === "localhost" || loc.hostname === "127.0.0.1";

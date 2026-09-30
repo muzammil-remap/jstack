@@ -14,8 +14,38 @@ export const AUTH = {
   getToken: async (): Promise<string | null> => null,
 };
 
-/** Flip to swap the app onto the real backend (see data/provider.ts). */
-export const USE_API_ADAPTER = process.env.EXPO_PUBLIC_USE_API_ADAPTER === "1" || API_BASE_URL != null;
+/**
+ * ADR-76 (REMAP): which server the app talks to. `mock` is the in-process mock
+ * every test runs on, `http` the real backend `API_BASE_URL` names, and `n8n`
+ * the webhook dispatcher (`data/transport/n8n.ts`) that reaches Josh's n8n
+ * through a proxy. Unset or unknown keeps the rule this file always had: a base
+ * URL or the swap flag means `http`, anything else the mock.
+ */
+const rawDataSource = process.env.EXPO_PUBLIC_DATA_SOURCE;
+export const DATA_SOURCE: "mock" | "http" | "n8n" =
+  rawDataSource === "mock" || rawDataSource === "http" || rawDataSource === "n8n"
+    ? rawDataSource
+    : process.env.EXPO_PUBLIC_USE_API_ADAPTER === "1" || API_BASE_URL != null
+      ? "http"
+      : "mock";
+
+/** Flip to swap the app onto the real backend (see data/provider.ts). True for
+ * `n8n` too: every branch that reads it asks "is this the mock?", and on n8n
+ * the answer is no — no mock sign-in, no demo watermark, no fixtures. */
+export const USE_API_ADAPTER = DATA_SOURCE !== "mock";
+
+/**
+ * ADR-76: where the n8n proxy answers. The browser POSTs to `<this>/<key>`
+ * with a short allow-listed key (`calendar`, `tasks`), never an n8n path, and
+ * never a secret: the proxy maps the key to the webhook and adds the header
+ * (`remap/dev-proxy.mjs` locally, nginx in production). The default is the
+ * production same-origin prefix; local dev sets `http://127.0.0.1:8787/n8n`.
+ */
+export const N8N_BASE_URL: string = (process.env.EXPO_PUBLIC_N8N_BASE_URL ?? "/n8n").replace(/\/+$/, "");
+
+/** ADR-76: Twenty's own web address, for "open in Twenty" links and the
+ * Agents portal. Empty means no link is drawn, rather than a guessed one. */
+export const TWENTY_APP_URL: string = (process.env.EXPO_PUBLIC_TWENTY_APP_URL ?? "").replace(/\/+$/, "");
 
 /**
  * D-4: how long `httpTransport` waits before giving up on a request — the

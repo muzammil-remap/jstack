@@ -44,6 +44,22 @@ and an archive through ONE dialog, `components/chrome/SearchableListDialog.tsx`;
 else under `components/` or `app/` imports the provider — `tests/unit/boundaries.test.ts`
 names those two and refuses a third (P-3, P-4).
 
+**The n8n transport (REMAP, ADR-76).** A third transport sits beside those two:
+`data/transport/n8n.ts`, chosen by `EXPO_PUBLIC_DATA_SOURCE=n8n` in `data/config.ts` and wrapped
+by the outbox and reachability layers exactly as HTTP is. It is a dispatcher, not a server: it
+matches each request against `data/routes.ts` in table order and answers it by its row in
+`data/n8n/registry.ts` — `wired` (one webhook, through an adapter of its own under
+data/n8n/adapters, whose output must validate against `openapi.yaml`), `derived` (a composite
+assembled from wired rows, sharing one in-flight call per webhook), `default` (configuration,
+`data/n8n/defaults.ts`) or `empty` (the contract's empty value, `data/n8n/empty.ts`). A write with
+no key answers `501 { reason: "not connected yet" }` and never leaves the device. The only way out is
+`data/n8n/client.ts`'s `callWebhook(key, body)`, a JSON POST to the proxy at
+`<N8N_BASE_URL>/<key>`; the browser names a short allow-listed key and never an n8n path or a
+secret — the proxy (`remap/dev-proxy.mjs` locally, nginx in production) adds the header. Raw n8n
+JSON never reaches a store. `data/n8n/` may not import `data/mock/` (CT-03), so what it needs of
+the mock's semantics is copied with its source named. `USE_API_ADAPTER` is true on n8n: no mock
+sign-in, no watermark, no fixtures.
+
 **Where truth lives.** The design pack (`design/`) is the truth for anything visual, through
 `theme/tokens.ts`, which is generated from it. `data/routes.ts` is the truth for what
 endpoints exist. `02_ACCEPTANCE_TESTS_v2.md` (166 IDs), `…_v21.md` (123) and `…_v22.md` (190,
@@ -60,7 +76,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 
 ## 2. The map of the territory
 
-<!-- generated:start section=2 sha=71f9d7d8 date=2026-09-16 -->
+<!-- generated:start section=2 sha=0335868 date=2026-09-28 -->
 
 ### `app/`
 
@@ -266,18 +282,18 @@ stacking order. And a green test you have not seen fail is not evidence.
 | file | lines | purpose | imported by |
 |---|---|---|---|
 | `ApiAdapter.ts` | 340 | ApiAdapter — the only DataProvider implementation (ADR-02). | 11 files |
-| `DataProvider.ts` | 279 | DataProvider — the app ↔ backend contract, 1:1 with CONTRACT_v2.md §4. | 5 files |
+| `DataProvider.ts` | 279 | DataProvider — the app ↔ backend contract, 1:1 with CONTRACT_v2.md §4. | 6 files |
 | `capabilities.ts` | 43 | Capabilities (CONTRACT_v2.md §4.9 `GET /capabilities`, ADR-16). | `stores/settings.ts` |
-| `config.swap.ts` | 24 | Swap-proof flavour of data/config.ts (BS-05). | — |
-| `config.ts` | 64 | Backend config — THE one file that changes at go-live. | 6 files |
+| `config.swap.ts` | 30 | Swap-proof flavour of data/config.ts (BS-05). | — |
+| `config.ts` | 94 | Backend config — THE one file that changes at go-live. | 8 files |
 | `files.ts` | 132 | The files vocabulary (X-1, §4.17) — one declaration the archive's filters, the mock's handler and the tests all read. | 10 files |
-| `labels.ts` | 135 | Data labels — silos and types on every record (spec §15.10, `DATA_LABELS.md`, contract §12.1). | 15 files |
-| `parameters.ts` | 148 | The parameter registry (ADR-41, L-1) — six tunables, in one typed table. | `data/mock/db.ts`, `data/mock/handlers/parameters.ts`, `stores/parameters.ts` |
-| `pins.ts` | 52 | Certificate-pinning scaffold (spec §14.9 — SEC-08, contract §9): the SPKI pins arrive with the completed BACKEND_HANDSHAKE (30-day rotation overlap). | `data/transport/http.ts` |
-| `provider.ts` | 73 | Provider swap point (ADR-02). | 29 files |
-| `routes.ts` | 329 | routes.ts — the one table (ADR-33, S-1): every endpoint, once. | 5 files |
+| `labels.ts` | 135 | Data labels — silos and types on every record (spec §15.10, `DATA_LABELS.md`, contract §12.1). | 16 files |
+| `parameters.ts` | 148 | The parameter registry (ADR-41, L-1) — six tunables, in one typed table. | 4 files |
+| `pins.ts` | 52 | Certificate-pinning scaffold (spec §14.9 — SEC-08, contract §9): the SPKI pins arrive with the completed BACKEND_HANDSHAKE (30-day rotation overlap). | `data/n8n/client.ts`, `data/transport/http.ts` |
+| `provider.ts` | 85 | Provider swap point (ADR-02). | 29 files |
+| `routes.ts` | 329 | routes.ts — the one table (ADR-33, S-1): every endpoint, once. | 6 files |
 | `taskFilters.ts` | 135 | The task filter shape, declared ONCE (TK-14, S-2, F-1). | 12 files |
-| `types.ts` | 1553 | Wire shapes — 1:1 with CONTRACT_v2.md §3 (camelCase, ISO 8601 UTC, money as strings with `sensitivity: sens`). | 124 files |
+| `types.ts` | 1553 | Wire shapes — 1:1 with CONTRACT_v2.md §3 (camelCase, ISO 8601 UTC, money as strings with `sensitivity: sens`). | 126 files |
 
 ### `data/mock/`
 
@@ -319,13 +335,23 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `today.ts` | 176 | §4.2 Today: the composite, review, journal. | `data/mock/server.ts` |
 | `usage.ts` | 77 | §4.16 Usage (T-4, ADR-43) — what the agents spent, and the one place the mock adds a cost up. | `data/mock/handlers/agents.ts`, `data/mock/server.ts` |
 
+### `data/n8n/`
+
+| file | lines | purpose | imported by |
+|---|---|---|---|
+| `client.ts` | 157 | `callWebhook(key, body)` — the one way the app reaches n8n (ADR-76): a JSON POST to the proxy at `<N8N_BASE_URL>/<key>`, answered `{ ok: true, data }` or `{ ok: false, error: { code, message } }`. | `data/transport/n8n.ts` |
+| `defaults.ts` | 216 | The configuration routes, answered on the device while n8n has no store for them (ADR-76): who is signed in, what this build can do, the layouts, focuses, parameters and section configs. | `data/n8n/registry.ts` |
+| `empty.ts` | 97 | The contract's empty value for every GET response shape the n8n transport answers without a source yet (ADR-76) — a list with nothing in it, a composite with nothing counted — so a section shows its own empty state and never the mock's demo content. | `data/transport/n8n.ts` |
+| `registry.ts` | 136 | The n8n dispatcher's route table (ADR-76): which of the app's routes are answered by a webhook, which are assembled from other routes, which are configuration, and which are honestly empty. | 4 files |
+
 ### `data/transport/`
 
 | file | lines | purpose | imported by |
 |---|---|---|---|
-| `Transport.ts` | 43 | The one boundary between ApiAdapter and "how a request actually travels" (ADR-02). | 28 files |
-| `http.ts` | 141 | The real transport (ADR-02): fetch, the auth header and the pinning guard (SEC-08). | `data/provider.ts` |
+| `Transport.ts` | 43 | The one boundary between ApiAdapter and "how a request actually travels" (ADR-02). | 33 files |
+| `http.ts` | 142 | The real transport (ADR-02): fetch, the auth header and the pinning guard (SEC-08). | `data/n8n/client.ts`, `data/provider.ts` |
 | `mock.ts` | 21 | The in-process mock transport (ADR-02): routes straight into data/mock/server.ts's router — no network, no serialisation round trip, but the same request/response shape as httpTransport so ApiAdapter (and every test built against it) is oblivious to which one is live. | `data/provider.ts`, `lib/serverEvents.ts` |
+| `n8n.ts` | 86 | The n8n transport (ADR-76): the third implementation of the one boundary, beside `httpTransport` and `mockTransport`, answering every route from Josh's n8n webhooks or honestly without them. | `data/provider.ts` |
 | `outbox.ts` | 343 | `withOutbox(inner, queue, isOnline, isEmergency)` — the transport that does not lose a capture (O-1, OF-01..07). | 18 files |
 | `reachability.ts` | 43 | `withReachability(inner, report)` — whether the server can be reached, told by the requests themselves (A-1, WP-A). | `data/provider.ts` |
 
@@ -415,11 +441,11 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `testBuild.prod.ts` | 10 | Production flavour of the test-build gateway (see testBuild.ts). | — |
 | `testBuild.ts` | 13 | Test-build gateway — the ONLY door to test-only capability (SEC-01, TM-01). | `components/chrome/ErrorBoundary.tsx`, `lib/boot.ts`, `lib/pwa.ts` |
 | `testHook.ts` | 484 | e2e state hook (web only): Playwright asserts on STORE STATE, never logs. | `lib/testBuild.ts` |
-| `time.ts` | 428 | One time library, one basis: **the device's own time zone** (ADR-47, D-1). | 63 files |
+| `time.ts` | 428 | One time library, one basis: **the device's own time zone** (ADR-47, D-1). | 65 files |
 | `timeGrid.ts` | 75 | The calendar time grid's geometry (S-8). | `components/today/CalendarGrid.tsx`, `stores/today.ts` |
 | `unlockCopy.ts` | 68 | The words for the unlock mechanism, in one place, because they differ by platform and are shown on four surfaces. | 5 files |
 | `usage.ts` | 122 | The lines the app draws about what an agent run cost (T-4, ADR-43). | 6 files |
-| `voice.ts` | 46 | The live voice stack (V-1, CONTRACT_v21.md §4.11, ADR-24). | 6 files |
+| `voice.ts` | 46 | The live voice stack (V-1, CONTRACT_v21.md §4.11, ADR-24). | 7 files |
 | `wakeLock.ts` | 80 | wakeLock.ts (V-2; v2.3.1 WPJ-1) — keep the screen awake while a microphone is open, and in car mode. | `lib/mic.ts`, `stores/voice.ts` |
 | `webData.ts` | 42 | data-* attributes for e2e hooks: react-native-web maps `dataSet` to data-* DOM attributes; native RN ignores it. | 25 files |
 | `webInert.ts` | 41 | `inert` for everything behind the gate (B7-01). | `app/_layout.tsx` |
@@ -541,6 +567,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `unused-exports.mjs` | 237 | Lists exports that nothing imports (S-6, CT-06). | — |
 | `validate-openapi.mjs` | 122 | Checks `openapi.yaml` structurally, and against the route table (W-1, WM-03). | — |
 | `vendor-fonts.mjs` | 110 | Copies the five faces the app uses out of the @expo-google-fonts packages into `public/fonts/`, where Expo's web export serves them as static files (S-4, SM-06/SEC-09). | — |
+| `web-n8n.mjs` | 69 | `pnpm web:n8n` — runs the app on REMAP's n8n build (ADR-76) with its settings on the command, never in `.env.local`. | — |
 | `workflow-yaml.mjs` | 162 | A YAML reader for GitHub workflow files, and nothing else (C-1). | — |
 | `yaml.mjs` | 126 | The smallest YAML that `openapi.yaml` needs (W-1) — a writer and a reader for exactly the subset this repository emits, and nothing else. | — |
 <!-- generated:end -->
@@ -552,7 +579,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 Endpoint → store action → component → testIDs, one block per contract group, from
 `wiring.json`.
 
-<!-- generated:start section=3 sha=71f9d7d8 date=2026-09-16 -->
+<!-- generated:start section=3 sha=0335868 date=2026-09-28 -->
 
 ### agents
 
@@ -873,6 +900,10 @@ them; `tools/gen-codemap.mjs` lists any that this section does not name.
 | `tests/unit/share.test.ts` | Share-in through its own routes: a shared link is its own source and files provisionally with a card, while a share the rules classify files without one; the screened extract step saves the content, names where it came from and counts it once; a page that ASKS to be obeyed is saved and not obeyed — no rule, no memory proposal, no verb, and the filing is the app's own — with the positive half asserted too so the negatives cannot pass against an extractor that returned nothing; teach writes a scoped standing rule and the next share from that host files silently and says which rule did it, while a different host still asks; a file landing in the Dropbox inbox becomes a capture, an attachment and a triage line together; and the handover's Shortcut recipe names only routes that exist, on the fragment rather than a query string |
 | `tests/unit/recentFiles.test.ts` | What the device cache holds and what it must never hold: the bytes are read back off the store and asserted to carry no `url` or `urlExpiresAt` and no trace of a signed link's secret, while keeping the metadata, the preview and the Dropbox path; a field added to `Attachment` later is dropped rather than silently persisted; the value is encrypted at rest; and the expiry is `files.recentDays`, applied on read and written back rather than filtered on the way out |
 | `tests/unit/transport.test.ts` | `httpTransport` builds the request the adapter meant, and surfaces a `ContractError` |
+| `tests/unit/n8nRoutes.test.ts` | ADR-76: every GET the n8n transport answers validates against its `openapi.yaml` response schema (or is an honest 404/501), every write with no key answers 501 without a call, the registry has exactly one row per GET, and no answer carries the fixtures' personal content |
+| `tests/unit/n8nClient.test.ts` | ADR-76: `callWebhook` POSTs JSON to `<base>/<key>` with no auth header, maps a DASH refusal to the contract's status (VALIDATION_ERROR → 422), retries once on a network failure or 5xx and never on a 4xx, times out as a network failure, and shares one request per key and body for 30 s — never for a write |
+| `tests/unit/n8nAllowList.test.ts` | ADR-76: the registry's webhook keys and the dev proxy's `ALLOW` are one set, no key or proxy path is a workflow that sends or returns file bytes, and no app source names a webhook path |
+| `tests/unit/n8nConfig.test.ts` | ADR-76: `EXPO_PUBLIC_DATA_SOURCE` defaults to the mock, `n8n` turns `USE_API_ADAPTER` on, and on n8n the provider routes through the n8n transport — no fixtures, a keyless write refused with 501, a voice socket that closes |
 | `tests/unit/useLayout.test.ts` | The three breakpoints, and that nothing else reads the window size |
 | `tests/unit/voice.test.ts` | The voice state machine: silence ends nothing, an end phrase asks, a drop reconnects |
 | `tests/unit/voice-ui.test.ts` | No voice session runs with neither the screen nor the banner visible |
@@ -1085,6 +1116,20 @@ writes belong in it (SEC-15: nothing that sends, pays, books or revokes; nothing
 would see), identifiers come from what the server itself named rather than being invented, and
 anything it cannot check reports itself skipped with the reason.
 
+**A webhook on the n8n build (REMAP, ADR-76).** One webhook at a time, and never a workflow that
+sends, pays, books, revokes or returns file bytes.
+1. The key goes in three places that must agree: `WEBHOOK_KEYS` in `data/n8n/registry.ts`, `ALLOW`
+   in `remap/dev-proxy.mjs`, and the nginx config. `tests/unit/n8nAllowList.test.ts` holds the
+   first two to one set.
+2. Call it through the proxy and save a redacted sample, plus an empty one, as JSON fixtures
+   under tests/fixtures/n8n (the folder arrives with the first sample).
+3. Write the adapter, data/n8n/adapters/<key>.ts: `body()` builds the request exactly as the
+   route's mock handler reads its query, and `toContract()` guards the raw reply and maps it into
+   the `data/types.ts` shape — dates through `lib/time.ts`, enums mapped member by member.
+4. Test the adapter against both samples, validating its output against `openapi.yaml`.
+5. Give the route's row in `data/n8n/registry.ts` its adapter (a read) or add it to `WRITES` (a
+   write); `tests/unit/n8nRoutes.test.ts` then sweeps it with the rest.
+
 **A UI primitive.** The family file under `theme/ui/`, then export it from `theme/ui.tsx`.
 
 **Where a new file goes.** The recipes above name the files they touch; this is the map from a
@@ -1106,7 +1151,8 @@ it. Each of these is a family `tools/gen-codemap.mjs` checks section 5 for by na
 | `./stores/` | One zustand store per domain, under 200 lines by guard. A store calls the adapter; a component never does |
 | `./lib/` | Framework-free helpers with one job each: time, auth tokens, the outbox queue, push, voice, the lock gate, the test hook |
 | `./data/` | The route table, the shapes, the adapter, the provider and the capabilities fallback — the contract's app-side half |
-| `./data/transport/` | The transport interface and its three implementations: http, mock, and the outbox that wraps either |
+| `./data/transport/` | The transport interface and its implementations — http, mock and n8n (ADR-76) — and the outbox and reachability layers that wrap them |
+| `./data/n8n/` | REMAP's n8n build (ADR-76): the route registry, the one webhook client, the configuration defaults, the contract's empty values, and one adapter per webhook in its adapters folder |
 | `./data/mock/` | The in-process SERVER: the db, its fixtures, the router and the shared handler helpers |
 | `./data/mock/handlers/` | One file per contract section, exported under the names `data/routes.ts` gives |
 | `./theme/` | Generated tokens, the provider, the layout hook and the reduced-motion hook |
@@ -1332,7 +1378,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 
 ## 7. The decision index
 
-<!-- generated:start section=7 sha=71f9d7d8 date=2026-09-16 -->
+<!-- generated:start section=7 sha=0335868 date=2026-09-28 -->
 
 `DECISIONS.md` — ADR-01..75, each with its status; the versioned decision files hold the full reasoning.
 
@@ -1417,7 +1463,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 
 ## 8. The test map
 
-<!-- generated:start section=8 sha=71f9d7d8 date=2026-09-16 -->
+<!-- generated:start section=8 sha=0335868 date=2026-09-28 -->
 
 ### Specs
 
@@ -1539,6 +1585,10 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 | `tests/unit/memoryHistory.test.ts` | — |
 | `tests/unit/mic.test.ts` | ADR-49, MC-01, MC-06, MC-07, MC-08, MC-09, TD-05 |
 | `tests/unit/micAwake.test.ts` | MC-01, VP-07 |
+| `tests/unit/n8nAllowList.test.ts` | ADR-76 |
+| `tests/unit/n8nClient.test.ts` | ADR-76 |
+| `tests/unit/n8nConfig.test.ts` | ADR-76, CD-14 |
+| `tests/unit/n8nRoutes.test.ts` | ADR-76 |
 | `tests/unit/needsYouSchedule.test.ts` | TD-01 |
 | `tests/unit/offlineVerbs.test.tsx` | — |
 | `tests/unit/openapi.test.ts` | WM-02, WM-03, WM-06 |
@@ -1646,7 +1696,7 @@ the codebase that the hand-written judgement has not caught up with. A release r
 empty — Stage 3c's `P-1` adds the release workflow and that gate with it. Until then they are
 advisory, and Stage 4 curates them.
 
-<!-- generated:start section=11 sha=71f9d7d8 date=2026-09-16 -->
+<!-- generated:start section=11 sha=0335868 date=2026-09-28 -->
 
 ### New since section 6 was curated
 

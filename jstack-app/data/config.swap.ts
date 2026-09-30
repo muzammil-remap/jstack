@@ -13,6 +13,12 @@ export const AUTH = {
 
 export const USE_API_ADAPTER = true;
 
+// ADR-76: the swap flavour is always the HTTP backend; the n8n values exist so
+// every name data/config.ts exports resolves here too, never as undefined.
+export const DATA_SOURCE: "mock" | "http" | "n8n" = "http";
+export const N8N_BASE_URL = "/n8n";
+export const TWENTY_APP_URL = "";
+
 // D-4, D-5, D-13, D-13b: kept equal to data/config.ts's defaults — this file
 // swaps the base URL and nothing about how a request behaves once it is
 // sent, the unset/blank/non-numeric/zero/negative-falls-back-to-default

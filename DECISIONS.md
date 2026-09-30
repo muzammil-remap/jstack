@@ -101,6 +101,15 @@ ADR-70..74 record Josh's 15 Sep answers (Round v2.3.1, WP-K); the code they desc
 | 74 | Rules and memory history is append-only | Josh, 15 Sep: "Append only. Memory will evolve over time, history matters." Confirms `CONTRACT.md` §1.5 for rules specifically: a removal from `PUT /settings/autonomy/rules` is a new entry, never a deletion of the one it replaces | stands |
 | 75 | P-1 clarified: JSTACK's lock and the device's lock | Josh, 15 Sep: "When you say 'Lock', do you mean phone or app lock? When talk / dictation is on — the app and phone/ipad/app should ensure the device remains open and screen on. If I lock the device, voice locks too." Two locks, one rule for the microphone. JSTACK's own lock — the inactivity timer, hold-to-lock, the emergency lock — pauses Talk as "Paused — locked", and only Resume reopens the microphone (ADR-69). The device's lock, or the app switched away, ends voice the same way: the words kept, Talk reading "Paused", Resume by hand. While a microphone is open the screen stays on, and JSTACK's inactivity lock waits, since a person speaking is not idle (WPJ-1, WPJ-2, WPJ-3) | stands |
 
+## ADR-76.. — REMAP's n8n build (29 Sep 2026 on)
+
+REMAP's own decisions, recorded where Josh's are. They sit in their own table, numbered `ADR-76` on, so that Josh's run of ADR-01..75 above — which `tests/unit/consolidation.test.ts` (RM-09) holds to exactly those numbers — is left as he wrote it. Scope and reasons: `CLAUDE.md` and `remap/` at the repository root.
+
+| ADR | Title | Decision in one line | Status |
+|---|---|---|---|
+| ADR-76 | A third transport: Josh's n8n webhooks, through a proxy, with no backend server | `EXPO_PUBLIC_DATA_SOURCE` = `mock` (the default, every test) \| `http` \| `n8n`; on `n8n`, `jstack-app/data/transport/n8n.ts` matches each request against `data/routes.ts` and answers it by its row in `jstack-app/data/n8n/registry.ts` — a webhook through an adapter whose output is the `openapi.yaml` shape, a composite assembled from those, a configuration default, or the contract's empty value — and every write without a key answers `501 { reason: "not connected yet" }` without leaving the device. The browser names a short allow-listed key (`calendar`, `tasks`); the proxy (`remap/dev-proxy.mjs` locally, nginx in production) maps it to the webhook and adds the header auth, so no n8n path or secret is in the bundle. `USE_API_ADAPTER` is true on `n8n`: no mock sign-in, no demo watermark, no fixtures. Wired one webhook at a time, sample → adapter → test → registry row (`remap/N8N-INTEGRATION-PROMPT.md`) | stands (REMAP) |
+| ADR-77 | On the n8n build the site password stands in for server-verified passkeys | `SECURITY.md` wants passkeys verified by a server, sessions and a server-side emergency lock; n8n has none of those, so the passkey gate runs on the device only (`jstack-app/lib/webauthnGate.ts`), HTTP Basic Auth on the whole site (nginx) is the real access control, the emergency lock is local, and every high-risk write answers `501` | proposed — Josh must agree; open in `KNOWN_GAPS.md` |
+
 ## Deferred and refused, merged
 
 | Item | Ruling | Source |
