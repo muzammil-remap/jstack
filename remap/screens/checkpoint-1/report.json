@@ -1,0 +1,23 @@
+{
+  "base": "http://localhost:4174",
+  "runs": [
+    {
+      "width": 1366,
+      "locked": {
+        "mockSignIn": 0,
+        "watermark": 0
+      },
+      "external": [],
+      "console": []
+    },
+    {
+      "width": 390,
+      "locked": {
+        "mockSignIn": 0,
+        "watermark": 0
+      },
+      "external": [],
+      "console": []
+    }
+  ]
+}
