@@ -128,6 +128,20 @@ means what it means today:
    cleared, for Agents › Decision history's reopen (`POST /actions/{id}/reopen`, today `501`).
    `409` if the card is already open, `404` if unknown.
 
+### Proposed change: JSTACK-DASH-tasks-write (spec — not deployed, nothing built on it)
+
+`KNOWN_GAPS.md` N8N-14. In `Validate Input`'s `pickFields`, two more allow-listed fields, each
+additive (a body without them writes what it writes today):
+
+- **`bucket`** — a string, one of the SELECT's option values (the `columns` op above lists them), or
+  `null`. The Board's move between stages sends it.
+- **`waitingOn`** — a string up to 200 characters, or `""` / `null` to clear. Marking a task waiting
+  (and the undo of it) sends it.
+
+The app would then write `column` as `bucket` (`bucket-<value>` → `<value>`) and `status: "waiting"`
+as `waitingOn`. Separately, not a workflow change: the "JSTACK Twenty" API key cannot delete tasks
+(`PERMISSION_DENIED`); the app never deletes one, but REMAP's cleanup of test tasks needs it.
+
 ## 3. Not n8n, or later by Josh's own stage plan
 
 | Thing | Why it waits |

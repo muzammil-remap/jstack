@@ -907,3 +907,47 @@ live**: a new test card (`dashtest-p6-undo12`) answered Never at 07:48:50 UTC ca
 (`UNDO_EXPIRED`). The deployed Decide node still answers 10 s — the change needs saving (and the
 workflow re-activating) in n8n. Nothing in the app depends on it; re-checked before the final
 report.
+
+## Phase 6 · `calendar-edit` — nothing to wire yet (30 Sep 2026)
+
+The app calls none of its routes: `GET`/`PATCH`/`DELETE /events/{id}` and `POST /calendar/propose`
+have no caller in the app (the adapter, the mock and e2e only), and "Block it" is on an insight,
+which has no source on n8n. It could not be wired anyway without changing the contract: an
+`Insight` holds its text and `primary.action: "block"` but no block (title, start, end), while
+the workflow's `block` needs all three (`KNOWN_GAPS.md` N8N-13). `capabilities.calendarWrite`
+stays off, since Help would otherwise list "Writing back to your calendar". No test event was made:
+nothing in the app would use it.
+
+## Phase 6 · `tasks-write` — live (30 Sep 2026)
+
+`PATCH /tasks/{id}`, `POST /tasks/{id}/complete`, `PUT /tasks/{id}` and `POST /tasks` answer from
+JSTACK-DASH-tasks-write through `data/n8n/adapters/tasksWrite.ts` (ADR-86): the title, the status
+and the due date; everything else Twenty's writer cannot hold is refused, naming the field. No
+capability gates task writes. Still `501`: subtasks, delegate, accept, the EA report (no source
+or no field), and the nudge (the `gmail-draft` key).
+
+**The test task** — created by curl, the only Twenty record touched:
+
+| Id | Title | State |
+|---|---|---|
+| `68367f7f-fca7-47e7-9994-030332b958ff` | "dashtest-p6 task (from the app) — REMAP, ignore" | **still in Twenty, DONE**: the writer's API key cannot delete (`PERMISSION_DENIED`) — delete it by hand, or give the key delete rights and REMAP will |
+
+**The writer's replies** (curl, saved as `tests/fixtures/n8n/tasks-write.*`): create 200 with the
+full record; the same create again 200 with `duplicate: true` and the same id (the `offlineId`
+dedupe works); update 200; a status Twenty doesn't know 400 `VALIDATION_ERROR`; nothing to update
+400; an unknown id 404; delete 400 `PERMISSION_DENIED` (mapped to 422 by the workflow). A new task
+sorts first in Twenty (`position` -49), so until it was DONE it led Today's "Your tasks".
+
+**Live in the app** (the test task only; `remap/screens/private/checkpoint-6-tasks-write/`):
+
+| Step | Sent | Proxy | Then |
+|---|---|---|---|
+| Tick | `update { status: DONE }` | `tasks-write`, then `tasks` | gone from the List; "Completed · Undo" |
+| Undo | `update { title, status: IN_PROGRESS, dueAt }` | `tasks-write`, `tasks` | back, in progress, Sun 4 Oct |
+| Rename (card) | `update { title }` | `tasks-write`, `tasks` | renamed |
+| Priority High | nothing | nothing | the control snaps back to Medium — **with no line** (N8N-15, the card has none for priority) |
+| Board › move to Done | `update { status: DONE }` | `tasks-write`, `tasks` | in the Done lane |
+
+A Board move between stages could not be tried live: Twenty's tasks have two buckets (Inbox,
+Done) and the test task, having none, stands in Inbox; the unit test covers the refusal. Console:
+0 messages.

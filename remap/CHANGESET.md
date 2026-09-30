@@ -4,6 +4,24 @@ One line per file. Newest phase first. Josh's own files are named with what was 
 
 **Generated files** are marked **regenerate in the target repo, don't port**: `jstack-mock-v15.html` (re-packaged from the source) and `REMAP_HANDOVER.html` (never committed changed; `remap/codemap.sh` restores it). Port the source and rebuild them there.
 
+## Phase 6 · `calendar-edit` and `tasks-write` (30 Sep 2026)
+
+| File | Change | Why |
+|---|---|---|
+| `jstack-app/data/n8n/adapters/tasksWrite.ts` | new: patch, complete, put (the undo), create — what Twenty's writer holds, the rest refused naming the field | ADR-86 |
+| `jstack-app/data/n8n/adapters/tasks.ts` | `taskFromRecord` (a written record, mapped as the list maps it) and `twentyStatusOf` (the last-read status) | the write answers, and the undo of a waiting task |
+| `jstack-app/data/n8n/registry.ts` | `postTask`, `patchTask`, `putTask`, `postTaskComplete` in `WRITES` | wires them |
+| `jstack-app/data/n8n/client.ts` | a write to `tasks-write` also forgets the shared `tasks` reads; it counts the proxy's replies | the reload after a task write; ADR-78 |
+| `jstack-app/data/transport/n8n.ts` | reports the connection only when a reply arrived | a refusal made on the device is not the proxy answering (ADR-78) |
+| `jstack-app/tests/fixtures/n8n/tasks-write.*.json` | new: the writer's real replies about the test task | the tests |
+| `jstack-app/tests/unit/n8nTasksWrite.test.ts` | new | the adapter, both zones |
+| `jstack-app/CODEMAP.md` | §4 row; maps regenerated | a guard is named in §4 |
+| `DECISIONS.md` | ADR-86 | the decision |
+| `KNOWN_GAPS.md` | N8N-13 (calendar-edit), N8N-14 (the writer's missing fields, delete rights), N8N-15 (no priority refusal line) | what the keys could not do |
+| `remap/WORKFLOWS-NEEDED.md` | the JSTACK-DASH-tasks-write change spec (`bucket`, `waitingOn`) | N8N-14 |
+| `jstack-mock-v15.html` | re-packaged (own commit). **Generated — regenerate in the target repo, don't port** | QA-06 |
+| `remap/PROGRESS.md` | the two sections, with the test task | the record |
+
 ## N8N-11 — the undo window at 12 s (30 Sep 2026)
 
 | File | Change | Why |
