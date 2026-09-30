@@ -4,6 +4,25 @@ One line per file. Newest phase first. Josh's own files are named with what was 
 
 **Generated files** are marked **regenerate in the target repo, don't port**: `jstack-mock-v15.html` (re-packaged from the source) and `REMAP_HANDOVER.html` (never committed changed; `remap/codemap.sh` restores it). Port the source and rebuild them there.
 
+## Phase 6 · `actions` — Needs you, live (30 Sep 2026)
+
+| File | Change | Why |
+|---|---|---|
+| `jstack-app/data/n8n/adapters/actions.ts` | new: the lists, one card, answer (Approve reads the card first; an email card's approve is 501), undo; the card guard | `GET /actions`, `/actions/{id}`, `POST /actions/{id}`, `/undo` from JSTACK-DASH-actions (ADR-84) |
+| `jstack-app/data/n8n/registry.ts` | `getActions`, `getAction` wired; `postActionVerb`, `postActionUndo` in `WRITES`; `getToday` uses `actions` | wires them |
+| `jstack-app/data/n8n/adapters/today.ts` | `needsYou` is `GET /actions`'s answer; any failed source fails Today | Today's Needs you |
+| `jstack-app/data/n8n/client.ts` | a write forgets its key's shared reads | the reload after an answer must see it answered |
+| `jstack-app/tests/fixtures/n8n/actions.*.json` | new: the store's real replies about REMAP's two test cards (open, get, answer, undo, history, empty) and five error replies, the HTTP status in the name | the adapter's tests; nothing of Josh's, so nothing to redact |
+| `jstack-app/tests/unit/n8nActions.test.ts` | new | the adapter against those replies |
+| `jstack-app/tests/unit/n8nRoutes.test.ts` | the stub answers `actions` by `op`, with the store's real 404 for an unknown card; the live rows are actions, calendar and tasks | expectation changed on purpose: Needs you is live |
+| `jstack-app/tests/unit/n8nToday.test.ts`, `n8nConfig.test.ts`, `n8nLocked.test.ts` | `actions` answers its real empty reply; the one-call-per-workflow lists include it | expectation changed on purpose: Needs you is live |
+| `jstack-app/CODEMAP.md` | §1 paragraph (writes with a key, the lock hold); §4 row for the new test; maps regenerated | a new convention updates its CODEMAP section |
+| `DECISIONS.md` | ADR-84 | the decision |
+| `KNOWN_GAPS.md` | N8N-10 (the store against the mock), N8N-11 (the undo window and the round trip), N8N-12 (the test cards) | what the key could not state |
+| `remap/WORKFLOWS-NEEDED.md` | the EA card contract's required fields, the `dashtest-` rule, expiry; the JSTACK-DASH-actions change spec | the EA's side, and N8N-10 |
+| `jstack-mock-v15.html` | re-packaged (own commit). **Generated — regenerate in the target repo, don't port** | QA-06 |
+| `remap/PROGRESS.md` | the Phase 6 · actions section, with the test card ids | Checkpoint 6 · actions |
+
 ## Phase 5 follow-ups — a locked app gets nothing (30 Sep 2026)
 
 | File | Change | Why |

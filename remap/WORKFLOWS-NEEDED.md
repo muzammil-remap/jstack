@@ -45,14 +45,16 @@ Habit logging no longer needs its own workflow: it's records keys like `habitlog
 The app and Telegram must see **the same** Needs-you card (`CONTRACT.md` §2). So:
 
 1. **The EA writes each card** with `POST /webhook/jstack-dash-actions` `{ "op": "put", "card": <ActionItem> }`. The card is an `ActionItem` from `jstack-app/data/types.ts`:
-   - `id`, `type` ("Clash", "Email"…), `kind` (`opts | quote | bill | section | parameter | triage | rule`), `title`, `rank` (lower shows first), `labels`, `setAt`, `focus`
-   - optionally `options` (exactly 3), `recommended`, `quote` (the draft email text), `bill`, and `expiresAt`
+   - **required** — the app leaves out a card missing any of them (one console warning names it), because they are words only the EA can write: `id`, `type` ("Clash", "Email"…), `kind` (`opts | quote | bill | section | parameter | triage | rule`), `title`, `rank` (lower shows first), `why`, `expiresAt`, `thenWhat` ("expires Fri 5pm · then proposes 1"), `silence`, `verb` (the primary button, "Go with"), `toast` ("{n}" is the option chosen), `receipt` (`{ cost, model, sources, seconds }`), `labels` (`{ silo, types, setBy }`), `setAt`, `focus`
+   - optionally `options` (exactly 3), `recommended`, `sources`, `quote` (the draft email text), `bill`, `sourceUrl`, and the kind's own `section` / `triage` / `rule` / `parameter`; `history` is the store's to add to
    - for an email card, also `draft: { to, subject, threadId? }`, so the app can make the Gmail draft on approve
 
    The store keeps at most 5 visible. Putting the same `id` again refreshes the card and reopens it.
 2. **The EA reads Josh's answers** with `{ "op": "list", "state": "history" }`. Each answered card has `answer: { verb, option, revision, rule, until, at, via }`. The EA carries out the decision **after** `undoUntil` has passed (10 s), because Josh can still undo before then.
 3. **If Josh answers on Telegram**, the EA records it the same way: `{ "op": "answer", "id", "verb", …, "via": "telegram" }`.
 4. **Never send, pay or book** as a result of an answer. An approved email is a Gmail draft (DASH gmail-draft) that Josh sends himself.
+5. **Never act on a card whose id starts with `dashtest-`.** Those are REMAP's test cards for wiring the dashboard, answered Never and nothing else; REMAP deletes them (`KNOWN_GAPS.md` N8N-12).
+6. **At expiry, the EA carries out `thenWhat`** — the store only stops showing an expired card — and records what it did as the card's answer.
 
 ### Proposed change: JSTACK-DASH-tasks-read, `op: "columns"` (spec — not deployed, nothing built on it)
 
@@ -111,6 +113,20 @@ answers one `Column` per option, in `order`, `id` `bucket-<value>`, `name` = `la
 others; tasks keep landing in their bucket's column, and `status` still decides done-ness. Moving a
 card between columns is a write (`tasks-write` `update` of `bucket`) and waits for Phase 6. The
 proxy key is unchanged (`tasks`), so no allow-list change.
+
+### Proposed change: JSTACK-DASH-actions (spec — not deployed, nothing built on it)
+
+Three gaps against the mock (`KNOWN_GAPS.md` N8N-10), each additive — a body that does not use them
+means what it means today:
+
+1. **`{ "op": "list", "state": "open", "all": true }`** returns every live card by rank, not the
+   first five, with `totalOpen` as now. The app then applies the focus and THEN the five — the
+   mock's order; today a focus can show fewer than five while more of its cards are open.
+2. **`"via": "expiry"`** accepted on `answer` (today only `app` and `telegram`), so the EA can
+   record carrying out `thenWhat` and the history says so.
+3. **`{ "op": "reopen", "id" }`** — a card answered at any time goes back to `open`, its answer
+   cleared, for Agents › Decision history's reopen (`POST /actions/{id}/reopen`, today `501`).
+   `409` if the card is already open, `404` if unknown.
 
 ## 3. Not n8n, or later by Josh's own stage plan
 

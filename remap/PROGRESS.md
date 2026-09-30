@@ -798,3 +798,68 @@ explicit, not an expectation changed.
 
 Also from Checkpoint 5: the overdue row is under **Open decisions for Josh** (Josh's spec, no change
 from us), and N8N-9, the 820 px Calendar heading, is on the must-fix list, unchanged for now.
+
+## Phase 6 · `actions` — Needs you, live (30 Sep 2026)
+
+`GET /actions`, `GET /actions/{id}`, `POST /actions/{id}` and `POST /actions/{id}/undo` answer
+from JSTACK-DASH-actions through `data/n8n/adapters/actions.ts` (ADR-84), and Today's Needs you is
+`GET /actions`'s own answer. The app never writes a card; `op: "put"` is the EA's. No capability
+gates Needs you (`Capabilities` has none for it), so there was no switch to flip: its buttons
+answered `501` before and reach the store now. Still `501`, nothing sent: approving an email card
+(until `gmail-draft`), reopening from the history (no op in the store), editing a draft
+(`records`).
+
+The table was empty before the test (no open cards, no history): the EA has written no card yet.
+
+### Test cards — for REMAP to delete from the actions data table
+
+| Card id | Created | Answered |
+|---|---|---|
+| `dashtest-p6-curl` | 30 Sep 06:15 UTC, `op: "put"` by curl | Never (06:15), undone, Never again (06:15) — answered |
+| `dashtest-p6-ui` | 30 Sep 06:15 UTC, put again at 06:16 with its title's UTF-8 intact | Never in the app (06:22), undone, Never again (06:22) — answered |
+
+`dashtest-p6-missing` was only ever ASKED for (the 404 and the 422) — there is no row. No other
+card was touched: every call named a `dashtest-` id, and `never` is the only verb sent.
+`dashtest-p6-curl`'s title shows "�" for its dash: the first put went through a Windows command
+line.
+
+### The store's replies (curl, through the 8787 proxy)
+
+| Call | HTTP | Reply |
+|---|---|---|
+| `list` open / history | 200 | `{ items, totalOpen }` / `{ items }`, each item the card plus `state`, and once answered `answer` and `undoUntil` |
+| `get`, `answer` (never), `undo` | 200 | `{ item }`; the answer also `undoUntil` |
+| `answer` a second time | 409 | `CONFLICT` "card is already answered" |
+| `undo` after 10 s | 409 | `UNDO_EXPIRED` |
+| `undo` a card never answered | 409 | `CONFLICT` "nothing to undo" |
+| `get` an unknown id | 404 | `NOT_FOUND` |
+| `answer` with verb `bogus` | 400 | `VALIDATION_ERROR` → the app's `422` |
+
+Saved as `jstack-app/tests/fixtures/n8n/actions.*.json` — REMAP's own test cards, nothing of
+Josh's (the one "josh" in them is the silo `personal:josh`).
+
+### Live in the app (n8n build, Chromium in Brisbane, a second proxy on 8788)
+
+Screenshots, `report.json` and the proxy log in `remap/screens/private/checkpoint-6-actions/`.
+
+| Step | Proxy log | Needs you |
+|---|---|---|
+| Cold load, 390 and 1440 | `tasks`, `actions`, `calendar` once each, per load | 1 — `dashtest-p6-ui`, drawn as the contract card it is |
+| Never (⋯ › Never) | `actions` (the answer), `actions` (Today's reload) | 0; toast "Never · rule offered · DASH test card (UI) — REMAP, ignore", Undo 9 |
+| Undo, inside the window | `actions` (undo), `actions` (reload) | 1 again |
+| Never again, then 14 s | `actions`, `actions` | 0 |
+| Decision history | `actions` (the history) | both test cards, "Test · never · via app" |
+
+Console: 0 messages. The reload after each write went to the store (the write forgot its shared
+reads); the calendar and the tasks came from the shared calls.
+
+### What does not match yet
+
+1. The store against the mock (`KNOWN_GAPS.md` N8N-10): the open cap before the focus, history
+   answered-only and 100 at most, no `thenWhat` at expiry, no reopen — a DASH change is specified
+   in `remap/WORKFLOWS-NEEDED.md` §2.
+2. The undo window and the round trip (N8N-11): an Undo in the toast's last second can arrive
+   after the store's ten seconds; the app then says nothing. Josh's call.
+3. The toast's "rule offered" after Never is the mock's copy (`lib/decisionCopy.ts`); on n8n the
+   offer is the EA's to make.
+4. Test cards stay until deleted (N8N-12); the EA contract now says never to act on `dashtest-`.
