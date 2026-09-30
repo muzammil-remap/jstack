@@ -16,6 +16,7 @@ import type { TransportRequest, TransportResponse } from "@/data/transport/Trans
 import { DEFAULTS } from "./defaults";
 import { calendarAdapter } from "./adapters/calendar";
 import { actionsAnswers } from "./adapters/actions";
+import { filesAnswers } from "./adapters/files";
 import { recordsAnswers as rec, sectionReads } from "./adapters/records";
 import { tasksAnswers } from "./adapters/tasks";
 import { tasksWriteAnswers } from "./adapters/tasksWrite";
@@ -84,7 +85,7 @@ export const READS: Partial<Record<RouteName, ReadRow>> = {
   getTask: { kind: "derived", uses: ["tasks"], answer: tasksAnswers.byId },
   getSlicers: { kind: "wired", key: "records", adapter: { answer: rec.slicers.get } },
   getTaskUsage: EMPTY,
-  getTaskFiles: EMPTY,
+  getTaskFiles: { kind: "wired", key: "files", adapter: { answer: filesAnswers.forTask } },
   // §4.6 brain
   getBrainLatest: EMPTY,
   getBrainItemVersions: EMPTY,
@@ -124,9 +125,9 @@ export const READS: Partial<Record<RouteName, ReadRow>> = {
   // value printed "$0 this month · 0 tokens". The Agents store's other reads stay empty for now: they
   // load in one Promise.all, and a failure there replaces the whole tab (Checkpoint 2's question).
   getUsage: UNAVAILABLE,
-  // §4.17 files
-  getFiles: EMPTY,
-  getFile: EMPTY,
+  // §4.17 files — Dropbox under /JSTACK, metadata only (JSTACK-DASH-files-list)
+  getFiles: { kind: "wired", key: "files", adapter: { answer: filesAnswers.list } },
+  getFile: { kind: "wired", key: "files", adapter: { answer: filesAnswers.byId } },
   // §4.9 settings
   // §4.9 — each a record in JSTACK-DASH-records, its default until Josh saves one
   getNotificationGroups: { kind: "wired", key: "records", adapter: { answer: rec.notificationGroups.get } },

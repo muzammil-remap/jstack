@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "to has an invalid address: \"not-an-address\""
+  },
+  "request_id": "dash-gd-2"
+}

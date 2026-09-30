@@ -8,8 +8,8 @@
  *  - `POST /actions/{id}` answers a card and `POST /actions/{id}/undo` takes the answer back; the
  *    store keeps the ten-second window, so a late undo, a second answer and an unknown card are the
  *    workflow's `409` and `404`, and a bad body its `VALIDATION_ERROR` (`422`);
- *  - approving an email card (`kind: "quote"`) answers `501` without answering the card: its draft
- *    is the `gmail-draft` key's, which is not wired yet, and "it's in your drafts" would be untrue.
+ *  - approving an email card (`kind: "quote"`) answers the card and makes its email a Gmail DRAFT
+ *    (`gmail-draft`) — never sent; `{ status: "outbox_user_sends" }` (`approveEmail`).
  *
  * A card is the EA's `ActionItem` with the store's state and answer on top. A card the contract
  * could not draw — a required field missing — is left out of the list with one warning naming it,
@@ -18,7 +18,6 @@
 import type { ActionHistoryEntry, ActionItem, ActionKind, ActionState, ActionVerb } from "@/data/types";
 import type { TransportResponse } from "@/data/transport/Transport";
 import { callWebhook } from "@/data/n8n/client";
-import { NOT_CONNECTED } from "@/data/n8n/empty";
 import { inFocus } from "@/data/n8n/focus";
 import type { Asked } from "@/data/n8n/registry";
 import { saveDraftRecord } from "./records";
@@ -185,6 +184,30 @@ function answerBody(id: string, body: Record<string, unknown>): Record<string, u
   return out;
 }
 
+/**
+ * Approving an email card (`CONTRACT.md` §1.1: never sends): the card is answered, then its email
+ * becomes a Gmail DRAFT (JSTACK-DASH-gmail-draft) of the card's quote to its `draft.to`, and the
+ * answer is `{ status: "outbox_user_sends" }` — Josh sends it himself. A card that names nobody to
+ * write to is refused before anything is sent; a draft that fails takes the answer back (the store's
+ * undo), so the card is open again and never reads as drafted when it is not.
+ */
+async function approveEmail(id: string, raw: Record<string, unknown>): Promise<TransportResponse> {
+  const draft = isObject(raw.draft) ? raw.draft : null;
+  if (draft == null || !isString(draft.to) || draft.to.trim() === "" || !isString(draft.subject) || !isString(raw.quote) || raw.quote.trim() === "") {
+    return { status: 422, json: { field: "draft", reason: "this card names no one to write to" } };
+  }
+  await callWebhook("actions", answerBody(id, { verb: "approve" }), { write: true });
+  let made: unknown;
+  try {
+    made = await callWebhook("gmail-draft", { to: draft.to, subject: draft.subject, body: raw.quote, ...(isString(draft.threadId) && draft.threadId !== "" ? { threadId: draft.threadId } : {}) }, { write: true });
+  } catch (error) {
+    await callWebhook("actions", { op: "undo", id }, { write: true }).catch(() => undefined);
+    throw error;
+  }
+  if (!isObject(made) || made.status !== "outbox_user_sends") throw new UnexpectedReply("the draft was not confirmed");
+  return { status: 200, json: { status: "outbox_user_sends" } };
+}
+
 export const actionsAnswers = {
   /** `GET /actions` — also what the Today composite's Needs you is */
   list: (asked: Asked) => answering(async () => ({ status: 200, json: listFor(cardsOf(await callWebhook("actions", listBody(asked))), asked) })),
@@ -194,9 +217,8 @@ export const actionsAnswers = {
       const id = asked.params[0];
       const body = isObject(asked.req.body) ? asked.req.body : {};
       if (body.verb === "approve") {
-        // the email card's draft is `gmail-draft`'s (not wired yet): refused before the card is touched
         const current = await callWebhook("actions", { op: "get", id });
-        if (isObject(current) && isObject(current.item) && current.item.kind === "quote") return NOT_CONNECTED;
+        if (isObject(current) && isObject(current.item) && current.item.kind === "quote") return approveEmail(id, current.item);
       }
       return { status: 200, json: cardOf(await callWebhook("actions", answerBody(id, body), { write: true })) };
     }),

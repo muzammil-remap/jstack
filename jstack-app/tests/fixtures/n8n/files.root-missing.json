@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "request_id": "dash-files-sample",
+  "data": {
+    "count": 0,
+    "files": [],
+    "has_more": false,
+    "cursor": null,
+    "root_missing": true
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "request_id": "dash-gd-1",
+  "data": {
+    "status": "outbox_user_sends",
+    "draftId": "r-3443898180391257001",
+    "messageId": "1a0f16d0deddd1e2",
+    "threadId": "1a0f16d0deddd1e2",
+    "gmailUrl": "https://mail.google.com/mail/u/0/#drafts"
+  }
+}

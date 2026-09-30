@@ -171,10 +171,41 @@ describe("Phase 6 · actions · answering and undo", () => {
     ]);
   });
 
-  it("Approve on an email card is 501 and the card is never answered: its draft is gmail-draft's, not wired yet", async () => {
-    answer = store({ get: () => okReply({ item: { ...card, kind: "quote", quote: "Hi —" } }) });
-    expect(await post(load(), "/actions/dashtest-p6-curl", { verb: "approve" })).toEqual({ status: 501, json: { reason: "not connected yet" } });
-    expect(ops()).toEqual(["get"]);
+  describe("Approve on an email card: answered, then a Gmail DRAFT — never sent", () => {
+    const email = { ...card, kind: "quote", quote: "Hi — a REMAP test.", draft: { to: "dashtest@example.com", subject: "Re: the test", threadId: "abc123def" } };
+    let drafted: Record<string, unknown>[] = [];
+    let draftReply: { status: number; body: unknown } = { status: 200, body: sample("gmail-draft.created") };
+    beforeEach(() => {
+      drafted = [];
+      draftReply = { status: 200, body: sample("gmail-draft.created") };
+      const inner = globalThis.fetch as jest.Mock;
+      globalThis.fetch = jest.fn(async (url: string, init?: { body?: string }) => {
+        if (!String(url).endsWith("/gmail-draft")) return inner(url, init);
+        drafted.push(Object.fromEntries(Object.entries(JSON.parse(init?.body ?? "{}")).filter(([k]) => k !== "request_id")));
+        return { status: draftReply.status, text: async () => JSON.stringify(draftReply.body) };
+      }) as unknown as typeof fetch;
+      answer = store({ get: () => okReply({ item: email }) });
+    });
+
+    it("the card is answered, its quote becomes a draft to its recipient, and the answer is outbox_user_sends", async () => {
+      const res = await post(load(), "/actions/dashtest-p6-curl", { verb: "approve" });
+      expect(res).toEqual({ status: 200, json: { status: "outbox_user_sends" } });
+      expect(contractErrors(res.json, "/actions/{id}", "POST")).toEqual([]);
+      expect(ops()).toEqual(["get", "answer"]);
+      expect(drafted).toEqual([{ to: "dashtest@example.com", subject: "Re: the test", body: "Hi — a REMAP test.", threadId: "abc123def" }]);
+    });
+
+    it("a card that names no one to write to is refused before anything is answered or drafted", async () => {
+      answer = store({ get: () => okReply({ item: { ...email, draft: undefined } }) });
+      expect(await post(load(), "/actions/dashtest-p6-curl", { verb: "approve" })).toEqual({ status: 422, json: { field: "draft", reason: "this card names no one to write to" } });
+      expect({ ops: ops(), drafted }).toEqual({ ops: ["get"], drafted: [] });
+    });
+
+    it("a draft Gmail refuses takes the answer back — the card is open again — and says why", async () => {
+      draftReply = { status: 400, body: sample("gmail-draft.error.400-validation") };
+      const res = await post(load(), "/actions/dashtest-p6-curl", { verb: "approve" });
+      expect({ status: res.status, ops: ops() }).toEqual({ status: 422, ops: ["get", "answer", "undo"] });
+    });
   });
 
   it("after an answer the next read asks the store again — the 30-second sharing does not keep the old list", async () => {

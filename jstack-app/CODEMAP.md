@@ -81,7 +81,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 
 ## 2. The map of the territory
 
-<!-- generated:start section=2 sha=0300e26 date=2026-09-30 -->
+<!-- generated:start section=2 sha=798d330 date=2026-09-30 -->
 
 ### `app/`
 
@@ -292,14 +292,14 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `capabilities.ts` | 43 | Capabilities (CONTRACT_v2.md §4.9 `GET /capabilities`, ADR-16). | `stores/settings.ts` |
 | `config.swap.ts` | 35 | Swap-proof flavour of data/config.ts (BS-05). | — |
 | `config.ts` | 119 | Backend config — THE one file that changes at go-live. | 14 files |
-| `files.ts` | 132 | The files vocabulary (X-1, §4.17) — one declaration the archive's filters, the mock's handler and the tests all read. | 10 files |
+| `files.ts` | 132 | The files vocabulary (X-1, §4.17) — one declaration the archive's filters, the mock's handler and the tests all read. | 11 files |
 | `labels.ts` | 135 | Data labels — silos and types on every record (spec §15.10, `DATA_LABELS.md`, contract §12.1). | 19 files |
 | `parameters.ts` | 148 | The parameter registry (ADR-41, L-1) — six tunables, in one typed table. | 6 files |
 | `pins.ts` | 52 | Certificate-pinning scaffold (spec §14.9 — SEC-08, contract §9): the SPKI pins arrive with the completed BACKEND_HANDSHAKE (30-day rotation overlap). | `data/n8n/client.ts`, `data/transport/http.ts` |
 | `provider.ts` | 105 | Provider swap point (ADR-02). | 29 files |
 | `routes.ts` | 329 | routes.ts — the one table (ADR-33, S-1): every endpoint, once. | 6 files |
 | `taskFilters.ts` | 135 | The task filter shape, declared ONCE (TK-14, S-2, F-1). | 14 files |
-| `types.ts` | 1553 | Wire shapes — 1:1 with CONTRACT_v2.md §3 (camelCase, ISO 8601 UTC, money as strings with `sensitivity: sens`). | 134 files |
+| `types.ts` | 1553 | Wire shapes — 1:1 with CONTRACT_v2.md §3 (camelCase, ISO 8601 UTC, money as strings with `sensitivity: sens`). | 135 files |
 
 ### `data/mock/`
 
@@ -345,19 +345,20 @@ stacking order. And a green test you have not seen fail is not evidence.
 
 | file | lines | purpose | imported by |
 |---|---|---|---|
-| `client.ts` | 179 | `callWebhook(key, body)` — the one way the app reaches n8n (ADR-76): a JSON POST to the proxy at `<N8N_BASE_URL>/<key>`, answered `{ ok: true, data }` or `{ ok: false, error: { code, message } }`. | 6 files |
+| `client.ts` | 179 | `callWebhook(key, body)` — the one way the app reaches n8n (ADR-76): a JSON POST to the proxy at `<N8N_BASE_URL>/<key>`, answered `{ ok: true, data }` or `{ ok: false, error: { code, message } }`. | 7 files |
 | `defaults.ts` | 215 | The configuration routes, answered on the device while n8n has no store for them (ADR-76): who is signed in, what this build can do, the layouts, focuses, parameters and section configs. | `data/n8n/adapters/records.ts`, `data/n8n/adapters/tasks.ts`, `data/n8n/registry.ts` |
-| `empty.ts` | 104 | The contract's empty value for every GET response shape the n8n transport answers without a source yet (ADR-76) — a list with nothing in it, a composite with nothing counted — so a section shows its own empty state and never the mock's demo content. | `data/n8n/adapters/actions.ts`, `data/n8n/adapters/today.ts`, `data/transport/n8n.ts` |
-| `focus.ts` | 30 | Who may see what, and what a focus narrows to, on the n8n build (ADR-76) — the rule the mock's `inFocus` applies (`data/mock/util.ts`), copied because `data/n8n/` may not import `data/mock/` (CT-03). | 6 files |
-| `registry.ts` | 184 | The n8n dispatcher's route table (ADR-76): which of the app's routes are answered by a webhook, which are assembled from other routes, which are configuration, and which are honestly empty. | 10 files |
+| `empty.ts` | 104 | The contract's empty value for every GET response shape the n8n transport answers without a source yet (ADR-76) — a list with nothing in it, a composite with nothing counted — so a section shows its own empty state and never the mock's demo content. | `data/n8n/adapters/today.ts`, `data/transport/n8n.ts` |
+| `focus.ts` | 30 | Who may see what, and what a focus narrows to, on the n8n build (ADR-76) — the rule the mock's `inFocus` applies (`data/mock/util.ts`), copied because `data/n8n/` may not import `data/mock/` (CT-03). | 7 files |
+| `registry.ts` | 185 | The n8n dispatcher's route table (ADR-76): which of the app's routes are answered by a webhook, which are assembled from other routes, which are configuration, and which are honestly empty. | 11 files |
 | `taskRules.ts` | 67 | The task list's rules on the n8n build — slicers, the date range and the filter groups — copied from `data/mock/predicates.ts`, the spec, because `data/n8n/` may not import `data/mock/` (CT-03). | `data/n8n/adapters/tasks.ts` |
 
 ### `data/n8n/adapters/`
 
 | file | lines | purpose | imported by |
 |---|---|---|---|
-| `actions.ts` | 214 | The Needs-you routes from the actions store, through the `actions` webhook (JSTACK-DASH-actions): the cards the EA writes there (`op: "put"`, never sent from the app), read and answered here with the mock's rules (`data/mock/handlers/decisions.ts`) and the contract's statuses. | `data/n8n/adapters/today.ts`, `data/n8n/registry.ts` |
+| `actions.ts` | 236 | The Needs-you routes from the actions store, through the `actions` webhook (JSTACK-DASH-actions): the cards the EA writes there (`op: "put"`, never sent from the app), read and answered here with the mock's rules (`data/mock/handlers/decisions.ts`) and the contract's statuses. | `data/n8n/adapters/today.ts`, `data/n8n/registry.ts` |
 | `calendar.ts` | 148 | `GET /calendar` from Google Calendar, through the `calendar` webhook (JSTACK-DASH-calendar-read) — the request built, and the reply guarded and mapped into the contract's `CalendarWindow`. | `data/n8n/adapters/today.ts`, `data/n8n/registry.ts` |
+| `files.ts` | 95 | The file lists, through the `files` webhook (JSTACK-DASH-files-list): Dropbox under `/JSTACK`, metadata only — never a file's bytes, so `capabilities.fileStore` stays off and a file opens as its Dropbox link. | `data/n8n/registry.ts` |
 | `records.ts` | 430 | The configuration and the Life records, through the `records` webhook (JSTACK-DASH-records): a versioned, append-only JSON store the app reads and writes key by key, with the mock's rules (`data/mock/handlers/settings.ts`, `parameters.ts`, `life.ts`, `sections.ts`) and the contract's statuses. | `data/n8n/adapters/actions.ts`, `data/n8n/adapters/today.ts`, `data/n8n/registry.ts` |
 | `tasks.ts` | 243 | The Tasks routes from Twenty, through the `tasks` webhook (JSTACK-DASH-tasks-read): the whole list paged in, each record guarded and mapped into the contract's `Task`, and the mock's list rules (`data/mock/handlers/tasks.ts`) applied on the device — `GET /tasks`, `GET /tasks/{id}`, `GET /tasks/waiting` and the Board's `GET /tasks/columns` all answer from the one list. | 4 files |
 | `tasksWrite.ts` | 123 | The task writes, through the `tasks-write` webhook (JSTACK-DASH-tasks-write): what Twenty's writer can hold — a task's title, its status and its due date — and a refusal for everything else. | `data/n8n/registry.ts` |
@@ -367,7 +368,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 
 | file | lines | purpose | imported by |
 |---|---|---|---|
-| `Transport.ts` | 43 | The one boundary between ApiAdapter and "how a request actually travels" (ADR-02). | 39 files |
+| `Transport.ts` | 43 | The one boundary between ApiAdapter and "how a request actually travels" (ADR-02). | 40 files |
 | `http.ts` | 142 | The real transport (ADR-02): fetch, the auth header and the pinning guard (SEC-08). | `data/n8n/client.ts`, `data/provider.ts` |
 | `mock.ts` | 21 | The in-process mock transport (ADR-02): routes straight into data/mock/server.ts's router — no network, no serialisation round trip, but the same request/response shape as httpTransport so ApiAdapter (and every test built against it) is oblivious to which one is live. | `data/provider.ts`, `lib/serverEvents.ts` |
 | `n8n.ts` | 141 | The n8n transport (ADR-76): the third implementation of the one boundary, beside `httpTransport` and `mockTransport`, answering every route from Josh's n8n webhooks or honestly without them. | `data/provider.ts` |
@@ -460,7 +461,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `testBuild.prod.ts` | 10 | Production flavour of the test-build gateway (see testBuild.ts). | — |
 | `testBuild.ts` | 13 | Test-build gateway — the ONLY door to test-only capability (SEC-01, TM-01). | `components/chrome/ErrorBoundary.tsx`, `lib/boot.ts`, `lib/pwa.ts` |
 | `testHook.ts` | 484 | e2e state hook (web only): Playwright asserts on STORE STATE, never logs. | `lib/testBuild.ts` |
-| `time.ts` | 428 | One time library, one basis: **the device's own time zone** (ADR-47, D-1). | 71 files |
+| `time.ts` | 428 | One time library, one basis: **the device's own time zone** (ADR-47, D-1). | 72 files |
 | `timeGrid.ts` | 101 | The calendar time grid's geometry (S-8). | 4 files |
 | `unlockCopy.ts` | 68 | The words for the unlock mechanism, in one place, because they differ by platform and are shown on four surfaces. | 5 files |
 | `usage.ts` | 122 | The lines the app draws about what an agent run cost (T-4, ADR-43). | 6 files |
@@ -598,7 +599,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 Endpoint → store action → component → testIDs, one block per contract group, from
 `wiring.json`.
 
-<!-- generated:start section=3 sha=0300e26 date=2026-09-30 -->
+<!-- generated:start section=3 sha=798d330 date=2026-09-30 -->
 
 ### agents
 
@@ -928,7 +929,8 @@ them; `tools/gen-codemap.mjs` lists any that this section does not name.
 | `tests/unit/writeRefusals.test.ts` | REMAP (the hand test of 30 Sep): every write refused with `501` — a tap's write resolves, says "Couldn't · not connected yet" and leaves its store as it was (a Board drag into Done, accept, delegate, nudge, a habit, the Agents verbs, the card verbs; the settings saves answer `false`); an awaited one rejects with the 501 having put back what it changed (Dictate's line off the thread, the journal and dump drafts back); every fire-and-forget call of an awaited one carries its catch; every write route is driven or named with why nothing calls it |
 | `tests/unit/n8nTasksWrite.test.ts` | Phase 6 · `tasks-write` (ADR-86): a title, a due day (local noon, per board zone), open/in progress/done and the completion are written in the writer's words and answered as the list maps a task, valid; the undo of a completion puts a waiting task back to Twenty's own status; a Board stage, a Gantt drag, a priority, waiting and a goal link are refused `422 { field, reason }` with nothing sent; a new task gets its own offlineId and a repeat is the first; 404/422/502 are the writer's; a refusal on the device reports nothing, a real write says online; the list is read again after a write |
 | `tests/unit/n8nRecords.test.ts` | Phase 6 · `records` (ADR-87): the store's real replies read as sent (absent, present, stale, a bad key); every settings route answers the build's default until saved, then the record; a save sends the version it read and a record saved meanwhile is 409; the namespace prefixes every key; the mock's refusals (a rule, a pinned section, a parameter's range, a locked group, a goal's silo, a habit removed); goals dropped with a history line; a day's log as a date-first key and the week's stats and streaks from it; Today's glance and close-the-day and Life from the same records; a section's edit and revert; an email card's revised draft |
-| `tests/unit/n8nActions.test.ts` | Phase 6 · `actions`: Needs you from the actions store's real replies — the open list valid, by rank, five at most after the focus; history answered-only, newest first, `?q=` on the title, each card's last history entry the store's answer; a card the contract cannot draw left out and named once, by id a 502; each verb sends only its fields, Approve reads the card first and an email card's approve is 501 with nothing answered; the reload after an answer asks again; a second answer, a late undo and nothing-to-undo are 409, a bad verb 422, an unknown card 404; reopen and the draft 501; Today's Needs you is `GET /actions`'s answer through one call |
+| `tests/unit/n8nFiles.test.ts` | Phase 6 · `files` (ADR-89): every page of Dropbox's /JSTACK listing, newest first, each a valid Attachment held in Dropbox (kind from the name, Josh's in an Inbox folder, a task's in the folder named for it); the app's own file filter on the device; /JSTACK not made yet is an empty list; one file by id, else 404 |
+| `tests/unit/n8nActions.test.ts` | Phase 6 · `actions`: Needs you from the actions store's real replies — the open list valid, by rank, five at most after the focus; history answered-only, newest first, `?q=` on the title, each card's last history entry the store's answer; a card the contract cannot draw left out and named once, by id a 502; each verb sends only its fields, Approve reads the card first and an email card's approve is 501 with nothing answered; the reload after an answer asks again; a second answer, a late undo and nothing-to-undo are 409, a bad verb 422, an unknown card 404; an email card's approve answered, then drafted to its recipient (ADR-88), refused when it names no one, taken back when the draft fails; reopen 501; Today's Needs you is `GET /actions`'s answer through one call |
 | `tests/unit/n8nLocked.test.ts` | ADR-83: on n8n, while the gate is shut every call waits and nothing reaches the proxy — webhook reads, local answers and keyless writes alike — while the unlocking routes and the emergency lock go through; on unlock each held call is answered and each workflow runs once; through the provider the session's own lock holds Today, `unlock()` releases it and a relock holds the next; the mock still answers under the gate |
 | `tests/unit/n8nToday.test.ts` | Phase 5: `GET /today` from the live sources — a valid TodayComposite whose calendar is exactly `GET /calendar`'s today answer, whose tasks are the first three not done in Twenty's order, with no cards, lines or delta (even when asked), the glance and the close at nothing; a failed source fails the composite; one cold load of Today, the grid and the Tasks tab runs each workflow once, counted at the fetch |
 | `tests/unit/n8nTasks.test.ts` | Phase 4: the Tasks routes from Twenty — the redacted replies are valid TaskList/Task/WaitingList/ColumnList answers, the cursor is followed and capped at ten pages with one warning, every status maps (a non-empty waitingOn on a task not done is waiting; status decides done-ness over bucket; an unknown status is open with a warning), owner is josh, the priority and area switches each off and on, due is the local day of dueAt, no completion time, the Board mirrors bucket, and the mock's focus, slicer, range, filter, search and order rules hold |
@@ -1410,7 +1412,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 
 ## 7. The decision index
 
-<!-- generated:start section=7 sha=0300e26 date=2026-09-30 -->
+<!-- generated:start section=7 sha=798d330 date=2026-09-30 -->
 
 `DECISIONS.md` — ADR-01..75, each with its status; the versioned decision files hold the full reasoning.
 
@@ -1495,7 +1497,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 
 ## 8. The test map
 
-<!-- generated:start section=8 sha=0300e26 date=2026-09-30 -->
+<!-- generated:start section=8 sha=798d330 date=2026-09-30 -->
 
 ### Specs
 
@@ -1624,6 +1626,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 | `tests/unit/n8nCalendar.test.ts` | ADR-47, ADR-76, ADR-80, ADR-82 |
 | `tests/unit/n8nClient.test.ts` | ADR-76 |
 | `tests/unit/n8nConfig.test.ts` | ADR-76, CD-14 |
+| `tests/unit/n8nFiles.test.ts` | — |
 | `tests/unit/n8nLocked.test.ts` | ADR-83 |
 | `tests/unit/n8nReachability.test.ts` | ADR-78, ADR-83 |
 | `tests/unit/n8nRecords.test.ts` | ADR-87 |
@@ -1739,7 +1742,7 @@ the codebase that the hand-written judgement has not caught up with. A release r
 empty — Stage 3c's `P-1` adds the release workflow and that gate with it. Until then they are
 advisory, and Stage 4 curates them.
 
-<!-- generated:start section=11 sha=0300e26 date=2026-09-30 -->
+<!-- generated:start section=11 sha=798d330 date=2026-09-30 -->
 
 ### New since section 6 was curated
 

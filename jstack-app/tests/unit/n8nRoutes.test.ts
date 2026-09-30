@@ -31,6 +31,8 @@ jest.mock("@/data/n8n/client", () => {
     actions: (body) => (body.op !== "get" ? fixture("actions.open").data : body.id === card.item.id ? card : Promise.reject(new actual.N8nError(404, "NOT_FOUND", "card not found"))),
     // the records store as Josh's is today: nothing saved yet, so every read is its default
     records: (body) => fixture(body.op === "list" ? "records.list-empty" : "records.get-absent").data,
+    // Dropbox as it is today: /JSTACK not made yet, so nothing filed
+    files: () => fixture("files.root-missing").data,
   };
   return {
     ...actual,
@@ -127,10 +129,10 @@ describe("ADR-76 · every GET the n8n transport answers is the contract's", () =
     }
   });
 
-  it("only live rows reached a webhook: actions, calendar, records and tasks", () => {
+  it("only live rows reached a webhook: actions, calendar, files, records and tasks", () => {
     const live = new Set(Object.values(READS).flatMap((row) => (row?.kind === "wired" && row.adapter != null ? [row.key] : [])));
-    expect([...live].sort()).toEqual(["actions", "calendar", "records", "tasks"]);
-    expect([...reached].sort()).toEqual(["actions", "calendar", "records", "tasks"]);
+    expect([...live].sort()).toEqual(["actions", "calendar", "files", "records", "tasks"]);
+    expect([...reached].sort()).toEqual(["actions", "calendar", "files", "records", "tasks"]);
   });
 });
 

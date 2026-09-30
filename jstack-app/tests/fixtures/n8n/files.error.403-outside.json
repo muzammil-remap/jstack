@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "path must be /JSTACK or inside it"
+  },
+  "request_id": "dash-files-bad"
+}
