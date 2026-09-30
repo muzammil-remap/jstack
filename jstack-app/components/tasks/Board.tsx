@@ -232,9 +232,11 @@ export function Board() {
             {`${hiddenLanes} more →`}
           </Txt>
         )}
-        <Txt testID="board-columns-twenty" onPress={() => openModal("external-link", packPayload(TWENTY_URL, "Twenty"))} kind="meta" tone="accentInk" style={{ minHeight: 36, lineHeight: 36 }}>
-          Columns · edit in Twenty
-        </Txt>
+        {TWENTY_URL != null && (
+          <Txt testID="board-columns-twenty" onPress={() => openModal("external-link", packPayload(TWENTY_URL, "Twenty"))} kind="meta" tone="accentInk" style={{ minHeight: 36, lineHeight: 36 }}>
+            Columns · edit in Twenty
+          </Txt>
+        )}
         <Txt testID="board-refresh" onPress={() => void loadColumns()} kind="meta" tone="accentInk" style={{ minHeight: 36, lineHeight: 36 }}>
           Refresh
         </Txt>

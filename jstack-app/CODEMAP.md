@@ -46,12 +46,15 @@ names those two and refuses a third (P-3, P-4).
 
 **The n8n transport (REMAP, ADR-76).** A third transport sits beside those two:
 `data/transport/n8n.ts`, chosen by `EXPO_PUBLIC_DATA_SOURCE=n8n` in `data/config.ts` and wrapped
-by the outbox and reachability layers exactly as HTTP is. It is a dispatcher, not a server: it
+by the outbox as HTTP is. It reports reachability itself, around its webhook calls only — most of
+its answers are made on the device, and `withReachability` would read a local default as the
+server answering (ADR-78). It is a dispatcher, not a server: it
 matches each request against `data/routes.ts` in table order and answers it by its row in
 `data/n8n/registry.ts` — `wired` (one webhook, through an adapter of its own under
 data/n8n/adapters, whose output must validate against `openapi.yaml`), `derived` (a composite
 assembled from wired rows, sharing one in-flight call per webhook), `default` (configuration,
-`data/n8n/defaults.ts`) or `empty` (the contract's empty value, `data/n8n/empty.ts`). A write with
+`data/n8n/defaults.ts`), `empty` (the contract's empty value, `data/n8n/empty.ts`) or
+`unavailable` (`501`, where the empty value would claim activity, ADR-78). A write with
 no key answers `501 { reason: "not connected yet" }` and never leaves the device. The only way out is
 `data/n8n/client.ts`'s `callWebhook(key, body)`, a JSON POST to the proxy at
 `<N8N_BASE_URL>/<key>`; the browser names a short allow-listed key and never an n8n path or a
@@ -76,7 +79,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 
 ## 2. The map of the territory
 
-<!-- generated:start section=2 sha=0335868 date=2026-09-28 -->
+<!-- generated:start section=2 sha=e5d218f date=2026-09-30 -->
 
 ### `app/`
 
@@ -228,7 +231,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 |---|---|---|---|
 | `ActiveFilters.tsx` | 74 | ActiveFilters — what is narrowing this list, on the list (F-1, TF-04, ADR-44). | `components/tasks/TaskViews.tsx` |
 | `Activity.tsx` | 89 | Activity — the task detail's activity list (TK-08): who did what, when, most recent first — and, since T-4, what each agent run spent (US-01, US-02). | `components/tasks/TaskDetail.tsx` |
-| `Board.tsx` | 244 | Board — Tasks' Board segment (TK-05, B-1, ADR-45): the lanes are TWENTY'S COLUMNS now, in Twenty's order, on the mock's Hairline lane surface (`.board .bcol{background:var(--hairline);border-radius:var(--r-card); padding:8px}`); Done dimmed; a card opens the task, or moves. | `components/tasks/TaskViews.tsx` |
+| `Board.tsx` | 246 | Board — Tasks' Board segment (TK-05, B-1, ADR-45): the lanes are TWENTY'S COLUMNS now, in Twenty's order, on the mock's Hairline lane surface (`.board .bcol{background:var(--hairline);border-radius:var(--r-card); padding:8px}`); Done dimmed; a card opens the task, or moves. | `components/tasks/TaskViews.tsx` |
 | `BoardCard.tsx` | 159 | BoardCard — one card on the board (B-1, BD-04/BD-05/BD-06, ADR-45). | `components/tasks/BoardLane.tsx` |
 | `BoardLane.tsx` | 97 | BoardLane — one of the board's columns (B-1, ADR-45; out of `Board.tsx` at ux round S6-20/S6-35, which took that file past its 250-line cap). | `components/tasks/Board.tsx` |
 | `CompleteConfirm.tsx` | 65 | CompleteConfirm — ticking a task that is not finished (T-3, ADR-42, TK-10). | `layout/dialogs.tsx` |
@@ -237,7 +240,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `EaReport.tsx` | 69 | EaReport — the task detail's "The EA's report" card (TK-10): title, quote, file chips, flagged count; Looks right / Revise / Teach → `POST /tasks/{id}/report`. | `components/tasks/TaskDetail.tsx` |
 | `Files.tsx` | 91 | Files.tsx (X-1, FL-01/FL-02, UP-01) — the task card's files. | `components/tasks/TaskDetail.tsx` |
 | `FilterDialog.tsx` | 186 | FilterDialog — TK-14: Priority / Status / Project / Owner / Due, multi-select; applied chips with ✕; Clear all; composes with the slicer (AND across groups, OR within — `stores/tasks.ts` serialises the same shape `data/mock/handlers/tasks.ts` applies). | `layout/dialogs.tsx` |
-| `Gantt.tsx` | 190 | Gantt — Tasks' timeline (G-1, ADR-46): a real axis, swimlanes by project, and bars you can move. | `components/tasks/Board.tsx`, `components/tasks/TaskViews.tsx`, `components/tasks/WaitingOn.tsx` |
+| `Gantt.tsx` | 196 | Gantt — Tasks' timeline (G-1, ADR-46): a real axis, swimlanes by project, and bars you can move. | `components/tasks/Board.tsx`, `components/tasks/TaskViews.tsx`, `components/tasks/WaitingOn.tsx` |
 | `GanttAxis.tsx` | 133 | GanttAxis — the timeline's scale (G-1, GT-01/GT-02). | `components/tasks/GanttChart.tsx` |
 | `GanttBar.tsx` | 224 | GanttBar — one task on the timeline, and the three gestures it answers (G-1, GT-04/GT-05/GT-06/GT-08). | `components/tasks/GanttChart.tsx` |
 | `GanttChart.tsx` | 205 | GanttChart — the scrolling half of the timeline, and everything that shares its coordinate space (G-1, GT-02/GT-03/GT-07). | `components/tasks/Gantt.tsx` |
@@ -252,7 +255,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `TaskDetail.tsx` | 152 | TaskDetail — the task detail dialog (TK-08/09/10/12), root-mounted via `app/_layout.tsx` keyed off `stores/taskCard.ts`'s `openTaskId` (BUGLOG_v2.md B-14: never render a Dialog inline in a scrolled section). | `layout/dialogs.tsx` |
 | `TaskEdit.tsx` | 137 | TaskEdit — the row of controls under a task's title (T-1, ADR-42, TK-02..TK-04). | `components/tasks/TaskDetail.tsx` |
 | `TaskRow.tsx` | 98 | TaskRow — one row in List or Done (TK-03/TK-04/TK-13): a dashed EA-owned checkbox or a solid one, an EA/J owner tag (Josh's rows carry none), title + meta (+ repeat rule, TK-13), a chevron opening the task detail. | `components/tasks/DoneSearch.tsx`, `components/tasks/TaskViews.tsx` |
-| `TaskViews.tsx` | 77 | TaskViews — Tasks' column-1 section (TK-01/02): the List/Board/ Gantt/Done segmented control, the slicer row (F-1: on ALL FOUR views, not List only), the active-filter chip row under it, and the active segment's body. | `layout/registry.tsx` |
+| `TaskViews.tsx` | 79 | TaskViews — Tasks' column-1 section (TK-01/02): the List/Board/ Gantt/Done segmented control, the slicer row (F-1: on ALL FOUR views, not List only), the active-filter chip row under it, and the active segment's body. | `layout/registry.tsx` |
 | `WaitingOn.tsx` | 55 | WaitingOn — Tasks' column-2 section (TK-11): rows like "Steve · villa contract · 9 days" with "Draft a nudge"; a mini Gantt card underneath (mock v11 `tasksTab()`'s `map.waiting`). | `layout/registry.tsx` |
 | `WorkMark.tsx` | 57 | WorkMark — "an agent is on this right now" (T-5, WK-02/WK-03, ADR-42). | 4 files |
 | `filterLabels.ts` | 42 | What a filter value is CALLED (F-1, TF-03, ADR-44). | `components/tasks/ActiveFilters.tsx`, `components/tasks/FilterDialog.tsx` |
@@ -285,12 +288,12 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `DataProvider.ts` | 279 | DataProvider — the app ↔ backend contract, 1:1 with CONTRACT_v2.md §4. | 6 files |
 | `capabilities.ts` | 43 | Capabilities (CONTRACT_v2.md §4.9 `GET /capabilities`, ADR-16). | `stores/settings.ts` |
 | `config.swap.ts` | 30 | Swap-proof flavour of data/config.ts (BS-05). | — |
-| `config.ts` | 94 | Backend config — THE one file that changes at go-live. | 8 files |
+| `config.ts` | 94 | Backend config — THE one file that changes at go-live. | 9 files |
 | `files.ts` | 132 | The files vocabulary (X-1, §4.17) — one declaration the archive's filters, the mock's handler and the tests all read. | 10 files |
 | `labels.ts` | 135 | Data labels — silos and types on every record (spec §15.10, `DATA_LABELS.md`, contract §12.1). | 16 files |
 | `parameters.ts` | 148 | The parameter registry (ADR-41, L-1) — six tunables, in one typed table. | 4 files |
 | `pins.ts` | 52 | Certificate-pinning scaffold (spec §14.9 — SEC-08, contract §9): the SPKI pins arrive with the completed BACKEND_HANDSHAKE (30-day rotation overlap). | `data/n8n/client.ts`, `data/transport/http.ts` |
-| `provider.ts` | 85 | Provider swap point (ADR-02). | 29 files |
+| `provider.ts` | 87 | Provider swap point (ADR-02). | 29 files |
 | `routes.ts` | 329 | routes.ts — the one table (ADR-33, S-1): every endpoint, once. | 6 files |
 | `taskFilters.ts` | 135 | The task filter shape, declared ONCE (TK-14, S-2, F-1). | 12 files |
 | `types.ts` | 1553 | Wire shapes — 1:1 with CONTRACT_v2.md §3 (camelCase, ISO 8601 UTC, money as strings with `sensitivity: sens`). | 126 files |
@@ -340,9 +343,9 @@ stacking order. And a green test you have not seen fail is not evidence.
 | file | lines | purpose | imported by |
 |---|---|---|---|
 | `client.ts` | 157 | `callWebhook(key, body)` — the one way the app reaches n8n (ADR-76): a JSON POST to the proxy at `<N8N_BASE_URL>/<key>`, answered `{ ok: true, data }` or `{ ok: false, error: { code, message } }`. | `data/transport/n8n.ts` |
-| `defaults.ts` | 216 | The configuration routes, answered on the device while n8n has no store for them (ADR-76): who is signed in, what this build can do, the layouts, focuses, parameters and section configs. | `data/n8n/registry.ts` |
+| `defaults.ts` | 222 | The configuration routes, answered on the device while n8n has no store for them (ADR-76): who is signed in, what this build can do, the layouts, focuses, parameters and section configs. | `data/n8n/registry.ts` |
 | `empty.ts` | 97 | The contract's empty value for every GET response shape the n8n transport answers without a source yet (ADR-76) — a list with nothing in it, a composite with nothing counted — so a section shows its own empty state and never the mock's demo content. | `data/transport/n8n.ts` |
-| `registry.ts` | 136 | The n8n dispatcher's route table (ADR-76): which of the app's routes are answered by a webhook, which are assembled from other routes, which are configuration, and which are honestly empty. | 4 files |
+| `registry.ts` | 145 | The n8n dispatcher's route table (ADR-76): which of the app's routes are answered by a webhook, which are assembled from other routes, which are configuration, and which are honestly empty. | 4 files |
 
 ### `data/transport/`
 
@@ -351,8 +354,8 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `Transport.ts` | 43 | The one boundary between ApiAdapter and "how a request actually travels" (ADR-02). | 33 files |
 | `http.ts` | 142 | The real transport (ADR-02): fetch, the auth header and the pinning guard (SEC-08). | `data/n8n/client.ts`, `data/provider.ts` |
 | `mock.ts` | 21 | The in-process mock transport (ADR-02): routes straight into data/mock/server.ts's router — no network, no serialisation round trip, but the same request/response shape as httpTransport so ApiAdapter (and every test built against it) is oblivious to which one is live. | `data/provider.ts`, `lib/serverEvents.ts` |
-| `n8n.ts` | 86 | The n8n transport (ADR-76): the third implementation of the one boundary, beside `httpTransport` and `mockTransport`, answering every route from Josh's n8n webhooks or honestly without them. | `data/provider.ts` |
-| `outbox.ts` | 343 | `withOutbox(inner, queue, isOnline, isEmergency)` — the transport that does not lose a capture (O-1, OF-01..07). | 18 files |
+| `n8n.ts` | 110 | The n8n transport (ADR-76): the third implementation of the one boundary, beside `httpTransport` and `mockTransport`, answering every route from Josh's n8n webhooks or honestly without them. | `data/provider.ts` |
+| `outbox.ts` | 343 | `withOutbox(inner, queue, isOnline, isEmergency)` — the transport that does not lose a capture (O-1, OF-01..07). | 19 files |
 | `reachability.ts` | 43 | `withReachability(inner, report)` — whether the server can be reached, told by the requests themselves (A-1, WP-A). | `data/provider.ts` |
 
 ### `eslint-rules/`
@@ -579,7 +582,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 Endpoint → store action → component → testIDs, one block per contract group, from
 `wiring.json`.
 
-<!-- generated:start section=3 sha=0335868 date=2026-09-28 -->
+<!-- generated:start section=3 sha=e5d218f date=2026-09-30 -->
 
 ### agents
 
@@ -903,6 +906,7 @@ them; `tools/gen-codemap.mjs` lists any that this section does not name.
 | `tests/unit/n8nRoutes.test.ts` | ADR-76: every GET the n8n transport answers validates against its `openapi.yaml` response schema (or is an honest 404/501), every write with no key answers 501 without a call, the registry has exactly one row per GET, and no answer carries the fixtures' personal content |
 | `tests/unit/n8nClient.test.ts` | ADR-76: `callWebhook` POSTs JSON to `<base>/<key>` with no auth header, maps a DASH refusal to the contract's status (VALIDATION_ERROR → 422), retries once on a network failure or 5xx and never on a 4xx, times out as a network failure, and shares one request per key and body for 30 s — never for a write |
 | `tests/unit/n8nAllowList.test.ts` | ADR-76: the registry's webhook keys and the dev proxy's `ALLOW` are one set, no key or proxy path is a workflow that sends or returns file bytes, and no app source names a webhook path |
+| `tests/unit/n8nReachability.test.ts` | ADR-78: on n8n a local answer and a `501` leave the session's `online` as it was and queue nothing, `GET /usage` is the Usage section's error, and a real webhook call reports offline on a network failure and online on any answer, a refusal included |
 | `tests/unit/n8nConfig.test.ts` | ADR-76: `EXPO_PUBLIC_DATA_SOURCE` defaults to the mock, `n8n` turns `USE_API_ADAPTER` on, and on n8n the provider routes through the n8n transport — no fixtures, a keyless write refused with 501, a voice socket that closes |
 | `tests/unit/useLayout.test.ts` | The three breakpoints, and that nothing else reads the window size |
 | `tests/unit/voice.test.ts` | The voice state machine: silence ends nothing, an end phrase asks, a drop reconnects |
@@ -1378,7 +1382,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 
 ## 7. The decision index
 
-<!-- generated:start section=7 sha=0335868 date=2026-09-28 -->
+<!-- generated:start section=7 sha=e5d218f date=2026-09-30 -->
 
 `DECISIONS.md` — ADR-01..75, each with its status; the versioned decision files hold the full reasoning.
 
@@ -1463,7 +1467,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 
 ## 8. The test map
 
-<!-- generated:start section=8 sha=0335868 date=2026-09-28 -->
+<!-- generated:start section=8 sha=e5d218f date=2026-09-30 -->
 
 ### Specs
 
@@ -1588,7 +1592,8 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 | `tests/unit/n8nAllowList.test.ts` | ADR-76 |
 | `tests/unit/n8nClient.test.ts` | ADR-76 |
 | `tests/unit/n8nConfig.test.ts` | ADR-76, CD-14 |
-| `tests/unit/n8nRoutes.test.ts` | ADR-76 |
+| `tests/unit/n8nReachability.test.ts` | ADR-78 |
+| `tests/unit/n8nRoutes.test.ts` | ADR-76, ADR-78 |
 | `tests/unit/needsYouSchedule.test.ts` | TD-01 |
 | `tests/unit/offlineVerbs.test.tsx` | — |
 | `tests/unit/openapi.test.ts` | WM-02, WM-03, WM-06 |
@@ -1696,7 +1701,7 @@ the codebase that the hand-written judgement has not caught up with. A release r
 empty — Stage 3c's `P-1` adds the release workflow and that gate with it. Until then they are
 advisory, and Stage 4 curates them.
 
-<!-- generated:start section=11 sha=0335868 date=2026-09-28 -->
+<!-- generated:start section=11 sha=e5d218f date=2026-09-30 -->
 
 ### New since section 6 was curated
 

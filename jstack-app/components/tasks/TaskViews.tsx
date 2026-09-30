@@ -67,10 +67,12 @@ export function TaskViews() {
       {view === "done" && <DoneSearch />}
 
       <Txt testID="task-footer" kind="meta" style={{ marginTop: space[3] }}>
-        Tasks live in Twenty ·{" "}
-        <Text onPress={() => openModal("external-link", packPayload(TWENTY_URL, "Twenty"))} style={{ color: c.accentInk }}>
-          open in Twenty
-        </Text>
+        {TWENTY_URL == null ? "Tasks live in Twenty" : "Tasks live in Twenty · "}
+        {TWENTY_URL != null && (
+          <Text onPress={() => openModal("external-link", packPayload(TWENTY_URL, "Twenty"))} style={{ color: c.accentInk }}>
+            open in Twenty
+          </Text>
+        )}
       </Txt>
     </View>
   );

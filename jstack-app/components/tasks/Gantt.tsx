@@ -41,8 +41,12 @@ import { useTaskEditsStore } from "@/stores/taskEdits";
 import { space } from "@/theme/tokens";
 import { useTokens } from "@/theme/ThemeProvider";
 import type { Task } from "@/data/types";
+import { TWENTY_APP_URL, USE_API_ADAPTER } from "@/data/config";
 
-export const TWENTY_URL = "https://twenty.example/";
+/** Twenty's own address, for the three "open in Twenty" links (here, Board, Tasks' footer). A real
+ * build reads it from `TWENTY_APP_URL` and, with none configured, draws no link rather than a guessed
+ * one (ADR-76); the mock keeps its placeholder, so the demo is unchanged. */
+export const TWENTY_URL: string | null = TWENTY_APP_URL !== "" ? TWENTY_APP_URL : USE_API_ADAPTER ? null : "https://twenty.example/";
 const NO_PROJECT = "No project";
 /** the fallback window when the range has no two ends to draw between (`all`,
  * or a half-open custom one): four weeks either side of today, which is what
@@ -135,10 +139,12 @@ export function Gantt({ compact = false, limit }: { compact?: boolean; limit?: n
       <Txt kind="meta" style={{ marginTop: space[2] }}>
         {/* true again, and gated this time: GT-04 drives a real drag and
             asserts the dates it wrote (A-62, recorded in §4). */}
-        Drag a bar to change its dates.{" "}
-        <Text testID="gantt-open-twenty" onPress={() => openModal("external-link", packPayload(TWENTY_URL, "Twenty"))} style={{ color: c.accentInk }}>
-          Open in Twenty for the full timeline.
-        </Text>
+        {TWENTY_URL == null ? "Drag a bar to change its dates." : "Drag a bar to change its dates. "}
+        {TWENTY_URL != null && (
+          <Text testID="gantt-open-twenty" onPress={() => openModal("external-link", packPayload(TWENTY_URL, "Twenty"))} style={{ color: c.accentInk }}>
+            Open in Twenty for the full timeline.
+          </Text>
+        )}
       </Txt>
     </View>
   );
