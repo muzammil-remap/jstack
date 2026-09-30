@@ -4,6 +4,23 @@ One line per file. Newest phase first. Josh's own files are named with what was 
 
 **Generated files** are marked **regenerate in the target repo, don't port**: `jstack-mock-v15.html` (re-packaged from the source) and `REMAP_HANDOVER.html` (never committed changed; `remap/codemap.sh` restores it). Port the source and rebuild them there.
 
+## Phase 6 · `people`, `gmail-draft`, `files`, `memory` (30 Sep 2026)
+
+| File | Change | Why |
+|---|---|---|
+| `jstack-app/data/n8n/adapters/actions.ts` | Approve on an email card: answered, then a Gmail draft; undone if the draft fails (`approveEmail`) | ADR-88 |
+| `jstack-app/data/n8n/adapters/files.ts` | new: Dropbox's /JSTACK listing as Attachments, the app's own filter, a task's files, one file | ADR-89 |
+| `jstack-app/data/n8n/registry.ts` | `getFiles`, `getFile`, `getTaskFiles` wired | wires them |
+| `jstack-app/tests/fixtures/n8n/gmail-draft.*.json`, `files.*.json` | new: the real replies (the test draft; the empty /JSTACK; a path outside it) | the tests |
+| `jstack-app/tests/unit/n8nFiles.test.ts` | new | the files adapter |
+| `jstack-app/tests/unit/n8nActions.test.ts` | the email approve's three cases replace its 501 | expectation changed on purpose: gmail-draft is live |
+| `jstack-app/tests/unit/n8nRoutes.test.ts` | `files` answered with the real empty listing | files is live |
+| `jstack-app/CODEMAP.md` | §4 rows; maps regenerated | a guard is named in §4 |
+| `DECISIONS.md` | ADR-88, ADR-89 | the decisions |
+| `KNOWN_GAPS.md` | N8N-17 (people), N8N-18 (memory), N8N-19 (drafts cannot be deleted) | what could not be wired, and why |
+| `jstack-mock-v15.html` | re-packaged (own commit). **Generated — regenerate in the target repo, don't port** | QA-06 |
+| `remap/PROGRESS.md` | the four sections, the test draft, two open decisions | the record |
+
 ## Phase 6 · `records` (30 Sep 2026)
 
 | File | Change | Why |

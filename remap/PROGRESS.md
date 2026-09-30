@@ -14,6 +14,8 @@ _(the coding agent fills this in from Phase 0)_
 
 | Decision | Until then | Recorded |
 |---|---|---|
+| Which Twenty contacts are Life › People, and where each one's item and verb come from | Life › People empty; the glance's "People 0" has no source | N8N-17 |
+| Brain › Find on the private memory with only the site password in front of it — wait, or wire it without the sensitive types | not wired | N8N-18 |
 | A `priority` SELECT on Twenty tasks (HIGH / MEDIUM / LOW) — **required, with a default** | no priority is printed; `EXPO_PUBLIC_TWENTY_PRIORITY_FIELD` off | N8N-8 |
 | An `area` SELECT on Twenty tasks (PERSONAL / FAMILY / WORK), set by the EA's triage | every task `personal:josh`; `EXPO_PUBLIC_TWENTY_AREA_FIELD` off | Phase 4 |
 | A `waitingSince` date on Twenty tasks | waiting days count from `createdAt` | N8N-6 |
@@ -992,3 +994,51 @@ first; `list` the latest of each key with `truncated`; a bad key 400 `VALIDATION
 
 Console: 0 messages. Found and fixed on the way: the glance counted a log of a habit no longer
 tracked ("2/1"); it counts the tracked ones now.
+
+## Phase 6 · `people` — not wired (30 Sep 2026)
+
+JSTACK-DASH-people-read answers Twenty's contacts: 1,230, paged 60 at a time, each with a name and
+some of emails (41 of the first 60), phones (39), a job title (24) and a company (41) — and every
+"last contact" field empty. Life › People is a short list of people to act on (`item`, `meta`, a
+verb). Mapping the contacts would invent every item and verb, so `GET /people` stays empty and the
+person verbs `501`: **Josh decides** which contacts belong there and where their item and verb come
+from (`KNOWN_GAPS.md` N8N-17; CLAUDE.md §7 names this very case as his).
+
+## Phase 6 · `gmail-draft` — live, behind Approve on an email card (30 Sep 2026)
+
+Approve on a `quote` card answers it, then JSTACK-DASH-gmail-draft makes its `quote` a Gmail
+DRAFT to the card's `draft.to` — never sent; the answer is `outbox_user_sends` (ADR-88). A card
+naming nobody is `422` before anything is sent; a draft Gmail refuses is undone in the store. Not
+wired: the nudge (a waiting task's `waitingOn` is a name, and the app would be writing in Josh's
+name) and a person's draft (no people).
+
+**The test draft — in Josh's Gmail Drafts, to delete by hand** (the workflow cannot delete, N8N-19):
+
+| Draft id | Subject | To |
+|---|---|---|
+| `r-3443898180391257001` | "DASH test draft — REMAP, delete me" | `dashtest@example.com` (a draft; never sent) |
+
+Replies (`tests/fixtures/n8n/gmail-draft.*`): 200 `{ status: outbox_user_sends, draftId, messageId,
+threadId, gmailUrl }`; an invalid address 400 `VALIDATION_ERROR`. **Approve end to end was not run
+live**: the only cards are REMAP's `dashtest-` ones and they are answered Never only (your rule).
+It is proved by `tests/unit/n8nActions.test.ts` against the real replies of both workflows; say if
+you want it run live on a `dashtest-` email card (one more draft to delete).
+
+## Phase 6 · `files` — live, read only (30 Sep 2026)
+
+`GET /files`, `/files/{id}` and `/tasks/{id}/files` read JSTACK-DASH-files-list (ADR-89). /JSTACK
+does not exist in Josh's Dropbox yet (`root_missing: true`), so every list is empty — honestly.
+`capabilities.fileStore` stays off: nothing serves a file's bytes, a file opens as its Dropbox link.
+
+## Phase 6 · `memory` — not wired (30 Sep 2026)
+
+`remap/WEBHOOKS.md` §A: memory-search returns Josh's private memory, sensitive types included
+with a blank filter — "don't expose it until access control is stronger than one site password".
+It still is one site password, so Brain › Find and Find stay empty (N8N-18). **Josh (or you) to
+decide**: wait, or wire it with the sensitive types always excluded and his own silos only.
+
+## Phase 6 · capabilities
+
+None of the writes wired in Phase 6 has a capability flag (`Capabilities` has none for Needs you,
+tasks, the settings or Life), so none was flipped. `calendarWrite` (Help: "Writing back to your
+calendar") and `fileStore` ("Opening a picked file attachment") stay off: neither is true.
