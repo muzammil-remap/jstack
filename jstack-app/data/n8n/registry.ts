@@ -40,11 +40,17 @@ type ReadRow =
   /** App configuration — the same answer for every caller, and nothing in Josh's voice. */
   | { kind: "default"; answer: (asked: Asked) => TransportResponse }
   /** No source yet: the contract's empty value for the route's response shape (`data/n8n/empty.ts`). */
-  | { kind: "empty" };
+  | { kind: "empty" }
+  /** No source yet, AND the empty value would be a claim — "$0 spent", "0 tokens", "all healthy" is
+   * a statement about activity, not the absence of one. Answers `501 { reason: "not connected yet" }`,
+   * which the store records as that section's load error (ADR-78). A local answer, so it says nothing
+   * about the connection. */
+  | { kind: "unavailable" };
 
 type RouteName = keyof DataProvider;
 
 const EMPTY: ReadRow = { kind: "empty" };
+const UNAVAILABLE: ReadRow = { kind: "unavailable" };
 const deflt = (name: keyof typeof DEFAULTS): ReadRow => ({ kind: "default", answer: DEFAULTS[name] });
 
 /** `remap/WEBHOOKS.md` §B and §D, route by route, in `data/routes.ts` order. */
@@ -103,7 +109,10 @@ export const READS: Partial<Record<RouteName, ReadRow>> = {
   getAgentFeed: EMPTY,
   getSecurityChecks: EMPTY,
   getAgentRuns: EMPTY,
-  getUsage: EMPTY,
+  // ADR-78: its section (a config record) survives a failed load and shows nothing, where the empty
+  // value printed "$0 this month · 0 tokens". The Agents store's other reads stay empty for now: they
+  // load in one Promise.all, and a failure there replaces the whole tab (Checkpoint 2's question).
+  getUsage: UNAVAILABLE,
   // §4.17 files
   getFiles: EMPTY,
   getFile: EMPTY,

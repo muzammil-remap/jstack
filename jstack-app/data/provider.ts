@@ -12,7 +12,7 @@ import { webSocket, type Socket } from "@/lib/voice";
 import type { DataProvider } from "./DataProvider";
 import { httpTransport } from "./transport/http";
 import { mockTransport } from "./transport/mock";
-import { n8nTransport, n8nVoiceSocket } from "./transport/n8n";
+import { createN8nTransport, n8nVoiceSocket } from "./transport/n8n";
 import type { Transport } from "./transport/Transport";
 import { withOutbox, type Outbox } from "./transport/outbox";
 import { withReachability } from "./transport/reachability";
@@ -38,11 +38,13 @@ let outbox: Outbox | null = null;
  * so a queued 202 is never mistaken for the server answering. The mock has no
  * network to lose and reports nothing: there the rig's `goOffline` stays the
  * only word on the connection, which is what the e2e board drives. The n8n
- * transport has a network, so it is wrapped exactly as HTTP is (ADR-76).
+ * transport has a network but answers most routes on the device, so it reports
+ * the connection itself, around its webhook calls only (ADR-78) — wrapped in
+ * `withReachability`, a local default would read as the server answering.
  */
 function liveTransport(): Transport {
   // `=== "n8n"`, not a switch: a test that mocks data/config with only the older names leaves DATA_SOURCE undefined
-  if (DATA_SOURCE === "n8n") return withReachability(n8nTransport, reportReachable);
+  if (DATA_SOURCE === "n8n") return createN8nTransport(reportReachable);
   return USE_API_ADAPTER ? withReachability(httpTransport, reportReachable) : mockTransport;
 }
 

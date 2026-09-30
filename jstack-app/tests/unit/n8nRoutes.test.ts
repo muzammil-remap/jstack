@@ -82,8 +82,9 @@ const pathFor = (template: string) => buildPath(template, (template.match(/\{[^}
 
 /** Single records nothing has produced yet: honestly missing. */
 const NOT_FOUND = ["getAction", "getEvent", "getTask", "getBrainItem", "getGoal", "getLearningItem", "getAgentIssue", "getFile", "getSection"];
-/** No honest empty form, and nothing in the app asks for it (`data/n8n/empty.ts`). */
-const NOT_CONNECTED = ["getSectionCatalogue"];
+/** No honest empty form, and nothing in the app asks for it (`data/n8n/empty.ts`); or an empty
+ * form that would be a claim — "$0 this month · 0 tokens" (ADR-78, the registry's `unavailable`). */
+const NOT_CONNECTED = ["getSectionCatalogue", "getUsage"];
 
 const GETS = ROUTES.filter((r) => r.method === "GET");
 const WRITE_ROUTES = ROUTES.filter((r) => r.method !== "GET");
