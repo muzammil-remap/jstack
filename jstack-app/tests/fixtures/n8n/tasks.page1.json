@@ -1,0 +1,944 @@
+{
+  "ok": true,
+  "duration_ms": 106,
+  "data": {
+    "count": 29,
+    "totalCount": 29,
+    "pageInfo": {
+      "startCursor": "eyJpZCI6IjAwMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAwMSJ9",
+      "endCursor": "eyJpZCI6IjAwMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAwMiJ9",
+      "hasNextPage": false,
+      "hasPreviousPage": false
+    },
+    "tasks": [
+      {
+        "id": "00000000-0000-4000-8000-000000000001",
+        "createdAt": "2026-09-24T07:19:41.570Z",
+        "updatedAt": "2026-09-24T07:19:41.570Z",
+        "deletedAt": null,
+        "position": -36,
+        "title": "Task A",
+        "bodyV2": {
+          "blocknote": "[{\"id\":\"45b3d8b3-e73b-4e67-a2e3-262cb602874a\",\"type\":\"heading\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\",\"level\":2,\"isToggleable\":false},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]},{\"id\":\"686c9025-7372-4725-954e-f554fb8c34e6\",\"type\":\"bulletListItem\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]}]",
+          "markdown": "## text\n- text"
+        },
+        "dueAt": "2026-10-07T12:00:00.000Z",
+        "status": "TODO",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "INBOX",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000003",
+        "createdAt": "2026-09-18T11:16:28.545Z",
+        "updatedAt": "2026-09-18T11:26:11.228Z",
+        "deletedAt": null,
+        "position": -20,
+        "title": "Task B",
+        "bodyV2": {
+          "blocknote": null,
+          "markdown": ""
+        },
+        "dueAt": "2026-09-16T12:00:00.000Z",
+        "status": "DONE",
+        "createdBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "jstack-n8n",
+          "context": {}
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "jstack-n8n",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": null,
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000004",
+        "createdAt": "2026-09-14T07:25:02.945Z",
+        "updatedAt": "2026-09-23T08:30:16.466Z",
+        "deletedAt": null,
+        "position": -6,
+        "title": "Task C",
+        "bodyV2": {
+          "blocknote": null,
+          "markdown": ""
+        },
+        "dueAt": "2026-09-18T05:00:00.000Z",
+        "status": "DONE",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "DONE",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000005",
+        "createdAt": "2026-09-21T09:00:02.583Z",
+        "updatedAt": "2026-09-23T08:34:07.900Z",
+        "deletedAt": null,
+        "position": -21,
+        "title": "Task D",
+        "bodyV2": {
+          "blocknote": null,
+          "markdown": ""
+        },
+        "dueAt": null,
+        "status": "DONE",
+        "createdBy": {
+          "source": "WORKFLOW",
+          "workspaceMemberId": null,
+          "name": "Workflow",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "DONE",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000006",
+        "createdAt": "2026-09-30T00:15:14.483Z",
+        "updatedAt": "2026-09-30T00:15:14.483Z",
+        "deletedAt": null,
+        "position": -48,
+        "title": "Task E",
+        "bodyV2": {
+          "blocknote": null,
+          "markdown": ""
+        },
+        "dueAt": "2026-09-30T00:17:00.000Z",
+        "status": "TODO",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "INBOX",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000007",
+        "createdAt": "2026-09-15T11:28:29.461Z",
+        "updatedAt": "2026-09-23T08:30:16.465Z",
+        "deletedAt": null,
+        "position": -16,
+        "title": "Task F",
+        "bodyV2": {
+          "blocknote": "[{\"id\":\"66f114e9-2e7c-4a86-9b42-a17d45bf5631\",\"type\":\"paragraph\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]}]",
+          "markdown": "text"
+        },
+        "dueAt": "2026-09-15T23:00:00.000Z",
+        "status": "DONE",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "DONE",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000008",
+        "createdAt": "2026-09-28T09:00:03.355Z",
+        "updatedAt": "2026-09-28T09:00:03.355Z",
+        "deletedAt": null,
+        "position": -47,
+        "title": "Task D",
+        "bodyV2": {
+          "blocknote": null,
+          "markdown": ""
+        },
+        "dueAt": null,
+        "status": "TODO",
+        "createdBy": {
+          "source": "WORKFLOW",
+          "workspaceMemberId": null,
+          "name": "Workflow",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "APPLICATION",
+          "workspaceMemberId": null,
+          "name": "Standard",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "INBOX",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000009",
+        "createdAt": "2026-09-11T13:23:09.409Z",
+        "updatedAt": "2026-09-23T08:34:07.902Z",
+        "deletedAt": null,
+        "position": -2,
+        "title": "Task G",
+        "bodyV2": {
+          "blocknote": "[{\"id\":\"e0e6a4b8-ed5c-4056-a512-16f71f6f7aae\",\"type\":\"paragraph\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]}]",
+          "markdown": "text"
+        },
+        "dueAt": null,
+        "status": "DONE",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "DONE",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000010",
+        "createdAt": "2026-09-26T06:17:36.287Z",
+        "updatedAt": "2026-09-26T06:17:36.287Z",
+        "deletedAt": null,
+        "position": -46,
+        "title": "Task H",
+        "bodyV2": {
+          "blocknote": null,
+          "markdown": ""
+        },
+        "dueAt": null,
+        "status": "TODO",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "INBOX",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000011",
+        "createdAt": "2026-09-15T08:57:53.305Z",
+        "updatedAt": "2026-09-23T08:30:24.936Z",
+        "deletedAt": null,
+        "position": -12,
+        "title": "Task I",
+        "bodyV2": {
+          "blocknote": null,
+          "markdown": ""
+        },
+        "dueAt": "2026-09-16T07:00:00.000Z",
+        "status": "DONE",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "DONE",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000012",
+        "createdAt": "2026-09-14T03:06:03.463Z",
+        "updatedAt": "2026-09-23T08:30:16.469Z",
+        "deletedAt": null,
+        "position": -3,
+        "title": "Task J",
+        "bodyV2": {
+          "blocknote": null,
+          "markdown": ""
+        },
+        "dueAt": "2026-09-18T09:00:00.000Z",
+        "status": "DONE",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "DONE",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000013",
+        "createdAt": "2026-09-18T10:41:38.643Z",
+        "updatedAt": "2026-09-23T08:30:16.473Z",
+        "deletedAt": null,
+        "position": -19,
+        "title": "Task K",
+        "bodyV2": {
+          "blocknote": "[{\"id\":\"19d70bf7-2403-4625-baa7-e2c452ddc3bf\",\"type\":\"paragraph\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]}]",
+          "markdown": "text"
+        },
+        "dueAt": "2026-09-19T04:00:00.000Z",
+        "status": "DONE",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "DONE",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000014",
+        "createdAt": "2026-09-11T13:08:37.570Z",
+        "updatedAt": "2026-09-23T08:34:07.899Z",
+        "deletedAt": null,
+        "position": -1,
+        "title": "Task L",
+        "bodyV2": {
+          "blocknote": "[{\"id\":\"c00bc72e-93d1-4fcf-b163-452b737a398d\",\"type\":\"paragraph\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]}]",
+          "markdown": "text"
+        },
+        "dueAt": null,
+        "status": "DONE",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "DONE",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000015",
+        "createdAt": "2026-09-15T11:23:53.355Z",
+        "updatedAt": "2026-09-23T08:30:16.470Z",
+        "deletedAt": null,
+        "position": -15,
+        "title": "Task M",
+        "bodyV2": {
+          "blocknote": "[{\"id\":\"ffa8d076-7a31-490e-991a-cf46a632fa73\",\"type\":\"paragraph\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]}]",
+          "markdown": "text"
+        },
+        "dueAt": "2026-09-18T07:00:00.000Z",
+        "status": "DONE",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "DONE",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000016",
+        "createdAt": "2026-09-15T08:56:54.483Z",
+        "updatedAt": "2026-09-23T08:30:16.464Z",
+        "deletedAt": null,
+        "position": -11,
+        "title": "Task I",
+        "bodyV2": {
+          "blocknote": null,
+          "markdown": ""
+        },
+        "dueAt": "2026-09-16T07:00:00.000Z",
+        "status": "DONE",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "DONE",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000017",
+        "createdAt": "2026-09-17T14:00:09.931Z",
+        "updatedAt": "2026-09-23T08:30:16.472Z",
+        "deletedAt": null,
+        "position": -18,
+        "title": "Task N",
+        "bodyV2": {
+          "blocknote": null,
+          "markdown": ""
+        },
+        "dueAt": "2026-09-18T21:00:00.000Z",
+        "status": "DONE",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "DONE",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000018",
+        "createdAt": "2026-09-17T10:53:47.706Z",
+        "updatedAt": "2026-09-18T10:47:47.610Z",
+        "deletedAt": null,
+        "position": -17,
+        "title": "Task O",
+        "bodyV2": {
+          "blocknote": null,
+          "markdown": ""
+        },
+        "dueAt": "2026-09-16T12:00:00.000Z",
+        "status": "DONE",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "jstack-n8n",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "INBOX",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000019",
+        "createdAt": "2026-09-14T07:55:59.910Z",
+        "updatedAt": "2026-09-15T08:59:58.227Z",
+        "deletedAt": null,
+        "position": -9,
+        "title": "Task I",
+        "bodyV2": {
+          "blocknote": null,
+          "markdown": ""
+        },
+        "dueAt": "2026-09-14T09:55:00.000Z",
+        "status": "DONE",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "DONE",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000020",
+        "createdAt": "2026-09-14T07:43:31.946Z",
+        "updatedAt": "2026-09-23T08:30:24.935Z",
+        "deletedAt": null,
+        "position": -8,
+        "title": "Task P",
+        "bodyV2": {
+          "blocknote": null,
+          "markdown": ""
+        },
+        "dueAt": null,
+        "status": "DONE",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "DONE",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000021",
+        "createdAt": "2026-09-14T07:25:13.591Z",
+        "updatedAt": "2026-09-23T08:30:16.468Z",
+        "deletedAt": null,
+        "position": -7,
+        "title": "Task C",
+        "bodyV2": {
+          "blocknote": null,
+          "markdown": ""
+        },
+        "dueAt": "2026-09-18T05:00:00.000Z",
+        "status": "DONE",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "DONE",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000022",
+        "createdAt": "2026-09-23T10:44:02.378Z",
+        "updatedAt": "2026-09-23T11:19:45.876Z",
+        "deletedAt": null,
+        "position": -23,
+        "title": "Task Q",
+        "bodyV2": {
+          "blocknote": "[{\"id\":\"84a84c9f-d945-4a8a-b73c-08c11c2df8f7\",\"type\":\"paragraph\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]},{\"id\":\"4125dad9-db3a-49da-bcff-9a195317c569\",\"type\":\"paragraph\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{\"bold\":true}}],\"children\":[]},{\"id\":\"17549c99-1c40-4f01-b9ce-e526ef7f9985\",\"type\":\"bulletListItem\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]},{\"id\":\"e219100f-d7c3-4261-a033-578efa58c16e\",\"type\":\"bulletListItem\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]},{\"id\":\"91ee75b2-d44c-46fd-83ae-d23a788932b2\",\"type\":\"bulletListItem\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]},{\"id\":\"c1d0f8bf-df5d-42e4-a4f8-0483fbdc9cc9\",\"type\":\"bulletListItem\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]},{\"id\":\"e1049c12-6795-47a3-806e-3c0245e9731c\",\"type\":\"bulletListItem\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]},{\"id\":\"1208ce11-2453-40f3-8a66-97bc86013f08\",\"type\":\"bulletListItem\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]},{\"id\":\"78597196-734c-4b86-8124-0ddafd74748a\",\"type\":\"paragraph\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{\"bold\":true}}],\"children\":[]},{\"id\":\"1d414b03-0a63-41f1-92f7-dbb2971b29ee\",\"type\":\"bulletListItem\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]},{\"id\":\"8df8b737-8232-4030-b231-6f3b4cf4602c\",\"type\":\"bulletListItem\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]},{\"id\":\"6746e1e4-6605-4151-9161-38f8bbdba82c\",\"type\":\"bulletListItem\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]},{\"id\":\"e75eaa97-09e5-4275-bdbf-9d8397b88b1c\",\"type\":\"bulletListItem\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]},{\"id\":\"7fb69051-2245-4834-a1e9-8934d32e98f5\",\"type\":\"paragraph\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{\"bold\":true}}],\"children\":[]},{\"id\":\"702e9908-47d1-4f57-8a6e-30dc22b2a358\",\"type\":\"numberedListItem\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]},{\"id\":\"48a820b0-b79e-4add-abe0-519397aebac0\",\"type\":\"numberedListItem\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]},{\"id\":\"a8b4612a-10d3-4cd9-8ac2-b22dde63b1ff\",\"type\":\"numberedListItem\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]},{\"id\":\"db47aa25-1eeb-465b-bb04-343b928139ee\",\"type\":\"numberedListItem\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]},{\"id\":\"eae2982e-205c-4d94-8621-1c14a0436052\",\"type\":\"numberedListItem\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]},{\"id\":\"84465862-b164-4d71-8f33-46c2591105d6\",\"type\":\"paragraph\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]}]",
+          "markdown": "text\n\n**text**\n- text\n- text\n- text\n- text\n- text\n- text\n\n**text**\n- text\n- text\n- text\n- text\n\n**text**\n1. text\n2. text\n3. text\n4. text\n5. text\n\ntext"
+        },
+        "dueAt": null,
+        "status": "TODO",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "INBOX",
+        "waitingOn": "Person A",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000023",
+        "createdAt": "2026-09-25T09:07:32.576Z",
+        "updatedAt": "2026-09-25T09:07:32.576Z",
+        "deletedAt": null,
+        "position": -41,
+        "title": "Task R",
+        "bodyV2": {
+          "blocknote": "[{\"id\":\"3248e90b-b66a-475f-ac79-491945de5c56\",\"type\":\"paragraph\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]}]",
+          "markdown": "text"
+        },
+        "dueAt": null,
+        "status": "TODO",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "INBOX",
+        "waitingOn": "Person B",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000024",
+        "createdAt": "2026-09-15T08:59:22.063Z",
+        "updatedAt": "2026-09-23T08:30:24.937Z",
+        "deletedAt": null,
+        "position": -14,
+        "title": "Task I",
+        "bodyV2": {
+          "blocknote": null,
+          "markdown": ""
+        },
+        "dueAt": "2026-09-16T07:00:00.000Z",
+        "status": "DONE",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "DONE",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000025",
+        "createdAt": "2026-09-14T07:21:56.597Z",
+        "updatedAt": "2026-09-14T07:47:45.344Z",
+        "deletedAt": null,
+        "position": -5,
+        "title": "Task S",
+        "bodyV2": {
+          "blocknote": "[{\"id\":\"7ec5bd3d-8aa6-4bb1-ac12-225d921f069b\",\"type\":\"paragraph\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]}]",
+          "markdown": "text"
+        },
+        "dueAt": null,
+        "status": "DONE",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "DONE",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000026",
+        "createdAt": "2026-09-11T12:54:12.097Z",
+        "updatedAt": "2026-09-23T08:30:24.943Z",
+        "deletedAt": null,
+        "position": 0,
+        "title": "Task S",
+        "bodyV2": {
+          "blocknote": "[{\"id\":\"ee1c5232-91dc-4592-9ac5-9c89db970664\",\"type\":\"paragraph\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]}]",
+          "markdown": "text"
+        },
+        "dueAt": null,
+        "status": "DONE",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "DONE",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000027",
+        "createdAt": "2026-09-14T09:00:05.455Z",
+        "updatedAt": "2026-09-23T08:30:24.934Z",
+        "deletedAt": null,
+        "position": -10,
+        "title": "Task D",
+        "bodyV2": {
+          "blocknote": null,
+          "markdown": ""
+        },
+        "dueAt": null,
+        "status": "DONE",
+        "createdBy": {
+          "source": "WORKFLOW",
+          "workspaceMemberId": null,
+          "name": "Workflow",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "DONE",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000028",
+        "createdAt": "2026-09-15T08:59:06.394Z",
+        "updatedAt": "2026-09-23T08:30:24.939Z",
+        "deletedAt": null,
+        "position": -13,
+        "title": "Task I",
+        "bodyV2": {
+          "blocknote": null,
+          "markdown": ""
+        },
+        "dueAt": "2026-09-16T07:00:00.000Z",
+        "status": "DONE",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "DONE",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000029",
+        "createdAt": "2026-09-14T07:21:49.524Z",
+        "updatedAt": "2026-09-23T08:30:24.945Z",
+        "deletedAt": null,
+        "position": -4,
+        "title": "Task S",
+        "bodyV2": {
+          "blocknote": null,
+          "markdown": ""
+        },
+        "dueAt": null,
+        "status": "DONE",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "API",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "DONE",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000002",
+        "createdAt": "2026-09-23T06:35:04.909Z",
+        "updatedAt": "2026-09-26T06:16:46.385Z",
+        "deletedAt": null,
+        "position": -22,
+        "title": "Task T",
+        "bodyV2": {
+          "blocknote": "[{\"id\":\"3cfcb037-8ee7-41b3-8dfb-fdf4c2f5679a\",\"type\":\"paragraph\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]},{\"id\":\"dda0f788-efb7-4b2a-b6ac-b78616219bdc\",\"type\":\"bulletListItem\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]},{\"id\":\"f710ef51-b4d5-4d85-bd60-9f36045ec0d0\",\"type\":\"bulletListItem\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]},{\"id\":\"8a617810-d841-4339-b076-e1d03b556819\",\"type\":\"bulletListItem\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]},{\"id\":\"09d7b555-4c16-4790-b1cc-c78d3ba19808\",\"type\":\"paragraph\",\"props\":{\"backgroundColor\":\"default\",\"textColor\":\"default\",\"textAlignment\":\"left\"},\"content\":[{\"type\":\"text\",\"text\":\"text\",\"styles\":{}}],\"children\":[]}]",
+          "markdown": "text\n- text\n- text\n- text\n\ntext"
+        },
+        "dueAt": "2026-09-26T12:00:00.000Z",
+        "status": "DONE",
+        "createdBy": {
+          "source": "AGENT",
+          "workspaceMemberId": null,
+          "name": "openclaw-agent",
+          "context": null
+        },
+        "updatedBy": {
+          "source": "MANUAL",
+          "workspaceMemberId": "00000000-0000-4000-8000-000000000030",
+          "name": "Person C",
+          "context": {}
+        },
+        "searchVector": "'redacted':1",
+        "assigneeId": null,
+        "bucket": "INBOX",
+        "waitingOn": "",
+        "projectId": null,
+        "decisionId": null
+      }
+    ]
+  }
+}

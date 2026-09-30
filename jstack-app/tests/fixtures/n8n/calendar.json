@@ -1,0 +1,67 @@
+{
+  "ok": true,
+  "duration_ms": 1270,
+  "data": {
+    "count": 3,
+    "window": {
+      "timeMin": "2026-09-29T14:00:00.000Z",
+      "timeMax": "2026-10-06T14:00:00.000Z"
+    },
+    "events": [
+      {
+        "id": "event001",
+        "title": "Event A",
+        "start": "2026-10-02",
+        "end": "2026-10-04",
+        "allDay": true,
+        "timeZone": null,
+        "location": null,
+        "meet_link": null,
+        "htmlLink": "https://www.google.com/calendar/event?eid=REDACTED001",
+        "attendees_count": 0,
+        "transparency": "transparent",
+        "eventType": "default",
+        "recurringEventId": null,
+        "updated": "2026-05-21T00:19:53.747Z",
+        "protectedByEa": false,
+        "calendarId": "primary"
+      },
+      {
+        "id": "event002",
+        "title": "Event B",
+        "start": "2026-10-02T16:00:00+10:00",
+        "end": "2026-10-02T19:00:00+10:00",
+        "allDay": false,
+        "timeZone": "Australia/Brisbane",
+        "location": null,
+        "meet_link": null,
+        "htmlLink": "https://www.google.com/calendar/event?eid=REDACTED002",
+        "attendees_count": 0,
+        "transparency": "opaque",
+        "eventType": "default",
+        "recurringEventId": null,
+        "updated": "2026-09-08T23:45:53.586Z",
+        "protectedByEa": false,
+        "calendarId": "primary"
+      },
+      {
+        "id": "event003_20261005",
+        "title": "Event C",
+        "start": "2026-10-05",
+        "end": "2026-10-06",
+        "allDay": true,
+        "timeZone": null,
+        "location": null,
+        "meet_link": null,
+        "htmlLink": "https://www.google.com/calendar/event?eid=REDACTED003",
+        "attendees_count": 0,
+        "transparency": "transparent",
+        "eventType": "default",
+        "recurringEventId": "event003",
+        "updated": "2026-05-11T13:55:46.244Z",
+        "protectedByEa": false,
+        "calendarId": "primary"
+      }
+    ]
+  }
+}

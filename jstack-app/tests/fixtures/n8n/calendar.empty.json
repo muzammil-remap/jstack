@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "duration_ms": 421,
+  "data": {
+    "count": 0,
+    "window": {
+      "timeMin": "1990-01-01T14:00:00.000Z",
+      "timeMax": "1990-01-02T14:00:00.000Z"
+    },
+    "events": []
+  }
+}
