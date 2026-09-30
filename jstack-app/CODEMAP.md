@@ -81,7 +81,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 
 ## 2. The map of the territory
 
-<!-- generated:start section=2 sha=f0292d3 date=2026-09-30 -->
+<!-- generated:start section=2 sha=69abb79 date=2026-09-30 -->
 
 ### `app/`
 
@@ -601,7 +601,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 Endpoint → store action → component → testIDs, one block per contract group, from
 `wiring.json`.
 
-<!-- generated:start section=3 sha=f0292d3 date=2026-09-30 -->
+<!-- generated:start section=3 sha=69abb79 date=2026-09-30 -->
 
 ### agents
 
@@ -925,6 +925,7 @@ them; `tools/gen-codemap.mjs` lists any that this section does not name.
 | `tests/unit/n8nRoutes.test.ts` | ADR-76: every GET the n8n transport answers validates against its `openapi.yaml` response schema (or is an honest 404/501), every write with no key answers 501 without a call, the registry has exactly one row per GET, and no answer carries the fixtures' personal content |
 | `tests/unit/n8nClient.test.ts` | ADR-76: `callWebhook` POSTs JSON to `<base>/<key>` with no auth header, maps a DASH refusal to the contract's status (VALIDATION_ERROR → 422), retries once on a network failure or 5xx and never on a 4xx, times out as a network failure, and shares one request per key and body for 30 s — never for a write |
 | `tests/unit/n8nAllowList.test.ts` | ADR-76: the registry's webhook keys and the dev proxy's `ALLOW` are one set, no key or proxy path is a workflow that sends or returns file bytes, and no app source names a webhook path |
+| `tests/unit/n8nServe.test.ts` | ADR-93: the production server's allow-list is exactly the keys the app calls, never `memory` or a sending workflow; the server, started for real, asks for the site password everywhere but `/healthz` and the manifest, serves the export with `public/_headers`, keeps to the export, forwards only its keys' JSON from this origin with the n8n header and nothing of the browser's, refuses to start without its secrets; the bundle check fails on each thing it looks for |
 | `tests/unit/n8nCalendar.test.ts` | Phase 3: `GET /calendar` from the `calendar` webhook — each view's window is `rangeFor`'s (literal instants for both board zones, turning over at the device's midnight), the redacted real replies map to a valid `CalendarWindow`, an all-day event runs midnight to midnight with Google's exclusive end, a missing end is half an hour, the mock's start-in-window, gaps and focus rules hold, and any other reply is the section's 502 |
 | `tests/unit/allDay.test.ts` | Option C: the one all-day test (the time grid's `isAllDay`: local midnight to a later local midnight; a timed hour, eleven to midnight, midnight to noon and a zero-length midnight are not) and `eventsCovering` (a two-day event on both its days and neither neighbour, an overnight event on both, a zero-length one on its instant's day) — instants from each board zone's offset |
 | `tests/native/calendarAllDay.test.tsx` | Option C, rendered: in Week a two-day all-day event sits in the strip on both its days (the empty Saturday keeps the strip's height so the hours stay level) and never in a track, a timed event stays in its track, no all-day event means no strip, and the Calendar card says "all day", never "0:00" |
@@ -1156,8 +1157,9 @@ anything it cannot check reports itself skipped with the reason.
 **A webhook on the n8n build (REMAP, ADR-76).** One webhook at a time, and never a workflow that
 sends, pays, books, revokes or returns file bytes.
 1. The key goes in three places that must agree: `WEBHOOK_KEYS` in `data/n8n/registry.ts`, `ALLOW`
-   in `remap/dev-proxy.mjs`, and the nginx config. `tests/unit/n8nAllowList.test.ts` holds the
-   first two to one set.
+   in `remap/dev-proxy.mjs`, and `PROD_ALLOW` in `remap/deploy/server.mjs` (the production server,
+   ADR-93: the dev list without the keys the app never calls). `tests/unit/n8nAllowList.test.ts` holds the
+   first two to one set, `tests/unit/n8nServe.test.ts` the third to the keys the app calls.
 2. Call it through the proxy and save a redacted sample, plus an empty one, in
    `tests/fixtures/n8n/` — `remap/redact-samples.mjs` redacts them and refuses to write on a leak.
 3. Write the adapter in `data/n8n/adapters/` (`data/n8n/adapters/calendar.ts` is the first):
@@ -1417,7 +1419,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 
 ## 7. The decision index
 
-<!-- generated:start section=7 sha=f0292d3 date=2026-09-30 -->
+<!-- generated:start section=7 sha=69abb79 date=2026-09-30 -->
 
 `DECISIONS.md` — ADR-01..75, each with its status; the versioned decision files hold the full reasoning.
 
@@ -1502,7 +1504,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 
 ## 8. The test map
 
-<!-- generated:start section=8 sha=f0292d3 date=2026-09-30 -->
+<!-- generated:start section=8 sha=69abb79 date=2026-09-30 -->
 
 ### Specs
 
@@ -1639,6 +1641,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 | `tests/unit/n8nReachability.test.ts` | ADR-78, ADR-83 |
 | `tests/unit/n8nRecords.test.ts` | ADR-87 |
 | `tests/unit/n8nRoutes.test.ts` | ADR-76, ADR-78 |
+| `tests/unit/n8nServe.test.ts` | ADR-93 |
 | `tests/unit/n8nTasks.test.ts` | — |
 | `tests/unit/n8nTasksWrite.test.ts` | — |
 | `tests/unit/n8nToday.test.ts` | — |
@@ -1750,7 +1753,7 @@ the codebase that the hand-written judgement has not caught up with. A release r
 empty — Stage 3c's `P-1` adds the release workflow and that gate with it. Until then they are
 advisory, and Stage 4 curates them.
 
-<!-- generated:start section=11 sha=f0292d3 date=2026-09-30 -->
+<!-- generated:start section=11 sha=69abb79 date=2026-09-30 -->
 
 ### New since section 6 was curated
 

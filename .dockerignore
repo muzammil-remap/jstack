@@ -1,0 +1,14 @@
+# Only what the Dockerfile copies matters; this keeps secrets, dependencies and scratch out of the
+# build context even when someone builds from a working copy rather than a clean clone.
+.git
+**/node_modules
+**/.env
+**/.env.*
+!**/.env.local.example
+**/.expo
+remap/screens
+remap/n8n/reference
+jstack-app/e2e/.artifacts
+jstack-app/evidence/.e2e-raw
+jstack-app/tests/lint-guard-scratch-*
+dist
