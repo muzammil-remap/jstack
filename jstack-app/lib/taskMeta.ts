@@ -20,6 +20,7 @@
 import { dayKey, formatAgo, formatDate, formatTime12, formatWhen, now } from "@/lib/time";
 import type { AgentRoster, Task, TaskOwner, Work } from "@/data/types";
 import { PERSON_LABEL } from "@/lib/enumLabels";
+import { TASK_PRIORITY_KNOWN } from "@/data/config";
 
 /**
  * The one map from a wire id to the name a person reads (T-4).
@@ -50,9 +51,14 @@ function isOwner(id: string): id is TaskOwner {
  * Josh: "some task cards missing their priority in the subtext… make it
  * readable, 'high priority'". So all three say so, and the pop colour does the
  * work the omission used to do.
+ *
+ * REMAP (Phase 4): only where the priority is a fact. The contract requires the
+ * field, so a source with none — Twenty on the n8n build, until Josh adds the
+ * field — still sends one, and printing it would put "medium priority" on
+ * every task. `!== false`, so a build that does not say keeps the line as it was.
  */
 function priorityPhrase(task: Task): string {
-  return `${task.priority} priority`;
+  return TASK_PRIORITY_KNOWN !== false ? `${task.priority} priority` : "";
 }
 
 /**
@@ -119,8 +125,8 @@ export function completedLine(task: Task, nowDate?: Date): string | null {
  */
 export function taskMetaRuns(task: Task, nowDate?: Date, opts?: { marks?: boolean; repeatLabel?: string; completed?: boolean }): { text: string; accent: boolean }[] {
   const line = taskMetaLine(task, nowDate, opts);
-  if (task.priority !== "high") return [{ text: line, accent: false }];
   const phrase = priorityPhrase(task);
+  if (task.priority !== "high" || phrase === "") return [{ text: line, accent: false }];
   const at = line.indexOf(phrase);
   if (at === -1) return [{ text: line, accent: false }];
   return [

@@ -50,6 +50,20 @@ const rawCalendarSource = process.env.EXPO_PUBLIC_N8N_CALENDAR_SOURCE;
 export const N8N_CALENDAR_SOURCE: "personal" | "work" | "family" =
   rawCalendarSource === "work" || rawCalendarSource === "family" ? rawCalendarSource : "personal";
 
+/**
+ * Phase 4: the two Twenty fields Josh has been asked to add to the task object, each a switch the
+ * tasks adapter reads, OFF until the field exists. `priority` (SELECT HIGH / MEDIUM / LOW) becomes
+ * `Task.priority`; `area` (SELECT PERSONAL / FAMILY / WORK) becomes the task's silo and focus.
+ * Off, no priority is claimed (see `TASK_PRIORITY_KNOWN`) and every task is `personal:josh`.
+ */
+export const TWENTY_PRIORITY_FIELD = process.env.EXPO_PUBLIC_TWENTY_PRIORITY_FIELD === "1";
+export const TWENTY_AREA_FIELD = process.env.EXPO_PUBLIC_TWENTY_AREA_FIELD === "1";
+
+/** Whether a task's `priority` is a fact the source holds. The contract requires the field, so a
+ * source without one still sends a value; `lib/taskMeta.ts` prints it only when this is true —
+ * always on the mock and a real backend, on n8n only once Twenty has the field. */
+export const TASK_PRIORITY_KNOWN = DATA_SOURCE !== "n8n" || TWENTY_PRIORITY_FIELD;
+
 /** ADR-76: Twenty's own web address, for "open in Twenty" links and the
  * Agents portal. Empty means no link is drawn, rather than a guessed one. */
 export const TWENTY_APP_URL: string = (process.env.EXPO_PUBLIC_TWENTY_APP_URL ?? "").replace(/\/+$/, "");

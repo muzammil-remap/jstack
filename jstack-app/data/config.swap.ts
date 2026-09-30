@@ -19,6 +19,9 @@ export const DATA_SOURCE: "mock" | "http" | "n8n" = "http";
 export const N8N_BASE_URL = "/n8n";
 export const N8N_CALENDAR_SOURCE: "personal" | "work" | "family" = "personal";
 export const TWENTY_APP_URL = "";
+export const TWENTY_PRIORITY_FIELD = false;
+export const TWENTY_AREA_FIELD = false;
+export const TASK_PRIORITY_KNOWN = true;
 
 // D-4, D-5, D-13, D-13b: kept equal to data/config.ts's defaults — this file
 // swaps the base URL and nothing about how a request behaves once it is
