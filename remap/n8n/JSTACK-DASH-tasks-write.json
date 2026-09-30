@@ -1,0 +1,713 @@
+{
+  "name": "JSTACK-DASH-tasks-write",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "jstack-dash-tasks-write",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "webhookId": "34f402b6-ef29-4098-9717-22484bfaf1a0",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "5yHVwzb020qVVMjj",
+          "name": "JSTACK Webhook Auth"
+        }
+      },
+      "id": "d0e51b4e-c23e-4d3e-b973-8bdeeb16b40d",
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// op: create | update | delete. Only allow-listed Twenty fields are written.\nconst first = $input.first().json;\nconst body = first.body || first;\nconst request_id = (typeof body.request_id === 'string' && body.request_id.length <= 100) ? body.request_id : undefined;\nconst fail = (code, message, status_code = 400) => [{ json: { valid: false, status_code, error: { code, message }, request_id } }];\nconst isIso = (v) => typeof v === 'string' && v.trim() !== '' && !isNaN(new Date(v).getTime());\nconst BASE = 'http://172.17.0.1:3000/rest/tasks';\nconst STATUS = ['TODO', 'IN_PROGRESS', 'DONE'];\nconst op = body.op;\nif (!['create', 'update', 'delete'].includes(op)) return fail('VALIDATION_ERROR', 'op must be create, update or delete');\n\nfunction pickFields(f) {\n  if (f == null || typeof f !== 'object' || Array.isArray(f)) return { error: 'fields must be an object' };\n  const out = {};\n  if ('title' in f) {\n    if (typeof f.title !== 'string' || f.title.trim() === '' || f.title.length > 300) return { error: 'title must be 1-300 characters' };\n    out.title = f.title.trim();\n  }\n  if ('status' in f) {\n    if (!STATUS.includes(f.status)) return { error: 'status must be one of ' + STATUS.join(', ') };\n    out.status = f.status;\n  }\n  if ('dueAt' in f) {\n    if (f.dueAt !== null && !isIso(f.dueAt)) return { error: 'dueAt must be ISO 8601 or null' };\n    out.dueAt = f.dueAt;\n  }\n  if ('assigneeId' in f) {\n    if (f.assigneeId !== null && (typeof f.assigneeId !== 'string' || f.assigneeId.length > 100)) return { error: 'assigneeId must be an id or null' };\n    out.assigneeId = f.assigneeId;\n  }\n  if ('bodyMarkdown' in f) {\n    if (f.bodyMarkdown !== null && (typeof f.bodyMarkdown !== 'string' || f.bodyMarkdown.length > 20000)) return { error: 'bodyMarkdown must be text up to 20000 characters' };\n    out.bodyV2 = { markdown: f.bodyMarkdown, blocknote: null };\n  }\n  return { fields: out };\n}\nconst idOk = (id) => typeof id === 'string' && /^[A-Za-z0-9-]{1,100}$/.test(id);\n\nif (op === 'create') {\n  const offlineId = body.offlineId;\n  if (typeof offlineId !== 'string' || !/^[A-Za-z0-9-]{8,100}$/.test(offlineId)) return fail('VALIDATION_ERROR', 'offlineId (uuid) is required for create');\n  const p = pickFields(body.fields);\n  if (p.error) return fail('VALIDATION_ERROR', p.error);\n  if (!p.fields.title) return fail('VALIDATION_ERROR', 'fields.title is required for create');\n  if (!p.fields.status) p.fields.status = 'TODO';\n  const dedupeKey = 'dash-tasks-write:' + offlineId;\n  const filter = { type: 'and', filters: [{ columnName: 'request_id', condition: 'eq', value: dedupeKey }] };\n  return [{ json: { valid: true, op, request_id, dedupe: true, dedupeKey, hasBody: true,\n    dedupeLookupUrl: 'http://localhost:5678/api/v1/data-tables/RaOJmGMJFdZHIVRm/rows?limit=1&filter=' + encodeURIComponent(JSON.stringify(filter)),\n    req: { method: 'POST', url: BASE, body: p.fields } } }];\n}\nif (!idOk(body.id)) return fail('VALIDATION_ERROR', 'id is required');\nif (op === 'update') {\n  const p = pickFields(body.fields);\n  if (p.error) return fail('VALIDATION_ERROR', p.error);\n  if (Object.keys(p.fields).length === 0) return fail('VALIDATION_ERROR', 'nothing to update');\n  return [{ json: { valid: true, op, id: body.id, request_id, dedupe: false, hasBody: true,\n    req: { method: 'PATCH', url: BASE + '/' + encodeURIComponent(body.id), body: p.fields } } }];\n}\nreturn [{ json: { valid: true, op, id: body.id, request_id, dedupe: false, hasBody: false,\n  req: { method: 'DELETE', url: BASE + '/' + encodeURIComponent(body.id) } } }];\n"
+      },
+      "name": "Validate Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "9e04511d-ea99-49d2-b723-265510da8fa5",
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "9d2bd077-76d0-448b-821b-ff81e8c4e89c",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "id": "728eb2d3-b185-47e8-b607-8a5b32f5b43a",
+      "position": [
+        640,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "ac9fa3e1-57a2-4fd0-94ba-2e5c4b3438f0",
+              "leftValue": "={{ $json.dedupe }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Is Create?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "id": "0e37d866-130e-40be-8896-14e1ef38c1ec",
+      "position": [
+        860,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.dedupeLookupUrl }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 15000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "name": "Dedupe Lookup",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "jZ4fXuIu8LhwhBQS",
+          "name": "JSTACK n8n API Auth"
+        }
+      },
+      "onError": "continueErrorOutput",
+      "id": "993d5cfc-51c1-4a38-8136-249eb0eefc35",
+      "position": [
+        1080,
+        150
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// A create repeated with the same offlineId returns the first result (CONTRACT.md \u00a71.12).\nconst v = $('Validate Input').first().json;\nconst r = $input.first().json || {};\nconst rows = (r.statusCode >= 200 && r.statusCode < 300 && r.body && Array.isArray(r.body.data)) ? r.body.data : [];\nif (rows.length > 0) {\n  let stored;\n  try { stored = JSON.parse(rows[0].response_json); } catch (e) { stored = { ok: true, request_id: v.request_id, data: { op: 'create', id: rows[0].resource_id } }; }\n  stored.duplicate = true;\n  return [{ json: { done: true, response: stored } }];\n}\nreturn [{ json: Object.assign({}, v, { done: false }) }];\n"
+      },
+      "name": "Duplicate?",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "9aecb96b-23bb-45bd-8c6b-54d2787f1453",
+      "position": [
+        1300,
+        150
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "0dd0c5d8-5c65-4e84-9f07-ba4639838f48",
+              "leftValue": "={{ $json.done }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Already Done?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "id": "ffdea978-51cb-4c6c-95b2-443907e0fa28",
+      "position": [
+        1520,
+        150
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "cc46ee7e-1a76-442a-a4e3-6b7be2bd23ba",
+              "leftValue": "={{ $json.hasBody }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Has Body?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "id": "e9f9164d-18de-45fe-beb1-57c81c174a24",
+      "position": [
+        1740,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "={{ $json.req.method }}",
+        "url": "={{ $json.req.url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.req.body) }}",
+        "options": {
+          "timeout": 15000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "name": "Twenty Write",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "mOgOt5eHxfUT4kbf",
+          "name": "JSTACK Twenty"
+        }
+      },
+      "onError": "continueErrorOutput",
+      "id": "1fbbbf73-2b8c-4603-b608-a57e7c07b342",
+      "position": [
+        1960,
+        250
+      ]
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "={{ $json.req.url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 15000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "name": "Twenty Delete",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "mOgOt5eHxfUT4kbf",
+          "name": "JSTACK Twenty"
+        }
+      },
+      "onError": "continueErrorOutput",
+      "id": "1243777e-b953-4298-8220-0cb1339b773e",
+      "position": [
+        2180,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const v = $('Validate Input').first().json;\nconst r = $input.first().json || {};\nconst sc = r.statusCode;\nconst err = (code, message, status_code) => [{ json: { ok: false, status_code, request_id: v.request_id, error: { code, message } } }];\nconst detail = () => JSON.stringify(r.body || '').slice(0, 300);\nif (sc === 404) return err('NOT_FOUND', 'task not found', 404);\nif (sc === 400 || sc === 422) return err('VALIDATION_ERROR', 'Twenty refused the change: ' + detail(), 422);\nif (!(sc >= 200 && sc < 300)) return err('UPSTREAM_ERROR', 'Twenty answered ' + sc + ': ' + detail(), 502);\n// Twenty REST answers { data: { createTask | updateTask | deleteTask: {...} } }\nconst d = (r.body && r.body.data) || {};\nconst rec = Object.values(d).find((x) => x && typeof x === 'object') || null;\nconst response = { ok: true, request_id: v.request_id, data: { op: v.op, id: (rec && rec.id) || v.id || null, task: v.op === 'delete' ? null : rec } };\nreturn [{ json: {\n  ok: true, response,\n  writeDedupe: v.op === 'create',\n  dedupeRow: v.op === 'create' ? { request_id: v.dedupeKey, workflow: 'JSTACK-DASH-tasks-write', resource_id: String((rec && rec.id) || ''), response_json: JSON.stringify(response), created_at: new Date().toISOString() } : null\n} }];\n"
+      },
+      "name": "Shape Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "bdfc40f0-d16f-4b7c-b017-02eb3d665c06",
+      "position": [
+        2400,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "f4ac5b93-cef5-44f4-a0b1-e5d931b05c3f",
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "id": "ea421eef-62a5-40fd-a48c-6bdd90933cce",
+      "position": [
+        2620,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "f46e95f2-aa99-4bb7-9504-b9592fa8546f",
+              "leftValue": "={{ $json.writeDedupe }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Write Dedupe?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "id": "77a1b767-470f-4d45-aae8-54d21f0df67a",
+      "position": [
+        2840,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5678/api/v1/data-tables/RaOJmGMJFdZHIVRm/rows",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ data: [ $json.dedupeRow ] }) }}",
+        "options": {
+          "timeout": 15000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "name": "Write Dedupe",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "jZ4fXuIu8LhwhBQS",
+          "name": "JSTACK n8n API Auth"
+        }
+      },
+      "onError": "continueErrorOutput",
+      "id": "85ebc0a1-9083-48f3-b912-d30bfafdbecc",
+      "position": [
+        3060,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $('Shape Result').first().json.response }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "name": "Respond 200",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "id": "e234182c-0797-4b6b-b3e9-dbd9b9dcf27c",
+      "position": [
+        3280,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.response }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "name": "Respond Duplicate",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "id": "7024a671-c8cc-4c05-ac65-d9e3d3332538",
+      "position": [
+        3500,
+        60
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: $json.error, request_id: $json.request_id } }}",
+        "options": {
+          "responseCode": "={{ $json.status_code || 400 }}"
+        }
+      },
+      "name": "Respond Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "id": "a44b75eb-cc7b-41de-9376-8df5bed10a01",
+      "position": [
+        3720,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: { code: 'UPSTREAM_UNREACHABLE', message: String(($json.error && $json.error.message) || $json.message || 'upstream did not answer') } } }}",
+        "options": {
+          "responseCode": 502
+        }
+      },
+      "name": "Respond 502",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "id": "59dfeeb7-11b1-4858-b906-1a4ec5602bc0",
+      "position": [
+        3940,
+        560
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Input": {
+      "main": [
+        [
+          {
+            "node": "Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid?": {
+      "main": [
+        [
+          {
+            "node": "Is Create?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Create?": {
+      "main": [
+        [
+          {
+            "node": "Dedupe Lookup",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Has Body?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dedupe Lookup": {
+      "main": [
+        [
+          {
+            "node": "Duplicate?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond 502",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Duplicate?": {
+      "main": [
+        [
+          {
+            "node": "Already Done?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Already Done?": {
+      "main": [
+        [
+          {
+            "node": "Respond Duplicate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Has Body?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Body?": {
+      "main": [
+        [
+          {
+            "node": "Twenty Write",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Twenty Delete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Twenty Write": {
+      "main": [
+        [
+          {
+            "node": "Shape Result",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond 502",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Twenty Delete": {
+      "main": [
+        [
+          {
+            "node": "Shape Result",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond 502",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Shape Result": {
+      "main": [
+        [
+          {
+            "node": "OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OK?": {
+      "main": [
+        [
+          {
+            "node": "Write Dedupe?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Dedupe?": {
+      "main": [
+        [
+          {
+            "node": "Write Dedupe",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond 200",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Dedupe": {
+      "main": [
+        [
+          {
+            "node": "Respond 200",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond 200",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "errorWorkflow": "3bocsiad5tgJ0TfE",
+    "timezone": "Australia/Brisbane"
+  },
+  "tags": [],
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "_note": "Creates, updates or deletes a Twenty task. create needs offlineId and is deduplicated through the existing dedupe data table (same one WF-02/04/05 use)."
+}

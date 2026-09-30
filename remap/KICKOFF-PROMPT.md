@@ -2,7 +2,7 @@
 
 ---
 
-You're working on JSTACK, a finished Expo / React Native Web app. The goal is to make it show the client's **real data, read-only, by calling n8n webhooks directly**. There is no backend server to build. I supervise: you plan, build, test and report at each checkpoint, then wait for my "go".
+You're working on JSTACK, a finished Expo / React Native Web app. The goal is to make it work on the client's **real data, reads and writes as his documents specify, by calling n8n webhooks directly** (superseded in detail by `remap/N8N-INTEGRATION-PROMPT.md`). There is no backend server to build. I supervise: you plan, build, test and report at each checkpoint, then wait for my "go".
 
 ## Phase 0 — Orient (no code changes)
 
@@ -40,7 +40,7 @@ Build what `CLAUDE.md` §3 describes:
 
 - `EXPO_PUBLIC_DATA_SOURCE = mock | http | n8n` in `data/config.ts` (default `mock`), plus `EXPO_PUBLIC_N8N_BASE_URL`. `data/provider.ts` picks the transport. The outbox and reachability layers wrap `n8nTransport` the same way they wrap `httpTransport`.
 - `data/transport/n8n.ts` and `data/n8n/{registry,client,defaults,empty}.ts`, with one registry row for **every GET in `data/routes.ts`**. Use the kinds from `remap/WEBHOOKS.md` Table B. Everything starts as `default` or `empty`, and `wired` rows are stubbed until webhooks arrive.
-- Every write returns `403 { reason: "read-only" }` without calling anything.
+- Every write without a wired key returns `{ status: 501, json: { reason: "not connected yet" } }` without calling anything.
 - In `n8n` mode the gate must never offer the mock sign-in, and nothing may serve fixture data.
 - Tests:
   - every GET route answered by `n8nTransport` validates against its response schema in `openapi.yaml` (reuse the existing validator)
@@ -80,7 +80,7 @@ For each webhook I add to `remap/WEBHOOKS.md` Table A:
 
 ## Rules that override convenience
 
-- Read-only. No write leaves the browser.
+- Never send, pay, book or revoke (`CONTRACT.md` §1.1); only allow-listed keys are called.
 - Raw n8n JSON never reaches a store.
 - No new dependencies (the app's rule).
 - Never edit an existing test to make it pass. Mock mode stays at the setup baseline (no new failures).

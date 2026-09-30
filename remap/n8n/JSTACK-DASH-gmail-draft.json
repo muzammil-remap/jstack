@@ -1,0 +1,258 @@
+{
+  "name": "JSTACK-DASH-gmail-draft",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "jstack-dash-gmail-draft",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "webhookId": "cd0a9bc2-5104-4164-bc4f-369c3790927e",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "5yHVwzb020qVVMjj",
+          "name": "JSTACK Webhook Auth"
+        }
+      },
+      "id": "5af28ced-c518-4d93-a596-76448781ebe5",
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// A DRAFT only. Nothing here sends.\nconst first = $input.first().json;\nconst body = first.body || first;\nconst request_id = (typeof body.request_id === 'string' && body.request_id.length <= 100) ? body.request_id : undefined;\nconst fail = (code, message, status_code = 400) => [{ json: { valid: false, status_code, error: { code, message }, request_id } }];\nconst isIso = (v) => typeof v === 'string' && v.trim() !== '' && !isNaN(new Date(v).getTime());\nconst emailRe = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;\nfunction list(value, required, field) {\n  if (value === undefined || value === null || value === '') return required ? { error: field + ' is required' } : { value: '' };\n  if (typeof value !== 'string') return { error: field + ' must be comma-separated addresses' };\n  const parts = value.split(',').map((s) => s.trim()).filter(Boolean);\n  if (required && parts.length === 0) return { error: field + ' is required' };\n  for (const x of parts) if (!emailRe.test(x)) return { error: field + ' has an invalid address: ' + JSON.stringify(x) };\n  return { value: parts.join(', ') };\n}\nconst to = list(body.to, true, 'to'); if (to.error) return fail('VALIDATION_ERROR', to.error);\nconst cc = list(body.cc, false, 'cc'); if (cc.error) return fail('VALIDATION_ERROR', cc.error);\nconst bcc = list(body.bcc, false, 'bcc'); if (bcc.error) return fail('VALIDATION_ERROR', bcc.error);\nif (typeof body.subject !== 'string' || body.subject.trim() === '' || body.subject.length > 300) return fail('VALIDATION_ERROR', 'subject must be 1-300 characters');\nif (typeof body.body !== 'string' || body.body.trim() === '' || body.body.length > 20000) return fail('VALIDATION_ERROR', 'body must be 1-20000 characters');\nlet threadId = '';\nif (body.threadId != null && body.threadId !== '') {\n  if (typeof body.threadId !== 'string' || !/^[A-Za-z0-9]{6,40}$/.test(body.threadId)) return fail('VALIDATION_ERROR', 'threadId is not a Gmail thread id');\n  threadId = body.threadId;\n}\nreturn [{ json: { valid: true, request_id, to: to.value, cc: cc.value, bcc: bcc.value, subject: body.subject, body: body.body, threadId } }];\n"
+      },
+      "name": "Validate Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "ca850f38-d6e3-44c0-a281-31e7562094fe",
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "3aa0bf3f-13d2-466b-91f5-9d788b6e83d7",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "id": "b7853a88-f2eb-451a-83b8-6ab8362e3970",
+      "position": [
+        640,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "operation": "create",
+        "subject": "={{ $json.subject }}",
+        "emailType": "text",
+        "message": "={{ $json.body }}",
+        "options": {
+          "sendTo": "={{ $json.to }}",
+          "ccList": "={{ $json.cc }}",
+          "bccList": "={{ $json.bcc }}",
+          "threadId": "={{ $json.threadId }}"
+        }
+      },
+      "name": "Gmail Draft",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "webhookId": "a81142ff-895d-49d2-a18a-e698f4aa8d58",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "v3TkuFf4wBgjmWby",
+          "name": "JSTACK Gmail"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 2000,
+      "onError": "continueErrorOutput",
+      "id": "3a30b16f-b6ca-422a-9014-00905385e441",
+      "position": [
+        860,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const v = $('Validate Input').first().json;\nconst d = $input.first().json || {};\nconst message = d.message || {};\nreturn [{ json: { response: { ok: true, request_id: v.request_id, data: {\n  status: 'outbox_user_sends', draftId: d.id || null, messageId: message.id || null, threadId: message.threadId || v.threadId || null,\n  gmailUrl: 'https://mail.google.com/mail/u/0/#drafts'\n} } } }];\n"
+      },
+      "name": "Shape Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "fa316379-81aa-44a4-a363-b40a432a544f",
+      "position": [
+        1080,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.response }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "name": "Respond 200",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "id": "46f8bc4c-7031-4e57-9272-7e8ec9d9b68a",
+      "position": [
+        1300,
+        250
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: $json.error, request_id: $json.request_id } }}",
+        "options": {
+          "responseCode": "={{ $json.status_code || 400 }}"
+        }
+      },
+      "name": "Respond Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "id": "7e293593-62ee-4ecc-8263-561a2a7ffc72",
+      "position": [
+        1520,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: { code: 'UPSTREAM_UNREACHABLE', message: String(($json.error && $json.error.message) || $json.message || 'upstream did not answer') } } }}",
+        "options": {
+          "responseCode": 502
+        }
+      },
+      "name": "Respond 502",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "id": "6ab13a9e-9196-4f2f-8af8-4899f6cd8d28",
+      "position": [
+        1740,
+        520
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Input": {
+      "main": [
+        [
+          {
+            "node": "Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid?": {
+      "main": [
+        [
+          {
+            "node": "Gmail Draft",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Draft": {
+      "main": [
+        [
+          {
+            "node": "Shape Result",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond 502",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Shape Result": {
+      "main": [
+        [
+          {
+            "node": "Respond 200",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "errorWorkflow": "3bocsiad5tgJ0TfE",
+    "timezone": "Australia/Brisbane"
+  },
+  "tags": [],
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "_note": "Creates a Gmail DRAFT. Never sends (CONTRACT.md \u00a71.1: approve on an email card returns outbox_user_sends; Josh sends from Gmail)."
+}

@@ -1,0 +1,413 @@
+{
+  "name": "JSTACK-DASH-calendar-edit",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "jstack-dash-calendar-edit",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "webhookId": "11955744-a0f7-44cc-aef5-cbdc29eb897f",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "5yHVwzb020qVVMjj",
+          "name": "JSTACK Webhook Auth"
+        }
+      },
+      "id": "cd7c93ea-7ebf-4dd4-a95b-74ee383c935c",
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// op: get | update | delete | block. Guests are never notified (sendUpdates=none): the app never sends.\nconst first = $input.first().json;\nconst body = first.body || first;\nconst request_id = (typeof body.request_id === 'string' && body.request_id.length <= 100) ? body.request_id : undefined;\nconst fail = (code, message, status_code = 400) => [{ json: { valid: false, status_code, error: { code, message }, request_id } }];\nconst isIso = (v) => typeof v === 'string' && v.trim() !== '' && !isNaN(new Date(v).getTime());\nconst BASE = 'https://www.googleapis.com/calendar/v3/calendars/primary/events';\nconst op = body.op;\nif (!['get', 'update', 'delete', 'block'].includes(op)) return fail('VALIDATION_ERROR', 'op must be get, update, delete or block');\nconst idOk = (id) => typeof id === 'string' && /^[A-Za-z0-9_-]{1,1024}$/.test(id);\n\nif (op === 'block') {\n  const { title, startsAt, endsAt } = body;\n  if (typeof title !== 'string' || title.trim() === '' || title.length > 200) return fail('VALIDATION_ERROR', 'title must be 1-200 characters');\n  if (!isIso(startsAt) || !isIso(endsAt)) return fail('VALIDATION_ERROR', 'startsAt and endsAt must be ISO 8601');\n  if (new Date(endsAt) <= new Date(startsAt)) return fail('VALIDATION_ERROR', 'endsAt must be after startsAt');\n  const description = typeof body.description === 'string' ? body.description.slice(0, 2000) : undefined;\n  return [{ json: { valid: true, op, request_id, hasBody: true, req: { method: 'POST', url: BASE + '?sendUpdates=none', body: {\n    summary: title.trim(), description, start: { dateTime: startsAt }, end: { dateTime: endsAt }, transparency: 'opaque',\n    extendedProperties: { private: { jstackProtected: 'true', jstackSource: 'dashboard' } } } } } }];\n}\nif (!idOk(body.eventId)) return fail('VALIDATION_ERROR', 'eventId is required');\nconst url = BASE + '/' + encodeURIComponent(body.eventId);\nif (op === 'get') return [{ json: { valid: true, op, request_id, eventId: body.eventId, hasBody: false, req: { method: 'GET', url } } }];\nif (op === 'delete') return [{ json: { valid: true, op, request_id, eventId: body.eventId, hasBody: false, req: { method: 'DELETE', url: url + '?sendUpdates=none' } } }];\n\nconst p = body.patch;\nif (p == null || typeof p !== 'object' || Array.isArray(p)) return fail('VALIDATION_ERROR', 'patch must be an object');\nconst out = {};\nif ('title' in p) { if (typeof p.title !== 'string' || p.title.trim() === '' || p.title.length > 200) return fail('VALIDATION_ERROR', 'title must be 1-200 characters'); out.summary = p.title.trim(); }\nif ('startsAt' in p) { if (!isIso(p.startsAt)) return fail('VALIDATION_ERROR', 'startsAt must be ISO 8601'); out.start = { dateTime: p.startsAt }; }\nif ('endsAt' in p) { if (!isIso(p.endsAt)) return fail('VALIDATION_ERROR', 'endsAt must be ISO 8601'); out.end = { dateTime: p.endsAt }; }\nif (out.start && out.end && new Date(p.endsAt) <= new Date(p.startsAt)) return fail('VALIDATION_ERROR', 'endsAt must be after startsAt');\nif ('location' in p) { if (p.location !== null && typeof p.location !== 'string') return fail('VALIDATION_ERROR', 'location must be text'); out.location = p.location || ''; }\nif ('description' in p) { if (p.description !== null && typeof p.description !== 'string') return fail('VALIDATION_ERROR', 'description must be text'); out.description = (p.description || '').slice(0, 8000); }\nif (Object.keys(out).length === 0) return fail('VALIDATION_ERROR', 'nothing to update');\nreturn [{ json: { valid: true, op, request_id, eventId: body.eventId, hasBody: true, req: { method: 'PATCH', url: url + '?sendUpdates=none', body: out } } }];\n"
+      },
+      "name": "Validate Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "e8ed1ddb-619b-4db6-9ab8-7bc218daaa7b",
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "bc962af0-1300-49c3-adf5-8640cb42cb6f",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "id": "a09b6da3-bc9e-4be8-9cc7-f2e6c314e508",
+      "position": [
+        640,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "bb13d287-5311-4881-a5c4-1b402fd0a0ca",
+              "leftValue": "={{ $json.hasBody }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Has Body?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "id": "eb38db16-2d12-4591-b980-3d8e3c204686",
+      "position": [
+        860,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "={{ $json.req.method }}",
+        "url": "={{ $json.req.url }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleCalendarOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.req.body) }}",
+        "options": {
+          "timeout": 15000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "name": "Google Write",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "xrs7EEt5BKwBuUx4",
+          "name": "JSTACK Google Calendar"
+        }
+      },
+      "onError": "continueErrorOutput",
+      "id": "59965be4-2992-4fc2-8db5-009bee0a3737",
+      "position": [
+        1080,
+        250
+      ]
+    },
+    {
+      "parameters": {
+        "method": "={{ $json.req.method }}",
+        "url": "={{ $json.req.url }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleCalendarOAuth2Api",
+        "options": {
+          "timeout": 15000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "name": "Google Read/Delete",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "xrs7EEt5BKwBuUx4",
+          "name": "JSTACK Google Calendar"
+        }
+      },
+      "onError": "continueErrorOutput",
+      "id": "46b11a3d-0eab-4b26-83ce-feafc4b21fc1",
+      "position": [
+        1300,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const pick = (t) => (t && (t.dateTime || t.date)) || null;\nfunction mapEvent(e) {\n  const video = (e.conferenceData && Array.isArray(e.conferenceData.entryPoints)) ? e.conferenceData.entryPoints.find((p) => p.entryPointType === 'video') : undefined;\n  const priv = (e.extendedProperties && e.extendedProperties.private) || {};\n  return {\n    id: e.id, title: e.summary || '(no title)', start: pick(e.start), end: pick(e.end),\n    allDay: !!(e.start && e.start.date && !e.start.dateTime), timeZone: (e.start && e.start.timeZone) || null,\n    location: e.location || null, meet_link: e.hangoutLink || (video && video.uri) || null, htmlLink: e.htmlLink || null,\n    attendees_count: Array.isArray(e.attendees) ? e.attendees.length : 0, transparency: e.transparency || 'opaque',\n    eventType: e.eventType || 'default', recurringEventId: e.recurringEventId || null, updated: e.updated || null,\n    protectedByEa: priv.jstackProtected === 'true', calendarId: 'primary'\n  };\n}\nconst v = $('Validate Input').first().json;\nconst r = $input.first().json || {};\nconst sc = r.statusCode;\nconst err = (code, message, status_code) => [{ json: { ok: false, status_code, request_id: v.request_id, error: { code, message } } }];\nconst detail = () => JSON.stringify((r.body && r.body.error) || r.body || '').slice(0, 300);\nif (sc === 404 || sc === 410) return err('NOT_FOUND', 'event not found', 404);\nif (sc === 400) return err('VALIDATION_ERROR', 'Google refused the change: ' + detail(), 422);\nif (!(sc >= 200 && sc < 300)) return err('UPSTREAM_ERROR', 'Google answered ' + sc + ': ' + detail(), 502);\nconst data = v.op === 'delete' ? { deleted: true, id: v.eventId } : { event: mapEvent(r.body || {}) };\nreturn [{ json: { ok: true, response: { ok: true, request_id: v.request_id, data } } }];\n"
+      },
+      "name": "Shape Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "b9bf826c-819f-4dd7-8ba7-7422d2d08206",
+      "position": [
+        1520,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "382ee208-86e6-47e5-a58e-200eb53d6625",
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "id": "9c5224d4-daac-44ee-9c68-c84386c6602b",
+      "position": [
+        1740,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.response }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "name": "Respond 200",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "id": "d44ad97b-4a4a-4be4-af5b-9a7e642a7f70",
+      "position": [
+        1960,
+        250
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: $json.error, request_id: $json.request_id } }}",
+        "options": {
+          "responseCode": "={{ $json.status_code || 400 }}"
+        }
+      },
+      "name": "Respond Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "id": "8de26af3-4a27-4dc9-9850-4a8f860d87e1",
+      "position": [
+        2180,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: { code: 'UPSTREAM_UNREACHABLE', message: String(($json.error && $json.error.message) || $json.message || 'upstream did not answer') } } }}",
+        "options": {
+          "responseCode": 502
+        }
+      },
+      "name": "Respond 502",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "id": "da3c5a1f-14d2-4f5f-9b2d-5f62e904a7de",
+      "position": [
+        2400,
+        520
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Input": {
+      "main": [
+        [
+          {
+            "node": "Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid?": {
+      "main": [
+        [
+          {
+            "node": "Has Body?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Body?": {
+      "main": [
+        [
+          {
+            "node": "Google Write",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Read/Delete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Write": {
+      "main": [
+        [
+          {
+            "node": "Shape Result",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond 502",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Read/Delete": {
+      "main": [
+        [
+          {
+            "node": "Shape Result",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond 502",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Shape Result": {
+      "main": [
+        [
+          {
+            "node": "OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OK?": {
+      "main": [
+        [
+          {
+            "node": "Respond 200",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "errorWorkflow": "3bocsiad5tgJ0TfE",
+    "timezone": "Australia/Brisbane"
+  },
+  "tags": [],
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "_note": "get / update / delete an existing event, and block (create an EA-protected block for 'Block it'). Google Calendar API through the existing credential. sendUpdates=none: guests are never emailed (the app never sends)."
+}

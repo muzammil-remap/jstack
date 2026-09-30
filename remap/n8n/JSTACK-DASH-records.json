@@ -1,0 +1,437 @@
+{
+  "name": "JSTACK-DASH-records",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "jstack-dash-records",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "webhookId": "bcd07b5c-98c1-422b-9159-1a0b2180b85d",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "5yHVwzb020qVVMjj",
+          "name": "JSTACK Webhook Auth"
+        }
+      },
+      "id": "381f1fc1-b21b-44f0-9cbd-756cb8f51492",
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Versioned JSON records. SETUP: paste the data table id below (n8n \u2192 Data tables \u2192 the table's URL).\nconst TABLE_ID = 'REPLACE_WITH_RECORDS_TABLE_ID';\nconst first = $input.first().json;\nconst body = first.body || first;\nconst request_id = (typeof body.request_id === 'string' && body.request_id.length <= 100) ? body.request_id : undefined;\nconst fail = (code, message, status_code = 400) => [{ json: { valid: false, status_code, error: { code, message }, request_id } }];\nconst isIso = (v) => typeof v === 'string' && v.trim() !== '' && !isNaN(new Date(v).getTime());\nif (TABLE_ID.startsWith('REPLACE')) return fail('SETUP_ERROR', 'records data table id is not set in Validate Input', 500);\nconst base = 'http://localhost:5678/api/v1/data-tables/' + TABLE_ID + '/rows';\nconst op = body.op;\nif (!['get', 'put', 'history', 'list'].includes(op)) return fail('VALIDATION_ERROR', 'op must be get, put, history or list');\nconst KEY = /^[A-Za-z0-9][A-Za-z0-9:_\\-./]{0,199}$/;\nlet filter, limit;\nif (op === 'list') {\n  if (typeof body.prefix !== 'string' || !KEY.test(body.prefix)) return fail('VALIDATION_ERROR', 'prefix is required (letters, digits, : _ - . /)');\n  filter = { type: 'and', filters: [{ columnName: 'key', condition: 'like', value: body.prefix + '%' }] };\n  limit = 250;\n} else {\n  if (typeof body.key !== 'string' || !KEY.test(body.key)) return fail('VALIDATION_ERROR', 'key is required (letters, digits, : _ - . /)');\n  filter = { type: 'and', filters: [{ columnName: 'key', condition: 'eq', value: body.key }] };\n  limit = op === 'history' ? Math.max(1, Math.min(50, parseInt(body.limit ?? 20, 10) || 20)) : 1;\n}\nlet value, expectedVersion = null, savedBy = 'josh';\nif (op === 'put') {\n  if (body.value === undefined) return fail('VALIDATION_ERROR', 'value is required');\n  value = body.value;\n  if (JSON.stringify(value).length > 200000) return fail('VALIDATION_ERROR', 'value is larger than 200 KB');\n  if (body.expectedVersion != null) {\n    expectedVersion = parseInt(body.expectedVersion, 10);\n    if (isNaN(expectedVersion) || expectedVersion < 0) return fail('VALIDATION_ERROR', 'expectedVersion must be a whole number');\n  }\n  if (body.savedBy != null) {\n    if (!['josh', 'joce', 'ea', 'dev'].includes(body.savedBy)) return fail('VALIDATION_ERROR', 'savedBy must be josh, joce, ea or dev');\n    savedBy = body.savedBy;\n  }\n}\nconst url = base + '?limit=' + limit + '&sortBy=' + encodeURIComponent(op === 'list' ? 'key:asc' : 'version:desc') + '&filter=' + encodeURIComponent(JSON.stringify(filter));\nreturn [{ json: { valid: true, op, request_id, key: body.key, prefix: body.prefix, value, expectedVersion, savedBy, insertUrl: base, req: { url } } }];\n"
+      },
+      "name": "Validate Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "70e4da07-42c9-4b96-9b3d-80bfa3699b9d",
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "06127e9c-0e1a-4553-8f31-99f4fd350988",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "id": "0939bc5e-5d3d-4ba7-8ef9-bd549bfaad17",
+      "position": [
+        640,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.req.url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 15000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "name": "Read Rows",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "jZ4fXuIu8LhwhBQS",
+          "name": "JSTACK n8n API Auth"
+        }
+      },
+      "onError": "continueErrorOutput",
+      "id": "13f896a4-5193-4313-9f1f-0f19c3540cb7",
+      "position": [
+        860,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const v = $('Validate Input').first().json;\nconst r = $input.first().json || {};\nconst err = (code, message, status_code) => [{ json: { ok: false, write: false, status_code, request_id: v.request_id, error: { code, message } } }];\nif (!(r.statusCode >= 200 && r.statusCode < 300)) return err('UPSTREAM_ERROR', 'data table answered ' + r.statusCode + ': ' + JSON.stringify(r.body || '').slice(0, 300), 502);\nconst rows = (r.body && Array.isArray(r.body.data)) ? r.body.data : [];\nconst parse = (s) => { try { return JSON.parse(s); } catch (e) { return null; } };\nconst toRec = (row) => ({ key: row.key, version: Number(row.version), value: parse(row.value_json), savedAt: row.saved_at || null, savedBy: row.saved_by || null });\nconst ok = (data) => [{ json: { ok: true, write: false, response: { ok: true, request_id: v.request_id, data } } }];\n\nif (v.op === 'get') return ok(rows[0] ? toRec(rows[0]) : { key: v.key, version: 0, value: null, savedAt: null, savedBy: null });\nif (v.op === 'history') return ok({ key: v.key, versions: rows.map(toRec) });\nif (v.op === 'list') {\n  const latest = {};\n  for (const row of rows) { const rec = toRec(row); if (!latest[rec.key] || rec.version > latest[rec.key].version) latest[rec.key] = rec; }\n  return ok({ prefix: v.prefix, items: Object.values(latest), truncated: rows.length >= 250 || !!(r.body && r.body.nextCursor) });\n}\n// put: append version N+1 (never overwrite)\nconst current = rows[0] ? Number(rows[0].version) : 0;\nif (v.expectedVersion !== null && v.expectedVersion !== current) {\n  return err('CONFLICT', 'record changed since it was loaded (now version ' + current + ')', 409);\n}\nconst savedAt = new Date().toISOString();\nconst row = { key: v.key, version: current + 1, value_json: JSON.stringify(v.value), saved_at: savedAt, saved_by: v.savedBy };\nreturn [{ json: { ok: true, write: true, insertUrl: v.insertUrl, row,\n  response: { ok: true, request_id: v.request_id, data: { key: v.key, version: current + 1, value: v.value, savedAt, savedBy: v.savedBy } } } }];\n"
+      },
+      "name": "Decide",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "b898e4e6-81c1-413b-b705-9276ec9ff374",
+      "position": [
+        1080,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "4ceab90d-6d37-4af5-967f-210741b46a28",
+              "leftValue": "={{ $json.write }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Write?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "id": "9db88542-3f19-46dd-8ee1-10ab170f924d",
+      "position": [
+        1300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.insertUrl }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ data: [ $json.row ] }) }}",
+        "options": {
+          "timeout": 15000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "name": "Insert Row",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "jZ4fXuIu8LhwhBQS",
+          "name": "JSTACK n8n API Auth"
+        }
+      },
+      "onError": "continueErrorOutput",
+      "id": "1212b7d1-0cbd-47e8-b457-0410e5ed6a51",
+      "position": [
+        1520,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// The write only counts if the data table said so.\nconst d = $('Decide').first().json;\nconst r = $input.first().json || {};\nif (r.statusCode >= 200 && r.statusCode < 300) return [{ json: { ok: true, response: d.response } }];\nreturn [{ json: { ok: false, status_code: 502, request_id: d.response && d.response.request_id, error: { code: 'UPSTREAM_ERROR', message: 'data table write answered ' + r.statusCode + ': ' + JSON.stringify(r.body || '').slice(0, 300) } } }];\n"
+      },
+      "name": "Check Write",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "f3dd2724-ead9-43d9-ad84-9854fc4d0698",
+      "position": [
+        1740,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "e1fdf744-d505-4574-9f14-c1a8d43f8762",
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "id": "75c6c32d-1b65-4231-9ed2-12843ff643c1",
+      "position": [
+        1960,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.response }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "name": "Respond 200",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "id": "7c141615-da42-40c6-8b29-121d8fae27d2",
+      "position": [
+        2180,
+        250
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: $json.error, request_id: $json.request_id } }}",
+        "options": {
+          "responseCode": "={{ $json.status_code || 400 }}"
+        }
+      },
+      "name": "Respond Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "id": "8de21c62-ea29-459c-8f5a-abfbe01d95cf",
+      "position": [
+        2400,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: { code: 'UPSTREAM_UNREACHABLE', message: String(($json.error && $json.error.message) || $json.message || 'upstream did not answer') } } }}",
+        "options": {
+          "responseCode": 502
+        }
+      },
+      "name": "Respond 502",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "id": "488f7fd9-e82a-45a0-a0a8-13554d024fbc",
+      "position": [
+        2620,
+        560
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Input": {
+      "main": [
+        [
+          {
+            "node": "Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid?": {
+      "main": [
+        [
+          {
+            "node": "Read Rows",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Rows": {
+      "main": [
+        [
+          {
+            "node": "Decide",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond 502",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Decide": {
+      "main": [
+        [
+          {
+            "node": "Write?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write?": {
+      "main": [
+        [
+          {
+            "node": "Insert Row",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Row": {
+      "main": [
+        [
+          {
+            "node": "Check Write",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond 502",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Write": {
+      "main": [
+        [
+          {
+            "node": "OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OK?": {
+      "main": [
+        [
+          {
+            "node": "Respond 200",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "errorWorkflow": "3bocsiad5tgJ0TfE",
+    "timezone": "Australia/Brisbane"
+  },
+  "tags": [],
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "_note": "Versioned JSON records in an n8n Data Table (settings, layouts, focuses, parameters, rules, goals, habits, habit logs, section configs). Append-only: a put adds version N+1, nothing is overwritten or deleted. SETUP: create the data table and paste its id into Validate Input."
+}

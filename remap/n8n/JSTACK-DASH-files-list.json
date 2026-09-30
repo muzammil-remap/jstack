@@ -1,0 +1,311 @@
+{
+  "name": "JSTACK-DASH-files-list",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "jstack-dash-files-list",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "webhookId": "188ae06c-217f-44ce-8906-35aee95130be",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "5yHVwzb020qVVMjj",
+          "name": "JSTACK Webhook Auth"
+        }
+      },
+      "id": "36048c51-32c1-4921-be00-f95054ce5fc4",
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Metadata only, under /JSTACK. Never downloads file contents.\nconst first = $input.first().json;\nconst body = first.body || first;\nconst request_id = (typeof body.request_id === 'string' && body.request_id.length <= 100) ? body.request_id : undefined;\nconst fail = (code, message, status_code = 400) => [{ json: { valid: false, status_code, error: { code, message }, request_id } }];\nconst isIso = (v) => typeof v === 'string' && v.trim() !== '' && !isNaN(new Date(v).getTime());\nconst ROOT = '/JSTACK';\nconst cursor = body.cursor == null || body.cursor === '' ? null : String(body.cursor);\nif (cursor) {\n  if (cursor.length > 2000) return fail('VALIDATION_ERROR', 'cursor too long');\n  return [{ json: { valid: true, request_id, req: { url: 'https://api.dropboxapi.com/2/files/list_folder/continue', body: { cursor } } } }];\n}\nconst path = body.path == null || body.path === '' ? ROOT : String(body.path);\nif (!(path.toLowerCase() === ROOT.toLowerCase() || path.toLowerCase().startsWith(ROOT.toLowerCase() + '/')) || path.includes('..')) {\n  return fail('VALIDATION_ERROR', 'path must be ' + ROOT + ' or inside it', 403);\n}\nlet limit = parseInt(body.limit ?? 500, 10); if (isNaN(limit)) limit = 500; limit = Math.max(1, Math.min(2000, limit));\nreturn [{ json: { valid: true, request_id, req: { url: 'https://api.dropboxapi.com/2/files/list_folder',\n  body: { path, recursive: body.recursive !== false, limit, include_deleted: false, include_non_downloadable_files: false } } } }];\n"
+      },
+      "name": "Validate Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "31e1fe42-97da-46ac-9b34-040b48fbcb10",
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "fe756e5e-eb69-49af-9355-a02fee51b278",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "id": "9dbcafdf-fbdf-4492-81e4-f5d69b281f1d",
+      "position": [
+        640,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.req.url }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "dropboxOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.req.body) }}",
+        "options": {
+          "timeout": 15000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "name": "List Folder",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "credentials": {
+        "dropboxOAuth2Api": {
+          "id": "gmnZBABgtDSHqJPw",
+          "name": "JSTACK Dropbox"
+        }
+      },
+      "onError": "continueErrorOutput",
+      "id": "c4d5aad8-1ad3-48cf-ba9f-063329f964fa",
+      "position": [
+        860,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const v = $('Validate Input').first().json;\nconst r = $input.first().json || {};\nconst sc = r.statusCode;\nconst err = (code, message, status_code) => [{ json: { ok: false, status_code, request_id: v.request_id, error: { code, message } } }];\n// Dropbox answers 409 path/not_found for a missing folder. /JSTACK itself not existing yet just\n// means nothing has been filed there (CONTRACT.md \u00a72: files live under /JSTACK/): an empty list.\nconst notFound = sc === 409 && JSON.stringify(r.body || '').includes('not_found');\nconst askedRoot = !(v.req.body && v.req.body.cursor) && String((v.req.body && v.req.body.path) || '').toLowerCase() === '/jstack';\nif (notFound && askedRoot) return [{ json: { ok: true, response: { ok: true, request_id: v.request_id, data: { count: 0, files: [], has_more: false, cursor: null, root_missing: true } } } }];\nif (notFound) return err('NOT_FOUND', 'folder not found under /JSTACK', 404);\nif (sc === 409) return err('UPSTREAM_ERROR', 'Dropbox refused: ' + JSON.stringify(r.body || '').slice(0, 200), 502);\nif (!(sc >= 200 && sc < 300)) return err('UPSTREAM_ERROR', 'Dropbox answered ' + sc + ': ' + JSON.stringify(r.body || '').slice(0, 300), 502);\nconst b = r.body || {};\nconst files = (b.entries || []).filter((e) => e['.tag'] === 'file').map((e) => {\n  const path = e.path_display || e.path_lower;\n  const folder = path.slice(0, path.lastIndexOf('/')) || '/';\n  return { id: e.id, name: e.name, path, folder, size: e.size ?? null, modified: e.server_modified || e.client_modified || null,\n    content_hash: e.content_hash || null, web_url: 'https://www.dropbox.com/home' + encodeURI(folder) + '?preview=' + encodeURIComponent(e.name) };\n});\nreturn [{ json: { ok: true, response: { ok: true, request_id: v.request_id, data: { count: files.length, files, has_more: !!b.has_more, cursor: b.cursor || null } } } }];\n"
+      },
+      "name": "Shape",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "afdb154f-885f-45f7-b90c-f356a675fc6c",
+      "position": [
+        1080,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "9faef05b-34ce-4ead-9d4f-22bc156914cd",
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "id": "0ccaeea5-3c7e-41cd-9f94-c1044fe05d91",
+      "position": [
+        1300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.response }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "name": "Respond 200",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "id": "b939baee-e029-48af-a548-fa3ddf27f9d9",
+      "position": [
+        1520,
+        250
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: $json.error, request_id: $json.request_id } }}",
+        "options": {
+          "responseCode": "={{ $json.status_code || 400 }}"
+        }
+      },
+      "name": "Respond Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "id": "c9a2ed99-adee-48d9-9f87-7f7c8860f375",
+      "position": [
+        1740,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: { code: 'UPSTREAM_UNREACHABLE', message: String(($json.error && $json.error.message) || $json.message || 'upstream did not answer') } } }}",
+        "options": {
+          "responseCode": 502
+        }
+      },
+      "name": "Respond 502",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "id": "abcfd693-2dfb-4178-9ea9-a8734d2e76c4",
+      "position": [
+        1960,
+        520
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Input": {
+      "main": [
+        [
+          {
+            "node": "Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid?": {
+      "main": [
+        [
+          {
+            "node": "List Folder",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Folder": {
+      "main": [
+        [
+          {
+            "node": "Shape",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond 502",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Shape": {
+      "main": [
+        [
+          {
+            "node": "OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OK?": {
+      "main": [
+        [
+          {
+            "node": "Respond 200",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "errorWorkflow": "3bocsiad5tgJ0TfE",
+    "timezone": "Australia/Brisbane"
+  },
+  "tags": [],
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "_note": "Lists files under /JSTACK in Dropbox (metadata only, never file contents). Replaces the app's use of dropbox-fetch."
+}

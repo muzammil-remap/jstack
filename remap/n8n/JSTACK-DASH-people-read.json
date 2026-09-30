@@ -1,0 +1,308 @@
+{
+  "name": "JSTACK-DASH-people-read",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "jstack-dash-people-read",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "webhookId": "a9c3d245-a372-4c12-8e4e-cd8a36fedc7a",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "5yHVwzb020qVVMjj",
+          "name": "JSTACK Webhook Auth"
+        }
+      },
+      "id": "fc98633d-a26e-431b-ab3d-4f51bfe28eb1",
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// One page of Twenty people (read-only). Twenty REST pages at 60.\nconst first = $input.first().json;\nconst body = first.body || first;\nconst request_id = (typeof body.request_id === 'string' && body.request_id.length <= 100) ? body.request_id : undefined;\nconst fail = (code, message, status_code = 400) => [{ json: { valid: false, status_code, error: { code, message }, request_id } }];\nconst isIso = (v) => typeof v === 'string' && v.trim() !== '' && !isNaN(new Date(v).getTime());\nlet limit = parseInt(body.limit ?? 60, 10);\nif (isNaN(limit)) return fail('VALIDATION_ERROR', 'limit must be a number');\nlimit = Math.max(1, Math.min(60, limit));\nconst cursor = body.cursor == null || body.cursor === '' ? null : String(body.cursor);\nif (cursor !== null && cursor.length > 500) return fail('VALIDATION_ERROR', 'cursor too long');\nconst url = 'http://172.17.0.1:3000/rest/people?limit=' + limit + (cursor ? '&starting_after=' + encodeURIComponent(cursor) : '');\nreturn [{ json: { valid: true, request_id, req: { url }, _startTime: Date.now() } }];\n"
+      },
+      "name": "Validate Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "73cee684-e29d-4be1-830d-bbdbcdf6b648",
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "7327de86-b907-4ed5-a89a-8fb4e6d89f66",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "id": "3e959517-1183-4fa5-ac63-ffa76fd89472",
+      "position": [
+        640,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.req.url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 15000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "name": "Twenty People",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "mOgOt5eHxfUT4kbf",
+          "name": "JSTACK Twenty"
+        }
+      },
+      "onError": "continueErrorOutput",
+      "id": "e4876bb0-c9ac-4ad2-8094-dc9e89432a3c",
+      "position": [
+        860,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pass Twenty's records through unchanged; the app's adapter maps them.\nconst v = $('Validate Input').first().json;\nconst r = $input.first().json || {};\nconst sc = r.statusCode;\nif (!(sc >= 200 && sc < 300)) {\n  return [{ json: { ok: false, status_code: 502, request_id: v.request_id, error: { code: 'UPSTREAM_ERROR', message: 'Twenty answered ' + sc + ': ' + JSON.stringify(r.body || '').slice(0, 300) } } }];\n}\nconst b = r.body || {};\nconst rows = (b.data && Array.isArray(b.data.people)) ? b.data.people : [];\nreturn [{ json: { ok: true, response: {\n  ok: true, request_id: v.request_id, duration_ms: Date.now() - (v._startTime || Date.now()),\n  data: { count: rows.length, totalCount: b.totalCount ?? null, pageInfo: b.pageInfo || null, people: rows }\n} } }];\n"
+      },
+      "name": "Shape",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "ffc3f2f0-8a0d-4671-9395-a39ae92dfd67",
+      "position": [
+        1080,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "54e9e0a2-9b6d-4bd3-b43a-d88fa3cc0151",
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "id": "89ee53e2-4167-4ac4-95c8-1d94e4012998",
+      "position": [
+        1300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.response }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "name": "Respond 200",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "id": "013c12e3-ac93-425e-8dc1-72f0ba6b114b",
+      "position": [
+        1520,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: $json.error, request_id: $json.request_id } }}",
+        "options": {
+          "responseCode": "={{ $json.status_code || 400 }}"
+        }
+      },
+      "name": "Respond Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "id": "39c4a75b-675b-4c07-81fb-c2acbb6299b3",
+      "position": [
+        1740,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: { code: 'UPSTREAM_UNREACHABLE', message: String(($json.error && $json.error.message) || $json.message || 'upstream did not answer') } } }}",
+        "options": {
+          "responseCode": 502
+        }
+      },
+      "name": "Respond 502",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "id": "3c1fbd4c-0542-4b33-bf90-cabcb6dde85e",
+      "position": [
+        1960,
+        520
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Input": {
+      "main": [
+        [
+          {
+            "node": "Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid?": {
+      "main": [
+        [
+          {
+            "node": "Twenty People",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Twenty People": {
+      "main": [
+        [
+          {
+            "node": "Shape",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond 502",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Shape": {
+      "main": [
+        [
+          {
+            "node": "OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OK?": {
+      "main": [
+        [
+          {
+            "node": "Respond 200",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "errorWorkflow": "3bocsiad5tgJ0TfE",
+    "timezone": "Australia/Brisbane"
+  },
+  "tags": [],
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "_note": "Read-only. Twenty people, one page per call (limit \u226460, cursor). Records pass through; the app maps them."
+}

@@ -1,0 +1,252 @@
+{
+  "name": "JSTACK-DASH-tasks-read",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "jstack-dash-tasks-read",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "webhookId": "e1d2d46f-41de-4ee9-a55b-83e67bcb59e7",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        208,
+        400
+      ],
+      "id": "0b350a6c-285a-4c49-8c77-9488582dc5ca",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "5yHVwzb020qVVMjj",
+          "name": "JSTACK Webhook Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// DASHBOARD tasks read (read-only): one page of Twenty tasks, passed through\n// as structured records. The app pages with `cursor` and maps fields itself.\nconst first = $input.first().json;\nconst body = first.body || first;\nconst request_id = (typeof body.request_id === 'string') ? body.request_id : undefined;\nconst bad = (message) => [{ json: { valid: false, code: 'VALIDATION_ERROR', message, request_id } }];\n\nlet limit = parseInt(body.limit ?? 60, 10);\nif (isNaN(limit)) return bad('limit must be a number');\nlimit = Math.max(1, Math.min(60, limit));   // Twenty REST pages at 60\n\nconst cursor = body.cursor == null || body.cursor === '' ? null : String(body.cursor);\nif (cursor !== null && cursor.length > 500) return bad('cursor too long');\n\nreturn [{ json: { valid: true, limit, cursor, request_id, _startTime: Date.now() } }];"
+      },
+      "name": "Validate Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        304
+      ],
+      "id": "ae735ae0-2125-4a1f-9724-d0d01eb0bc66"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "valid-cond-1",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        864,
+        304
+      ],
+      "id": "168b3d31-d3d9-42f5-8f5f-7acbf7080cda"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"ok\": false, \"error\": { \"code\": $json.code, \"message\": $json.message }, \"request_id\": $json.request_id } }}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "name": "Respond 400",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1088,
+        464
+      ],
+      "id": "27e17608-0ea2-4f82-a5d6-305daabb491a"
+    },
+    {
+      "parameters": {
+        "url": "={{ 'http://172.17.0.1:3000/rest/tasks?limit=' + $json.limit + ($json.cursor ? '&starting_after=' + encodeURIComponent($json.cursor) : '') }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "6bfd045c-1f3c-414f-a1c7-5128f3fd0445",
+      "name": "Twenty Tasks",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "position": [
+        448,
+        304
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "mOgOt5eHxfUT4kbf",
+          "name": "JSTACK Twenty"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"ok\": false, \"error\": { \"code\": \"UPSTREAM_ERROR\", \"message\": String(($json.error && $json.error.message) || $json.message || 'Twenty API error') } } }}",
+        "options": {
+          "responseCode": 502
+        }
+      },
+      "name": "Respond 502",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1312,
+        464
+      ],
+      "id": "7b3acb86-5ce5-4ea3-8bef-c8c1cc35c6db"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pass Twenty's records through unchanged (the app's adapter maps them),\n// plus paging info. Twenty REST answers { data: { tasks: [...] }, totalCount, pageInfo }.\nconst validated = $('Validate Input').first().json;\nconst r = $input.first().json || {};\nconst tasks = (r.data && Array.isArray(r.data.tasks)) ? r.data.tasks : [];\nreturn [{ json: {\n  ok: true,\n  request_id: validated.request_id,\n  duration_ms: Date.now() - (validated._startTime || Date.now()),\n  data: { count: tasks.length, totalCount: r.totalCount ?? null, pageInfo: r.pageInfo || null, tasks }\n} }];"
+      },
+      "name": "Shape Tasks",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1312,
+        272
+      ],
+      "id": "871e27b6-1076-4451-9b98-d4bb5acf7814"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "name": "Respond 200",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1520,
+        272
+      ],
+      "id": "442fe2d5-4e67-4a1d-9dfb-5c53dafc2e47"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Input": {
+      "main": [
+        [
+          {
+            "node": "Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid?": {
+      "main": [
+        [
+          {
+            "node": "Twenty Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond 400",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Twenty Tasks": {
+      "main": [
+        [
+          {
+            "node": "Shape Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond 502",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Shape Tasks": {
+      "main": [
+        [
+          {
+            "node": "Respond 200",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "errorWorkflow": "3bocsiad5tgJ0TfE",
+    "timezone": "Australia/Brisbane"
+  },
+  "tags": [],
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "_note": "Dashboard-only, read-only. Twenty REST via the same internal URL and 'JSTACK Twenty' credential that WF-06/WF-07 use. The cursor is only sent when present."
+}
