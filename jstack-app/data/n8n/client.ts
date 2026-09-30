@@ -56,6 +56,14 @@ const STATUS_FOR: Record<string, number> = {
 const SHARE_MS = 30_000;
 const shared = new Map<string, { at: number; answer: Promise<unknown> }>();
 
+/** The reads a write to a key changes, beside that key's own. */
+const CHANGES: Partial<Record<WebhookKey, WebhookKey[]>> = { "tasks-write": ["tasks"] };
+
+/** Replies the proxy has given since load — any status. The transport reads it to tell a call that
+ * went out from an answer made on the device (ADR-78). */
+let replies = 0;
+export const repliesSoFar = (): number => replies;
+
 function forget(key: WebhookKey): void {
   for (const id of shared.keys()) if (id.startsWith(`${key} `)) shared.delete(id);
 }
@@ -110,6 +118,7 @@ async function postOnce(key: WebhookKey, url: string, body: Record<string, unkno
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ ...body, request_id: requestId() }),
     });
+    replies++;
     return unwrap(key, res.status, await res.text());
   } catch (error) {
     // the class outbox.ts and reachability.ts read as a lost connection
@@ -147,9 +156,10 @@ export function callWebhook(key: WebhookKey, body: Record<string, unknown>, opts
   if (opts.write === true) {
     // a write changes what its key's reads would say: the reload after it asks again, and a read
     // that was in flight beside it is dropped once it settles, whichever way it went
-    forget(key);
+    const changed = [key, ...(CHANGES[key] ?? [])];
+    changed.forEach(forget);
     const sent = send(key, body, typeof body.offlineId === "string" && body.offlineId !== "");
-    sent.then(() => forget(key), () => forget(key));
+    sent.then(() => changed.forEach(forget), () => changed.forEach(forget));
     return sent;
   }
 

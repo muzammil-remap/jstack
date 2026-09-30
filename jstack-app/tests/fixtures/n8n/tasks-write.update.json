@@ -1,0 +1,40 @@
+{
+  "ok": true,
+  "request_id": "dash-tw-update",
+  "data": {
+    "op": "update",
+    "id": "68367f7f-fca7-47e7-9994-030332b958ff",
+    "task": {
+      "id": "68367f7f-fca7-47e7-9994-030332b958ff",
+      "createdAt": "2026-09-30T07:53:33.229Z",
+      "updatedAt": "2026-09-30T07:53:34.748Z",
+      "deletedAt": null,
+      "position": -49,
+      "title": "dashtest-p6 task (renamed) — REMAP, ignore",
+      "bodyV2": {
+        "blocknote": null,
+        "markdown": ""
+      },
+      "dueAt": "2026-10-04T02:00:00.000Z",
+      "status": "IN_PROGRESS",
+      "createdBy": {
+        "source": "API",
+        "workspaceMemberId": null,
+        "name": "jstack-n8n",
+        "context": {}
+      },
+      "updatedBy": {
+        "source": "API",
+        "workspaceMemberId": null,
+        "name": "jstack-n8n",
+        "context": {}
+      },
+      "searchVector": "'dashtest':2 'dashtest-p6':1 'ignore':7 'p6':3 'remap':6 'renamed':5 'task':4",
+      "assigneeId": null,
+      "bucket": null,
+      "waitingOn": "",
+      "projectId": null,
+      "decisionId": null
+    }
+  }
+}

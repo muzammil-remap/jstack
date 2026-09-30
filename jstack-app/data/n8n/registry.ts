@@ -17,6 +17,7 @@ import { DEFAULTS } from "./defaults";
 import { calendarAdapter } from "./adapters/calendar";
 import { actionsAnswers } from "./adapters/actions";
 import { tasksAnswers } from "./adapters/tasks";
+import { tasksWriteAnswers } from "./adapters/tasksWrite";
 import { todayAnswer } from "./adapters/today";
 
 /** `remap/WEBHOOKS.md` §C. Nothing that sends, pays, books, revokes or returns file bytes is here. */
@@ -153,4 +154,9 @@ export const READS: Partial<Record<RouteName, ReadRow>> = {
 export const WRITES: Partial<Record<RouteName, { key: WebhookKey; adapter: WebhookAdapter }>> = {
   postActionVerb: { key: "actions", adapter: { answer: actionsAnswers.answer } },
   postActionUndo: { key: "actions", adapter: { answer: actionsAnswers.undo } },
+  // §4.5 — what Twenty's writer holds: title, status, due date (JSTACK-DASH-tasks-write)
+  postTask: { key: "tasks-write", adapter: { answer: tasksWriteAnswers.create } },
+  patchTask: { key: "tasks-write", adapter: { answer: tasksWriteAnswers.patch } },
+  putTask: { key: "tasks-write", adapter: { answer: tasksWriteAnswers.put } },
+  postTaskComplete: { key: "tasks-write", adapter: { answer: tasksWriteAnswers.complete } },
 };

@@ -25,7 +25,7 @@
  * chooses it from `DATA_SOURCE`, and the adapter is oblivious.
  */
 import { pathToPattern, ROUTES } from "@/data/routes";
-import { callWebhook, N8nError } from "@/data/n8n/client";
+import { callWebhook, N8nError, repliesSoFar } from "@/data/n8n/client";
 import { isNetworkFailure } from "./outbox";
 import { emptyFor, NOT_CONNECTED } from "@/data/n8n/empty";
 import { READS, WRITES, type Asked, type WebhookAdapter, type WebhookKey } from "@/data/n8n/registry";
@@ -38,9 +38,11 @@ type Report = (online: boolean) => void;
 
 const TABLE = ROUTES.map((route) => ({ route, pattern: pathToPattern(route.path) }));
 
-/** Runs an answer that goes out to n8n, reporting the connection around it: any answer from the
- * proxy (a refusal included) says online, a network failure says offline. */
+/** Runs an answer that may go out to n8n, reporting the connection around it: any answer from the
+ * proxy (a refusal included) says online, a network failure says offline — and an answer made on
+ * the device alone (a refusal before any call) says nothing. */
 async function reached(run: () => Promise<TransportResponse>, report: Report): Promise<TransportResponse> {
+  const before = repliesSoFar();
   let res: TransportResponse;
   try {
     res = await run();
@@ -52,7 +54,7 @@ async function reached(run: () => Promise<TransportResponse>, report: Report): P
     if (isNetworkFailure(error)) report(false);
     throw error;
   }
-  report(true);
+  if (repliesSoFar() > before) report(true);
   return res;
 }
 

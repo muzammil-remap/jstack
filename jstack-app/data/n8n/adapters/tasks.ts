@@ -158,11 +158,29 @@ function columnsOf(raw: RawTask[]): Column[] {
   return [...rest, ...done].map((value, i) => ({ id: columnId(value), name: titleCase(value), statuses: value === "DONE" ? ["done"] : ["open", "in_progress", "waiting"], order: i + 1, source: "twenty" }));
 }
 
+/** What the last read saw, for a written record to be mapped the same way (`data/n8n/adapters/tasksWrite.ts`). */
+let lastDoneColumn: string | null = null;
+const lastStatus = new Map<string, string>();
+
 async function loadTasks(): Promise<{ tasks: Task[]; columns: Column[] }> {
   const raw = [...(await loadRaw())].sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
   const columns = columnsOf(raw);
   const doneColumn = columns.find((c) => c.statuses.includes("done"))?.id ?? null;
+  lastDoneColumn = doneColumn;
+  for (const r of raw) lastStatus.set(r.id, r.status);
   return { tasks: raw.map((r) => toTask(r, doneColumn)), columns };
+}
+
+/** A record Twenty's writer answered with, as the contract's `Task` — exactly as the list maps it — or null if it is not one. */
+export function taskFromRecord(record: unknown): Task | null {
+  if (!isRawTask(record)) return null;
+  lastStatus.set(record.id, record.status);
+  return toTask(record, lastDoneColumn);
+}
+
+/** Twenty's own status for a task, as last read or written — a waiting task is TODO or IN_PROGRESS there. */
+export function twentyStatusOf(id: string): string | undefined {
+  return lastStatus.get(id);
 }
 
 /** A load that answers the contract, or this section's 502 for a reply it cannot use. */

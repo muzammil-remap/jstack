@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "error": {
+    "code": "NOT_FOUND",
+    "message": "task not found"
+  },
+  "request_id": "dash-tw-error-not-found"
+}
