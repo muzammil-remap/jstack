@@ -121,7 +121,7 @@ function portals(): Portal[] {
  * (`design/DISCREPANCIES.md`). Everything else is off until its route is wired. */
 function capabilities(): Capabilities {
   const speech = Platform.OS === "web" && typeof globalThis !== "undefined" && "speechSynthesis" in globalThis;
-  return { liveRouting: false, liveVoice: false, speech, fileStore: false, calendarWrite: false, moneyFeed: false, healthFeed: false, export: false, calendarViews: true };
+  return { liveRouting: false, liveVoice: false, speech, fileStore: false, calendarWrite: true, moneyFeed: false, healthFeed: false, export: false, calendarViews: true };
 }
 
 /** ADR-79: Settings › Autonomy's six categories (`data/mock/fixtures/settings.json`), every one at

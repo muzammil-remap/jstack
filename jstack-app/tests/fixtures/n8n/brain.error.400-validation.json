@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "josh may put kind capture | journal | chat"
+  },
+  "request_id": "dash-br-error-kind"
+}

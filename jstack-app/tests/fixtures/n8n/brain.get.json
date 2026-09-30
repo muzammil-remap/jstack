@@ -1,0 +1,20 @@
+{
+  "ok": true,
+  "request_id": "dash-br-get",
+  "data": {
+    "item": {
+      "id": "dashtest-p6-reply-1",
+      "kind": "reply",
+      "text": "DASH test reply — REMAP: a wiring test, nothing to act on.",
+      "source": "ea",
+      "by": "ea",
+      "state": "open",
+      "offlineId": null,
+      "data": {
+        "inReplyTo": ""
+      },
+      "createdAt": "2026-09-30T08:45:37.436Z",
+      "updatedAt": "2026-09-30T08:45:37.436Z"
+    }
+  }
+}

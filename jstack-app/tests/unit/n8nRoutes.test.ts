@@ -33,6 +33,8 @@ jest.mock("@/data/n8n/client", () => {
     records: (body) => fixture(body.op === "list" ? "records.list-empty" : "records.get-absent").data,
     // Dropbox as it is today: /JSTACK not made yet, so nothing filed
     files: () => fixture("files.root-missing").data,
+    // the brain store with REMAP's test reply and insight in it; one item by id, else its real 404
+    brain: (body) => (body.op !== "get" ? fixture("brain.list-open").data : body.id === "dashtest-p6-reply-1" ? fixture("brain.get").data : Promise.reject(new actual.N8nError(404, "NOT_FOUND", "item not found"))),
   };
   return {
     ...actual,
@@ -130,10 +132,10 @@ describe("ADR-76 · every GET the n8n transport answers is the contract's", () =
     }
   });
 
-  it("only live rows reached a webhook: actions, calendar, files, records and tasks", () => {
+  it("only live rows reached a webhook: actions, brain, calendar, files, records and tasks", () => {
     const live = new Set(Object.values(READS).flatMap((row) => (row?.kind === "wired" && row.adapter != null ? [row.key] : [])));
-    expect([...live].sort()).toEqual(["actions", "calendar", "files", "records", "tasks"]);
-    expect([...reached].sort()).toEqual(["actions", "calendar", "files", "records", "tasks"]);
+    expect([...live].sort()).toEqual(["actions", "brain", "calendar", "files", "records", "tasks"]);
+    expect([...reached].sort()).toEqual(["actions", "brain", "calendar", "files", "records", "tasks"]);
   });
 });
 

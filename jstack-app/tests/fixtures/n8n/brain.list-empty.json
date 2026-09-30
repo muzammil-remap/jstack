@@ -1,0 +1,8 @@
+{
+  "ok": true,
+  "request_id": "dash-br-list-before",
+  "data": {
+    "items": [],
+    "truncated": false
+  }
+}

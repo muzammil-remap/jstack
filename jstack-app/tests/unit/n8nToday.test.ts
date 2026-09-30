@@ -8,7 +8,7 @@
  */
 import type { Task, TodayComposite } from "@/data/types";
 import type { TransportResponse } from "@/data/transport/Transport";
-import { contractErrors, emptyRecordsReply, sample } from "./n8nContract";
+import { contractErrors, emptyBrainReply, emptyRecordsReply, sample } from "./n8nContract";
 
 type N8n = typeof import("@/data/transport/n8n");
 type Time = typeof import("@/lib/time");
@@ -40,6 +40,7 @@ beforeEach(() => {
     fetched.push(key);
     // the records store as Josh's is today: no record yet (the Life records are n8nRecords.test.ts's)
     if (key === "records" && replies.records == null && Object.keys(replies).length > 0) return { status: 200, text: async () => emptyRecordsReply(init?.body) };
+    if (key === "brain" && Object.keys(replies).length > 0) return { status: 200, text: async () => emptyBrainReply() };
     const reply = replies[key];
     return reply != null ? reply() : Promise.reject(new TypeError("Failed to fetch"));
   }) as unknown as typeof fetch;
@@ -101,7 +102,8 @@ describe("Phase 5 · the Today composite from the live sources", () => {
     const { transport, time } = load();
     await Promise.all([get(transport, "/today"), get(transport, "/calendar", { view: "today", anchor: time.todayKey() }), get(transport, "/tasks", { view: "list" }), get(transport, "/tasks/waiting")]);
     // the records store is read key by key — the goals, the habits, today's logs — each once
-    expect(fetched.sort()).toEqual(["actions", "calendar", "records", "records", "records", "tasks"]);
+    // and the brain store for Today's insight
+    expect(fetched.sort()).toEqual(["actions", "brain", "calendar", "records", "records", "records", "tasks"]);
   });
 });
 

@@ -16,6 +16,7 @@ import type { TransportRequest, TransportResponse } from "@/data/transport/Trans
 import { DEFAULTS } from "./defaults";
 import { calendarAdapter } from "./adapters/calendar";
 import { actionsAnswers } from "./adapters/actions";
+import { brainAnswers } from "./adapters/brain";
 import { filesAnswers } from "./adapters/files";
 import { recordsAnswers as rec, sectionReads } from "./adapters/records";
 import { tasksAnswers } from "./adapters/tasks";
@@ -23,7 +24,7 @@ import { tasksWriteAnswers } from "./adapters/tasksWrite";
 import { lifeAnswer, todayAnswer } from "./adapters/today";
 
 /** `remap/WEBHOOKS.md` §C. Nothing that sends, pays, books, revokes or returns file bytes is here. */
-export const WEBHOOK_KEYS = ["calendar", "tasks", "people", "files", "memory", "tasks-write", "calendar-edit", "gmail-draft", "records", "actions"] as const;
+export const WEBHOOK_KEYS = ["calendar", "tasks", "people", "files", "memory", "tasks-write", "calendar-edit", "gmail-draft", "records", "actions", "brain"] as const;
 
 export type WebhookKey = (typeof WEBHOOK_KEYS)[number];
 
@@ -69,7 +70,7 @@ export const READS: Partial<Record<RouteName, ReadRow>> = {
   getAuthNonce: deflt("getAuthNonce"),
   getSession: deflt("getSession"),
   // §4.2 today
-  getToday: { kind: "derived", uses: ["calendar", "tasks", "actions", "records"], answer: todayAnswer },
+  getToday: { kind: "derived", uses: ["calendar", "tasks", "actions", "records", "brain"], answer: todayAnswer },
   getReview: EMPTY,
   // §4.3 decisions — the Needs-you store (JSTACK-DASH-actions)
   getActions: { kind: "wired", key: "actions", adapter: { answer: actionsAnswers.list } },
@@ -87,14 +88,15 @@ export const READS: Partial<Record<RouteName, ReadRow>> = {
   getTaskUsage: EMPTY,
   getTaskFiles: { kind: "wired", key: "files", adapter: { answer: filesAnswers.forTask } },
   // §4.6 brain
-  getBrainLatest: EMPTY,
+  // §4.6 — the brain store (JSTACK-DASH-brain): what Josh sends the EA and what the EA sends back
+  getBrainLatest: { kind: "wired", key: "brain", adapter: { answer: brainAnswers.latest } },
   getBrainItemVersions: EMPTY,
-  getBrainItem: EMPTY,
+  getBrainItem: { kind: "wired", key: "brain", adapter: { answer: brainAnswers.byId } },
   getBrainSearch: EMPTY,
   getSearch: EMPTY,
   getMemoryHistory: EMPTY,
-  getReplies: EMPTY,
-  getChatThread: EMPTY,
+  getReplies: { kind: "wired", key: "brain", adapter: { answer: brainAnswers.replies } },
+  getChatThread: { kind: "wired", key: "brain", adapter: { answer: brainAnswers.thread } },
   // N8N-2: no source, and the empty value would be a claim ("All caught up", "0 of 0") — 501, said per section
   getMemoryProposals: UNAVAILABLE,
   getMemoryHitRate: UNAVAILABLE,
@@ -160,6 +162,12 @@ export const READS: Partial<Record<RouteName, ReadRow>> = {
 export const WRITES: Partial<Record<RouteName, { key: WebhookKey; adapter: WebhookAdapter }>> = {
   postActionVerb: { key: "actions", adapter: { answer: actionsAnswers.answer } },
   postActionUndo: { key: "actions", adapter: { answer: actionsAnswers.undo } },
+  // §4.2, §4.6, §4.18 — the brain store: a capture, a journal line, a chat line; a reply dismissed; an insight answered
+  postBrainDump: { key: "brain", adapter: { answer: brainAnswers.dump } },
+  postJournal: { key: "brain", adapter: { answer: brainAnswers.journal } },
+  postChat: { key: "brain", adapter: { answer: brainAnswers.chat } },
+  patchReply: { key: "brain", adapter: { answer: brainAnswers.reply } },
+  postInsightAction: { key: "brain", adapter: { answer: brainAnswers.insight } },
   // a revised email draft, kept in the records store beside the card (the EA reads the revision off the answer)
   putActionDraft: { key: "records", adapter: { answer: actionsAnswers.draft } },
   // §4.5 — what Twenty's writer holds: title, status, due date (JSTACK-DASH-tasks-write)

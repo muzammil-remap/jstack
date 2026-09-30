@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "error": {
+    "code": "NOT_FOUND",
+    "message": "item not found"
+  },
+  "request_id": "dash-br-error-not-found"
+}

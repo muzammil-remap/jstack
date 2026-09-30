@@ -9,7 +9,7 @@
  */
 import type { TodayComposite } from "@/data/types";
 import type { TransportResponse } from "@/data/transport/Transport";
-import { contractErrors, emptyRecordsReply, sample } from "./n8nContract";
+import { contractErrors, emptyBrainReply, emptyRecordsReply, sample } from "./n8nContract";
 
 type N8n = typeof import("@/data/transport/n8n");
 type Provider = typeof import("@/data/provider");
@@ -28,7 +28,7 @@ beforeEach(() => {
   globalThis.fetch = jest.fn(async (url: string, init?: { body?: string }) => {
     const key = String(url).split("/").pop() ?? "";
     fetched.push(key);
-    const reply = key === "records" ? emptyRecordsReply(init?.body) : REPLIES[key];
+    const reply = key === "records" ? emptyRecordsReply(init?.body) : key === "brain" ? emptyBrainReply() : REPLIES[key];
     return reply != null ? { status: 200, text: async () => reply } : Promise.reject(new TypeError("Failed to fetch"));
   }) as unknown as typeof fetch;
 });
@@ -98,7 +98,7 @@ describe("ADR-83 · the n8n transport holds every call while the gate is shut", 
     expect(answers.map((a) => a.status)).toEqual([200, 200, 200, 200]);
     expect(contractErrors(answers[0].json, "/today")).toEqual([]);
     // Today's three records reads, and the focuses' own
-    expect([...fetched].sort()).toEqual(["actions", "calendar", "records", "records", "records", "records", "tasks"]);
+    expect([...fetched].sort()).toEqual(["actions", "brain", "calendar", "records", "records", "records", "records", "tasks"]);
   });
 });
 
@@ -113,7 +113,7 @@ describe("ADR-83 · through the provider, on the session's own gate", () => {
     session.useSessionStore.getState().unlock();
     const composite: TodayComposite = await today;
     expect(composite.todayDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-    expect([...fetched].sort()).toEqual(["actions", "calendar", "records", "records", "records", "tasks"]);
+    expect([...fetched].sort()).toEqual(["actions", "brain", "calendar", "records", "records", "records", "tasks"]);
 
     session.useSessionStore.getState().relock();
     const again = provider.getAdapter().getCapabilities();

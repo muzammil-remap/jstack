@@ -92,6 +92,7 @@ describe("ADR-76 · the provider on n8n", () => {
     const fetchSpy = jest.fn(async (url: string, init?: { body?: string }) => {
       const key = String(url).split("/").pop() ?? "";
       if (key === "records") return { status: 200, text: async () => jest.requireActual("./n8nContract").emptyRecordsReply(init?.body) };
+      if (key === "brain") return { status: 200, text: async () => jest.requireActual("./n8nContract").emptyBrainReply() };
       return replies[key] != null ? { status: 200, text: async () => replies[key] } : Promise.reject(new Error("unit test: no network"));
     });
     globalThis.fetch = fetchSpy as unknown as typeof fetch;
@@ -103,7 +104,8 @@ describe("ADR-76 · the provider on n8n", () => {
     expect((await a.getSession()).user).toEqual({ id: "josh", name: "Josh", role: "owner" });
     // one call per webhook: Today's tasks shared the list's call (the 30-second sharing)
     // and the records store key by key: Today's goals, habits and today's logs
-    expect(fetchSpy.mock.calls.map(([url]) => String(url).split("/").pop())).toEqual(["tasks", "calendar", "actions", "records", "records", "records"]);
+    // and Today's insight from the brain store
+    expect(fetchSpy.mock.calls.map(([url]) => String(url).split("/").pop())).toEqual(["tasks", "calendar", "actions", "records", "records", "records", "brain"]);
   });
 
   it("a write with no key is refused with the contract's error, and nothing is queued or sent", async () => {
@@ -112,7 +114,7 @@ describe("ADR-76 · the provider on n8n", () => {
     const { provider, adapter } = n8nProvider();
     const error = await provider
       .getAdapter()
-      .postJournal({ text: "a line", source: "typed" })
+      .postPersonAct("p1", "done") // a capture route with no key (Life's people have no source, N8N-17)
       .catch((e: unknown) => e);
     expect(error).toBeInstanceOf(adapter.ContractError);
     expect((error as InstanceType<Adapter["ContractError"]>).status).toBe(501);
@@ -133,7 +135,10 @@ describe("ADR-76 · the provider on n8n", () => {
 
 describe("N8N-2 · on n8n the Agents and Brain stores load section by section", () => {
   it("the reads with no source are recorded as not connected; the tab still loads and says nothing failed", async () => {
-    globalThis.fetch = jest.fn(async () => Promise.reject(new Error("unit test: no network"))) as unknown as typeof fetch;
+    // Brain's own read is live (the brain store, its real empty list); the rest have no source
+    globalThis.fetch = jest.fn(async (url: string) =>
+      String(url).endsWith("/brain") ? { status: 200, text: async () => jest.requireActual("./n8nContract").emptyBrainReply() } : Promise.reject(new Error("unit test: no network")),
+    ) as unknown as typeof fetch;
     let agents!: typeof import("@/stores/agents");
     let brain!: typeof import("@/stores/brain");
     jest.isolateModules(() => {

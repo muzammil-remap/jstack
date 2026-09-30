@@ -31,6 +31,7 @@ import { useBrainPushToTalk } from "@/lib/pushToTalk";
 import { touchSlop, webData, webHitArea } from "@/lib/webData";
 import { useAnyMicOpen } from "@/stores/mic";
 import { useSessionStore } from "@/stores/session";
+import { useSettingsStore } from "@/stores/settings";
 import { useUiStore } from "@/stores/ui";
 import { useReducedMotion } from "@/theme/useReducedMotion";
 import { useLayout } from "@/theme/useLayout";
@@ -120,6 +121,9 @@ export function Orb() {
   // S6-09: no capture control over a dialog's scrim; S6-13: on a phone the toast has this corner
   const overlayOpen = useOverlayOpen();
   const toastUp = useSessionStore((s) => s.toast != null);
+  const showToast = useSessionStore((s) => s.showToast);
+  // REMAP: voice is not in this build (`capabilities.liveVoice` off once settings load, as Talk says) — the orb says so
+  const comingSoon = useSettingsStore((s) => s.loaded && !s.capabilities.liveVoice);
   const reducedMotion = useReducedMotion();
   // WPR-4 (b): while the keyboard is up the orb rides where the visual viewport ends, and stands down over the
   // expanded editor, which owns that band (UX-02), as the tab bar does
@@ -160,8 +164,8 @@ export function Orb() {
         testID="mic-orb"
         holding={ptt.holding}
         accessibilityLabel={ptt.holding ? "Release to file" : "Hold to dictate"}
-        onPressIn={ptt.pressIn}
-        onPressOut={ptt.pressOut}
+        onPressIn={comingSoon ? () => showToast("Coming soon") : ptt.pressIn}
+        onPressOut={comingSoon ? () => undefined : ptt.pressOut}
         data={{ animating }}
       />
     </Animated.View>

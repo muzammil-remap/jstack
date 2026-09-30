@@ -26,6 +26,7 @@ import { EMPTY_TODAY } from "@/data/n8n/empty";
 import { inFocus } from "@/data/n8n/focus";
 import type { Asked } from "@/data/n8n/registry";
 import { actionsAnswers } from "./actions";
+import { openInsight } from "./brain";
 import { lifeRecords } from "./records";
 import { calendarAdapter } from "./calendar";
 import { tasksAnswers } from "./tasks";
@@ -36,17 +37,20 @@ export async function todayAnswer(asked: Asked): Promise<TransportResponse> {
   const focus = asked.req.query?.focus;
   const calendarAsked: Asked = { req: { method: "GET", path: "/calendar", query: { view: "today", anchor: todayKey(), focus } }, params: [] };
   const actionsAsked: Asked = { req: { method: "GET", path: "/actions", query: { focus } }, params: [] };
-  const [calendar, tasks, actions, life] = await Promise.all([
+  const [calendar, tasks, actions, life, insight] = await Promise.all([
     callWebhook("calendar", calendarAdapter.body(calendarAsked)).then((data) => calendarAdapter.toContract(data, calendarAsked)),
     tasksAnswers.all(),
     actionsAnswers.list(actionsAsked),
     lifeRecords(focus),
+    // no insight is no claim: a failed read leaves the card out rather than failing Today
+    openInsight().catch(() => undefined),
   ]);
   for (const part of [calendar, tasks, actions]) if (part.status !== 200) return part;
   const empty = EMPTY_TODAY();
   const composite: TodayComposite = {
     ...empty,
     needsYou: actions.json as ActionItem[],
+    ...(insight != null ? { insight } : {}),
     glance: { ...empty.glance, habits: `${life.logsToday.filter((l) => l.done && life.habits.some((h) => h.id === l.habitId)).length}/${life.habits.length}`, goals: life.goals.filter((g) => g.status === "behind").length },
     close: { habits: life.habits, logs: life.logsToday },
     calendar: calendar.json as TodayComposite["calendar"],

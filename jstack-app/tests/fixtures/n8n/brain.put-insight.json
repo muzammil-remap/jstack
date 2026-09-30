@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "request_id": "dash-br-put-insight",
+  "data": {
+    "item": {
+      "id": "dashtest-p6-insight-1",
+      "kind": "insight",
+      "text": "DASH test insight — REMAP: tomorrow morning is free for deep work.",
+      "source": "ea",
+      "by": "ea",
+      "state": "open",
+      "offlineId": null,
+      "data": {
+        "because": "a REMAP wiring test (dashtest) — not from the EA",
+        "block": {
+          "title": "DASH test block — REMAP, delete",
+          "startsAt": "2026-10-01T23:00:00.000Z",
+          "endsAt": "2026-10-02T00:00:00.000Z"
+        }
+      },
+      "createdAt": "2026-09-30T08:45:36.792Z",
+      "updatedAt": "2026-09-30T08:45:36.792Z"
+    }
+  }
+}

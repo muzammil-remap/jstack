@@ -67,3 +67,8 @@ export function emptyRecordsReply(requestBody: string | undefined): string {
   const op = (JSON.parse(requestBody ?? "{}") as { op?: string }).op;
   return JSON.stringify(sample(op === "list" ? "records.list-empty" : "records.get-absent"));
 }
+
+/** The brain store's real empty list (`tests/fixtures/n8n/brain.list-empty.json`) — nothing sent or written yet. */
+export function emptyBrainReply(): string {
+  return JSON.stringify(sample("brain.list-empty"));
+}

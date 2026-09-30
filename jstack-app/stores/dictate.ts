@@ -48,6 +48,6 @@ export const useDictateStore = create<DictateState>((set) => ({
       throw e;
     }
     const { reply, sources } = answered;
-    set((s) => ({ chat: [...s.chat, { from: "ea", text: reply, sources }] }));
+    if (reply !== "") set((s) => ({ chat: [...s.chat, { from: "ea", text: reply, sources }] })); // REMAP: on n8n the EA answers later, in the thread
   },
 }));
