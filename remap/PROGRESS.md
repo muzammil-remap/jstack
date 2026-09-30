@@ -1061,3 +1061,61 @@ each of those sections shows "Not connected yet" (`components/chrome/NotConnecte
 Proved: `tests/native/notConnected.test.tsx` (rendered: the line, none of the claims, the rail empty,
 and a connected empty section keeping its own words) and `tests/unit/n8nConfig.test.ts` (through the
 n8n provider: the flags set, the tab's `loadError` null, Portals loaded).
+
+## The `brain` key — live (30 Sep 2026)
+
+JSTACK-DASH-brain (added by you: the workflow, the proxy key, the WEBHOOKS row, the import guide's
+table) serves Brain and Today's "From your EA" through `data/n8n/adapters/brain.ts` (ADR-91): a
+capture, a journal line (Close the day) and a Dictate line go in by Josh; Latest in, the thread, the
+EA's replies and Today's insight come back; "Block it" makes the event through calendar-edit and
+answers the insight, "Leave it" answers it, Dismiss is the reply dismissed. `capabilities.calendarWrite`
+is on now ("Block it" writes). Your `WORKFLOWS-NEEDED.md` edit had been made on an older copy; its two
+additions (the 2.11 brain row and "Brain store, the EA's side") are merged onto the committed version,
+which keeps REMAP's specs.
+
+**Live, on REMAP's test items only** (the 8788 proxy restarted to take the new key; screenshots in
+`remap/screens/private/checkpoint-6-brain/`): Today showed the newer test insight and the test reply;
+Block it → `calendar-edit block` then the insight answered; Leave it on the other → answered, nothing
+made; Dismiss → the reply dismissed; a journal line and a capture → Latest in, "→ filing · Librarian",
+"personal · unlabelled"; a Dictate line → in the thread (read back on reopening). Console: 0.
+
+**Test data — the brain data table** (delete these rows):
+
+| Id | Kind, by | State now |
+|---|---|---|
+| `dashtest-p6-insight-1` | insight, ea | answered (leave) |
+| `dashtest-p6-insight-2` | insight, ea | answered (block) |
+| `dashtest-p6-reply-1` | reply, ea | dismissed |
+| `b-munvbtr7-jnknz8un` | journal, josh ("dashtest journal line — REMAP, ignore") | filed `{ test: true }` |
+| `b-munvbygm-ld1s21ef` | capture, josh ("dashtest capture — REMAP, ignore") | filed `{ test: true }` |
+| `b-munvc8ih-4idfboaa` | chat, josh ("dashtest chat line — REMAP, ignore") | filed `{ test: true }` |
+
+The three `b-` ids are the store's own (the app sends no `offlineId` for a typed capture), so the
+EA's "ignore `dashtest-`" rule does not name them — being `filed`, they are never in its inbox. **The
+calendar event** "Block it" made (`p7jhviuch2b3fth4707at4dfi0`, "DASH test block 2 — REMAP, delete")
+is deleted (calendar-edit `delete`, answered `deleted: true`).
+
+## Talk with EA and the floating mic — "not yet" (30 Sep 2026)
+
+ADR-92. Talk with EA already says so on its own screen, from `capabilities.liveVoice` (off): "Two-way
+voice conversation isn't available in this build yet — dictate into Brain or use Chat instead." The
+floating mic now shows "Coming soon" on a press (checked live with a real mouse press). One edit,
+`components/chrome/Orb.tsx`; the mock and its orb tests unchanged.
+
+## Approving an email card, end to end — live (30 Sep 2026)
+
+One `dashtest-` card of kind `quote` (`dashtest-p6-email-1`, put by curl as the EA would, `draft.to`
+`test@example.com`), approved in the app: the actions store answered it (`outbox_user_sends`), then
+JSTACK-DASH-gmail-draft made the draft (`r818215861100218682`, never sent); the app showed the card's
+own toast, "Approved · in Gmail Drafts · you send it", and the card left Needs you. The undo window
+passed untouched. Screenshots in `remap/screens/private/checkpoint-6-email/`.
+
+**Gmail drafts to delete** (Josh's Drafts; the workflow cannot delete, N8N-19):
+
+| Subject | To | Draft id |
+|---|---|---|
+| "[DASHTEST] Approve-path test — REMAP, delete me" | `test@example.com` | `r818215861100218682` |
+| "DASH test draft — REMAP, delete me" | `dashtest@example.com` | `r-3443898180391257001` |
+
+And `dashtest-p6-email-1` joins the actions table's test cards (answered approve — the EA ignores
+`dashtest-` ids).

@@ -32,8 +32,7 @@ Every new workflow follows the same pattern as the existing ones: a webhook (POS
 | 2.8 | DASH people-read | ✅ | `people` | `GET /people`, `/life` |
 | 2.9 | DASH files-list (`/JSTACK/`, metadata only) | ✅ | `files` | `GET /files`, `/tasks/{id}/files` |
 | 2.10 | memory-search (existing, as is) | ✅ | `memory` | `GET /brain/search`, `/search` |
-| 2.11 | **DASH capture**: sends a mind-dump, journal line or "Dictate to EA" to the EA for triage; returns the item with its routing; dedupes on `offlineId` | ⏳ needs the EA's intake (colleague) | `capture` | `POST /brain/dump`, `/journal`, `/chat` |
-| 2.12 | **DASH brain-read**: latest captures, EA replies, chat thread | ⏳ needs to know where the EA stores them (colleague) | `brain` | `GET /brain/latest`, `/brain/replies`, `/chat/thread` |
+| 2.11 | **DASH brain**: the brain store (put · list · get · update). The app puts captures, journal lines and chat; the EA reads them, files them, and puts replies and insights | ✅ | `brain` | `POST /brain/dump`, `/journal`, `/chat`, `GET /brain/latest`, `/brain/replies`, `/chat/thread`, Today's From your EA, `POST /insights/{id}` |
 | 2.13 | **DASH agent-stats**: runs, spend, caps from LiteLLM + OpenClaw's run log | ⏳ needs LiteLLM's admin key and where OpenClaw logs runs | `agents` | `GET /agents/summary`, `/agents/spend`, `/agents/runs`, `/usage` |
 | 2.14 | **DASH agent-health**: security checks, agent issues, last-24-hours feed | ⏳ depends on whether a watchdog exists yet | `agent-health` | `GET /security/checks`, `/agents/issues`, `/agents/feed` |
 | 2.15 | Files upload | ⏳ later (binary through the proxy) | — | `POST /files` |
@@ -52,9 +51,16 @@ The app and Telegram must see **the same** Needs-you card (`CONTRACT.md` §2). S
    The store keeps at most 5 visible. Putting the same `id` again refreshes the card and reopens it.
 2. **The EA reads Josh's answers** with `{ "op": "list", "state": "history" }`. Each answered card has `answer: { verb, option, revision, rule, until, at, via }`. The EA carries out the decision **after** `undoUntil` has passed (10 s), because Josh can still undo before then.
 3. **If Josh answers on Telegram**, the EA records it the same way: `{ "op": "answer", "id", "verb", …, "via": "telegram" }`.
-4. **Never send, pay or book** as a result of an answer. An approved email is a Gmail draft (DASH gmail-draft) that Josh sends himself.
-5. **Never act on a card whose id starts with `dashtest-`.** Those are REMAP's test cards for wiring the dashboard, answered Never and nothing else; REMAP deletes them (`KNOWN_GAPS.md` N8N-12).
-6. **At expiry, the EA carries out `thenWhat`** — the store only stops showing an expired card — and records what it did as the card's answer.
+4. **Brain store, the EA's side** (`POST /webhook/jstack-dash-brain`):
+   - **Read Josh's inbox:** `{ "op": "list", "kinds": ["capture","journal","chat"], "states": ["new"] }`
+   - **File each item:** `{ "op": "update", "by": "ea", "id", "patch": { "state": "filed", "data": { "routing": { kind, silos, labels, sensitivity, storage } } } }`, the triage `CONTRACT.md` §4.6 describes
+   - **Answer chat and send notes:** `{ "op": "put", "by": "ea", "item": { "kind": "reply", "text", "data": { "inReplyTo": "<chat item id>" } } }`
+   - **Raise insights:** `{ "op": "put", "by": "ea", "item": { "id", "kind": "insight", "text", "data": { "because", "block": { "title", "startsAt", "endsAt" } } } }`
+   - **Josh's answers to insights** come back as `state: "answered"`, with `data.answer.verb` (`block` / `leave`). "Block it" already creates the protected event through calendar-edit.
+   - Ignore ids starting with `dashtest-`.
+5. **Never send, pay or book** as a result of an answer. An approved email is a Gmail draft (DASH gmail-draft) that Josh sends himself.
+6. **Never act on a card whose id starts with `dashtest-`.** Those are REMAP's test cards for wiring the dashboard, answered Never and nothing else; REMAP deletes them (`KNOWN_GAPS.md` N8N-12).
+7. **At expiry, the EA carries out `thenWhat`** — the store only stops showing an expired card — and records what it did as the card's answer.
 
 ### Proposed change: JSTACK-DASH-tasks-read, `op: "columns"` (spec — not deployed, nothing built on it)
 

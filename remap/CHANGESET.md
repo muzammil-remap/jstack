@@ -4,6 +4,28 @@ One line per file. Newest phase first. Josh's own files are named with what was 
 
 **Generated files** are marked **regenerate in the target repo, don't port**: `jstack-mock-v15.html` (re-packaged from the source) and `REMAP_HANDOVER.html` (never committed changed; `remap/codemap.sh` restores it). Port the source and rebuild them there.
 
+## The `brain` key, the voice "not yet", the email approve (30 Sep 2026)
+
+| File | Change | Why |
+|---|---|---|
+| `remap/n8n/JSTACK-DASH-brain.json`, `remap/dev-proxy.mjs` (`brain`), `remap/WEBHOOKS.md` (the §C row), `remap/IMPORT-GUIDE.md` (the brain table), `remap/N8N-INTEGRATION-PROMPT.md`, `remap/n8n/JSTACK-DASH-actions.json` (the deployed 12 s) | **the user's own edits**, committed as they made them | the new key and its workflow |
+| `remap/WORKFLOWS-NEEDED.md` | the user's two additions (2.11 brain; "Brain store, the EA's side") merged onto the committed version | their copy was older and would have dropped REMAP's specs |
+| `jstack-app/data/n8n/adapters/brain.ts` | new: captures, journal, chat in; Latest in, the thread, replies, Today's insight out; Block it / Leave it | ADR-91 |
+| `jstack-app/data/n8n/registry.ts` | the `brain` key; its reads and writes; Today uses it | wires them |
+| `jstack-app/data/n8n/adapters/today.ts` | Today's insight (a failed read leaves it out) | "From your EA" |
+| `jstack-app/data/n8n/defaults.ts` | `calendarWrite` on | "Block it" writes to the calendar |
+| `jstack-app/stores/dictate.ts` | **edit to Josh's store**: an empty reply adds no EA turn | the EA answers later, in the thread |
+| `jstack-app/components/chrome/Orb.tsx` | **edit to Josh's UI**: "Coming soon" on a press while voice is off | ADR-92 |
+| `jstack-app/tests/fixtures/n8n/brain.*.json` | new: the store's real replies about REMAP's test items | the tests |
+| `jstack-app/tests/unit/n8nBrain.test.ts`, `jstack-app/tests/native/orbComingSoon.test.tsx` | new | the adapter; the orb |
+| `jstack-app/tests/unit/n8nContract.ts` | `emptyBrainReply` | the tests that read Today |
+| `jstack-app/tests/unit/n8nRoutes.test.ts`, `n8nToday.test.ts`, `n8nConfig.test.ts`, `n8nLocked.test.ts` | `brain` answered and counted; the keyless-write case moved to `postPersonAct` (`postJournal` is wired now) | expectations changed on purpose |
+| `jstack-app/CODEMAP.md` | §4 rows; maps regenerated | a guard is named in §4 |
+| `DECISIONS.md` | ADR-91, ADR-92 | the decisions |
+| `KNOWN_GAPS.md` | N8N-20 | what the brain store does differently |
+| `jstack-mock-v15.html` | re-packaged (own commit). **Generated — regenerate in the target repo, don't port** | QA-06 |
+| `remap/PROGRESS.md` | the three sections, with every test id, the drafts and the deleted event | the record |
+
 ## N8N-2 — per-section loading (30 Sep 2026)
 
 | File | Change | Why |
