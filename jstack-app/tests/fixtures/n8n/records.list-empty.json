@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "request_id": "dash-rec-list-empty",
+  "data": {
+    "prefix": "dashtest-p6/section:",
+    "items": [],
+    "truncated": false
+  }
+}

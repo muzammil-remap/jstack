@@ -60,3 +60,10 @@ export function contractErrors(value: unknown, path: string, method = "GET"): { 
 export function sample(name: string): { ok: boolean; data: unknown } {
   return JSON.parse(readFileSync(join(root, "tests", "fixtures", "n8n", `${name}.json`), "utf8")) as { ok: boolean; data: unknown };
 }
+
+/** The records store's real answer to a request no record exists for yet: an empty list for `list`,
+ * version 0 for anything else (`tests/fixtures/n8n/records.*`) — what Josh's store says today. */
+export function emptyRecordsReply(requestBody: string | undefined): string {
+  const op = (JSON.parse(requestBody ?? "{}") as { op?: string }).op;
+  return JSON.stringify(sample(op === "list" ? "records.list-empty" : "records.get-absent"));
+}

@@ -68,6 +68,10 @@ export const TASK_PRIORITY_KNOWN = DATA_SOURCE !== "n8n" || TWENTY_PRIORITY_FIEL
  * Agents portal. Empty means no link is drawn, rather than a guessed one. */
 export const TWENTY_APP_URL: string = (process.env.EXPO_PUBLIC_TWENTY_APP_URL ?? "").replace(/\/+$/, "");
 
+/** ADR-87: a namespace for every key the n8n build reads and writes in the records store —
+ * empty for Josh; REMAP's test runs set `dashtest-…`, so a test never writes a record of his. */
+export const N8N_RECORDS_NAMESPACE: string = (process.env.EXPO_PUBLIC_N8N_RECORDS_NAMESPACE ?? "").trim();
+
 /**
  * D-4: how long `httpTransport` waits before giving up on a request — the
  * gap `CONTRACT.md` Q20 used to name as the client's own (`the client sets

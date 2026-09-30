@@ -1,0 +1,17 @@
+{
+  "ok": true,
+  "request_id": "dash-rec-get-present",
+  "data": {
+    "key": "dashtest-p6/settings:quietHours",
+    "version": 1,
+    "value": {
+      "start": "23:00",
+      "end": "07:00",
+      "exceptions": [
+        "Security"
+      ]
+    },
+    "savedAt": "2026-09-30T08:11:53.348Z",
+    "savedBy": "josh"
+  }
+}

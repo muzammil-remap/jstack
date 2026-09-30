@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "key is required (letters, digits, : _ - . /)"
+  },
+  "request_id": "dash-rec-error-validation"
+}

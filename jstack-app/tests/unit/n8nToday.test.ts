@@ -8,7 +8,7 @@
  */
 import type { Task, TodayComposite } from "@/data/types";
 import type { TransportResponse } from "@/data/transport/Transport";
-import { contractErrors, sample } from "./n8nContract";
+import { contractErrors, emptyRecordsReply, sample } from "./n8nContract";
 
 type N8n = typeof import("@/data/transport/n8n");
 type Time = typeof import("@/lib/time");
@@ -35,9 +35,11 @@ beforeEach(() => {
   fetched = [];
   // the Needs-you store's real empty reply: the cards themselves are n8nActions.test.ts's
   replies = { calendar: ok(sample("calendar.cases").data), tasks: ok(page1), actions: ok(sample("actions.empty").data) };
-  globalThis.fetch = jest.fn(async (url: string) => {
+  globalThis.fetch = jest.fn(async (url: string, init?: { body?: string }) => {
     const key = String(url).split("/").pop() ?? "";
     fetched.push(key);
+    // the records store as Josh's is today: no record yet (the Life records are n8nRecords.test.ts's)
+    if (key === "records" && replies.records == null && Object.keys(replies).length > 0) return { status: 200, text: async () => emptyRecordsReply(init?.body) };
     const reply = replies[key];
     return reply != null ? reply() : Promise.reject(new TypeError("Failed to fetch"));
   }) as unknown as typeof fetch;
@@ -80,7 +82,7 @@ describe("Phase 5 · the Today composite from the live sources", () => {
     expect({ tasks: work.tasks, events: work.calendar.events }).toEqual({ tasks: [], events: [] });
   });
 
-  it("what has no source says nothing: no lines, no delta even when asked, the glance and the close at nothing — and an empty store, no cards", async () => {
+  it("what has no source says nothing: no lines, no delta even when asked, the glance's people and money at nothing — and an empty store, no cards, no habits", async () => {
     const { transport } = load();
     const today = (await get(transport, "/today", { since: "2026-10-01T00:00:00.000Z" })).json as TodayComposite;
     expect({ needsYou: today.needsYou, since: today.since, endLine: today.endLine, delta: today.delta, insight: today.insight, glance: today.glance, close: today.close }).toEqual({
@@ -89,7 +91,8 @@ describe("Phase 5 · the Today composite from the live sources", () => {
       endLine: "",
       delta: undefined,
       insight: undefined,
-      glance: { habits: "", people: 0, money: "", goals: 0 },
+      // the records store holds no habit and no goal yet: none of none done, none behind
+      glance: { habits: "0/0", people: 0, money: "", goals: 0 },
       close: { habits: [], logs: [] },
     });
   });
@@ -97,7 +100,8 @@ describe("Phase 5 · the Today composite from the live sources", () => {
   it("one cold load of Today and the calendar grid runs each workflow once", async () => {
     const { transport, time } = load();
     await Promise.all([get(transport, "/today"), get(transport, "/calendar", { view: "today", anchor: time.todayKey() }), get(transport, "/tasks", { view: "list" }), get(transport, "/tasks/waiting")]);
-    expect(fetched.sort()).toEqual(["actions", "calendar", "tasks"]);
+    // the records store is read key by key — the goals, the habits, today's logs — each once
+    expect(fetched.sort()).toEqual(["actions", "calendar", "records", "records", "records", "tasks"]);
   });
 });
 

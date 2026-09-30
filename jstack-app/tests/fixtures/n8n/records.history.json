@@ -1,0 +1,35 @@
+{
+  "ok": true,
+  "request_id": "dash-rec-history",
+  "data": {
+    "key": "dashtest-p6/settings:quietHours",
+    "versions": [
+      {
+        "key": "dashtest-p6/settings:quietHours",
+        "version": 2,
+        "value": {
+          "start": "22:30",
+          "end": "07:00",
+          "exceptions": [
+            "Security"
+          ]
+        },
+        "savedAt": "2026-09-30T08:11:55.065Z",
+        "savedBy": "josh"
+      },
+      {
+        "key": "dashtest-p6/settings:quietHours",
+        "version": 1,
+        "value": {
+          "start": "23:00",
+          "end": "07:00",
+          "exceptions": [
+            "Security"
+          ]
+        },
+        "savedAt": "2026-09-30T08:11:53.348Z",
+        "savedBy": "josh"
+      }
+    ]
+  }
+}

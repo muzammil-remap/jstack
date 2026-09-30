@@ -21,6 +21,7 @@ import { callWebhook } from "@/data/n8n/client";
 import { NOT_CONNECTED } from "@/data/n8n/empty";
 import { inFocus } from "@/data/n8n/focus";
 import type { Asked } from "@/data/n8n/registry";
+import { saveDraftRecord } from "./records";
 
 /** `data/mock/handlers/decisions.ts` `OPEN_CARD_CAP` — the workflow caps at the same five */
 const OPEN_CAP = 5;
@@ -200,4 +201,14 @@ export const actionsAnswers = {
       return { status: 200, json: cardOf(await callWebhook("actions", answerBody(id, body), { write: true })) };
     }),
   undo: (asked: Asked) => answering(async () => ({ status: 200, json: cardOf(await callWebhook("actions", { op: "undo", id: asked.params[0] }, { write: true })) })),
+  /** `PUT /actions/{id}/draft` (the mock sets the card's quote): kept as a record; the answer is the card with it */
+  draft: (asked: Asked) =>
+    answering(async () => {
+      const id = asked.params[0];
+      const card = cardOf(await callWebhook("actions", { op: "get", id }));
+      const body = isObject(asked.req.body) ? asked.req.body : {};
+      if (typeof body.body !== "string") return { status: 422, json: { reason: "a draft needs its text", field: "body" } };
+      const saved = await saveDraftRecord(id, { ...(typeof body.subject === "string" ? { subject: body.subject } : {}), body: body.body });
+      return saved.status === 200 ? { status: 200, json: { ...card, quote: body.body } } : saved;
+    }),
 };

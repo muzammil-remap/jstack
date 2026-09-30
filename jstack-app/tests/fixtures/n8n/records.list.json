@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "request_id": "dash-rec-list-logs",
+  "data": {
+    "prefix": "dashtest-p6/habitlog:2026-09",
+    "items": [
+      {
+        "key": "dashtest-p6/habitlog:2026-09-30:dashtest-habit",
+        "version": 1,
+        "value": {
+          "done": true
+        },
+        "savedAt": "2026-09-30T08:11:56.079Z",
+        "savedBy": "josh"
+      }
+    ],
+    "truncated": false
+  }
+}

@@ -29,6 +29,8 @@ jest.mock("@/data/n8n/client", () => {
     calendar: () => fixture("calendar").data,
     tasks: () => fixture("tasks.page1").data,
     actions: (body) => (body.op !== "get" ? fixture("actions.open").data : body.id === card.item.id ? card : Promise.reject(new actual.N8nError(404, "NOT_FOUND", "card not found"))),
+    // the records store as Josh's is today: nothing saved yet, so every read is its default
+    records: (body) => fixture(body.op === "list" ? "records.list-empty" : "records.get-absent").data,
   };
   return {
     ...actual,
@@ -93,7 +95,8 @@ describe("ADR-76 · every GET the n8n transport answers is the contract's", () =
     const allowed = row?.kind === "wired" && row.adapter != null ? [row.key] : row?.kind === "derived" && row.answer != null ? [...row.uses] : [];
     const keys = [...new Set(callWebhook.mock.calls.map(([key]) => key as string))];
     expect({ name, stray: keys.filter((k) => !allowed.includes(k as never)) }).toEqual({ name, stray: [] });
-    if (allowed.length > 0) expect({ name, calls: keys.length }).toEqual({ name, calls: allowed.length });
+    // a record nothing has produced is 404 as soon as one source says so, before it asks the others
+    if (allowed.length > 0 && !NOT_FOUND.includes(name)) expect({ name, calls: keys.length }).toEqual({ name, calls: allowed.length });
     for (const key of keys) reached.add(key);
     if (NOT_FOUND.includes(name)) {
       expect(res.status).toBe(404);
@@ -124,10 +127,10 @@ describe("ADR-76 · every GET the n8n transport answers is the contract's", () =
     }
   });
 
-  it("only live rows reached a webhook: actions, calendar and tasks", () => {
-    const live = Object.values(READS).flatMap((row) => (row?.kind === "wired" && row.adapter != null ? [row.key] : []));
-    expect(live).toEqual(["actions", "actions", "calendar", "tasks"]);
-    expect([...reached].sort()).toEqual(["actions", "calendar", "tasks"]);
+  it("only live rows reached a webhook: actions, calendar, records and tasks", () => {
+    const live = new Set(Object.values(READS).flatMap((row) => (row?.kind === "wired" && row.adapter != null ? [row.key] : [])));
+    expect([...live].sort()).toEqual(["actions", "calendar", "records", "tasks"]);
+    expect([...reached].sort()).toEqual(["actions", "calendar", "records", "tasks"]);
   });
 });
 

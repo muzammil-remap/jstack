@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "error": {
+    "code": "CONFLICT",
+    "message": "record changed since it was loaded (now version 1)"
+  },
+  "request_id": "dash-rec-put-stale"
+}

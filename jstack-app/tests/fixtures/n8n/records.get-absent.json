@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "request_id": "dash-rec-get-absent",
+  "data": {
+    "key": "dashtest-p6/settings:quietHours",
+    "version": 0,
+    "value": null,
+    "savedAt": null,
+    "savedBy": null
+  }
+}

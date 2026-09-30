@@ -165,6 +165,9 @@ function randomToken(): string {
   return Math.random().toString(36).slice(2, 12);
 }
 
+/** A default section by id, for the records adapter's overrides (`data/n8n/adapters/records.ts`). */
+export const defaultSection = (id: string): SectionConfig | null => SECTIONS.find((s) => s.id === id) ?? null;
+
 export const DEFAULTS = {
   /** Nothing verifies it: every high-risk write it would authorise answers 501 on n8n. */
   getAuthNonce: (): TransportResponse => ok({ nonce: `n8n-${randomToken()}`, expiresAt: new Date(now().getTime() + 60_000).toISOString() }),

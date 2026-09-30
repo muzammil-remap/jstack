@@ -9,7 +9,7 @@
  */
 import type { ActionItem, TodayComposite } from "@/data/types";
 import type { TransportResponse } from "@/data/transport/Transport";
-import { contractErrors, sample } from "./n8nContract";
+import { contractErrors, emptyRecordsReply, sample } from "./n8nContract";
 
 type N8n = typeof import("@/data/transport/n8n");
 
@@ -206,11 +206,9 @@ describe("Phase 6 · actions · answering and undo", () => {
     expect(sent.map(bodyOf)).toEqual([{ op: "undo", id: "dashtest-p6-curl" }]);
   });
 
-  it("reopening from the history and editing a draft are not connected yet: 501, nothing sent", async () => {
-    const t = load();
+  it("reopening from the history is not connected yet: 501, nothing sent (the store has no op for it)", async () => {
     const refused: TransportResponse = { status: 501, json: { reason: "not connected yet" } };
-    expect(await post(t, "/actions/dashtest-p6-curl/reopen")).toEqual(refused);
-    expect(await t({ method: "PUT", path: "/actions/dashtest-p6-curl/draft", body: { body: "x" } })).toEqual(refused);
+    expect(await post(load(), "/actions/dashtest-p6-curl/reopen")).toEqual(refused);
     expect(sent).toEqual([]);
   });
 });
@@ -222,6 +220,7 @@ describe("Phase 6 · actions · Today's Needs you", () => {
     const inner = globalThis.fetch as jest.Mock;
     globalThis.fetch = jest.fn(async (url: string, init?: { body?: string }) => {
       const key = String(url).split("/").pop() ?? "";
+      if (key === "records") return { status: 200, text: async () => emptyRecordsReply(init?.body) };
       if (others[key] == null) return inner(url, init);
       sent.push({ key, body: JSON.parse(init?.body ?? "{}") });
       return { status: 200, text: async () => JSON.stringify(others[key]) };

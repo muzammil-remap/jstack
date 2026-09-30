@@ -16,9 +16,10 @@ import type { TransportRequest, TransportResponse } from "@/data/transport/Trans
 import { DEFAULTS } from "./defaults";
 import { calendarAdapter } from "./adapters/calendar";
 import { actionsAnswers } from "./adapters/actions";
+import { recordsAnswers as rec, sectionReads } from "./adapters/records";
 import { tasksAnswers } from "./adapters/tasks";
 import { tasksWriteAnswers } from "./adapters/tasksWrite";
-import { todayAnswer } from "./adapters/today";
+import { lifeAnswer, todayAnswer } from "./adapters/today";
 
 /** `remap/WEBHOOKS.md` §C. Nothing that sends, pays, books, revokes or returns file bytes is here. */
 export const WEBHOOK_KEYS = ["calendar", "tasks", "people", "files", "memory", "tasks-write", "calendar-edit", "gmail-draft", "records", "actions"] as const;
@@ -67,7 +68,7 @@ export const READS: Partial<Record<RouteName, ReadRow>> = {
   getAuthNonce: deflt("getAuthNonce"),
   getSession: deflt("getSession"),
   // §4.2 today
-  getToday: { kind: "derived", uses: ["calendar", "tasks", "actions"], answer: todayAnswer },
+  getToday: { kind: "derived", uses: ["calendar", "tasks", "actions", "records"], answer: todayAnswer },
   getReview: EMPTY,
   // §4.3 decisions — the Needs-you store (JSTACK-DASH-actions)
   getActions: { kind: "wired", key: "actions", adapter: { answer: actionsAnswers.list } },
@@ -81,7 +82,7 @@ export const READS: Partial<Record<RouteName, ReadRow>> = {
   getColumns: { kind: "derived", uses: ["tasks"], answer: tasksAnswers.columns },
   getTasks: { kind: "wired", key: "tasks", adapter: { answer: tasksAnswers.list } },
   getTask: { kind: "derived", uses: ["tasks"], answer: tasksAnswers.byId },
-  getSlicers: deflt("getSlicers"),
+  getSlicers: { kind: "wired", key: "records", adapter: { answer: rec.slicers.get } },
   getTaskUsage: EMPTY,
   getTaskFiles: EMPTY,
   // §4.6 brain
@@ -96,12 +97,13 @@ export const READS: Partial<Record<RouteName, ReadRow>> = {
   getMemoryProposals: EMPTY,
   getMemoryHitRate: EMPTY,
   // §4.7 life
-  getLife: { kind: "derived", uses: ["people"] },
-  getGoals: EMPTY,
-  getGoalsHistory: EMPTY,
-  getGoal: EMPTY,
-  getHabits: EMPTY,
-  getHabitStats: EMPTY,
+  getLife: { kind: "derived", uses: ["records"], answer: lifeAnswer },
+  // §4.7 the Life records (JSTACK-DASH-records); a goal's detail also reads its tasks from Twenty
+  getGoals: { kind: "wired", key: "records", adapter: { answer: rec.goals.list } },
+  getGoalsHistory: { kind: "wired", key: "records", adapter: { answer: rec.goals.history } },
+  getGoal: { kind: "derived", uses: ["records", "tasks"], answer: rec.goals.byId },
+  getHabits: { kind: "wired", key: "records", adapter: { answer: rec.habits.list } },
+  getHabitStats: { kind: "wired", key: "records", adapter: { answer: rec.habits.stats } },
   getPeople: EMPTY,
   getMoney: EMPTY,
   getHealth: EMPTY,
@@ -126,37 +128,57 @@ export const READS: Partial<Record<RouteName, ReadRow>> = {
   getFiles: EMPTY,
   getFile: EMPTY,
   // §4.9 settings
-  getNotificationGroups: EMPTY,
-  getQuietHours: deflt("getQuietHours"),
+  // §4.9 — each a record in JSTACK-DASH-records, its default until Josh saves one
+  getNotificationGroups: { kind: "wired", key: "records", adapter: { answer: rec.notificationGroups.get } },
+  getQuietHours: { kind: "wired", key: "records", adapter: { answer: rec.quietHours.get } },
   getSchedules: EMPTY,
-  getAutonomy: deflt("getAutonomy"),
-  getAutonomyRules: EMPTY,
-  getVoiceSettings: deflt("getVoiceSettings"),
-  getFocuses: deflt("getFocuses"),
-  getAppLayout: deflt("getAppLayout"),
-  getLayout: deflt("getLayout"),
-  getParameters: deflt("getParameters"),
+  getAutonomy: { kind: "wired", key: "records", adapter: { answer: rec.autonomy.get } },
+  getAutonomyRules: { kind: "wired", key: "records", adapter: { answer: rec.rules.get } },
+  getVoiceSettings: { kind: "wired", key: "records", adapter: { answer: rec.voice.get } },
+  getFocuses: { kind: "wired", key: "records", adapter: { answer: rec.focuses.get } },
+  getAppLayout: { kind: "wired", key: "records", adapter: { answer: rec.appLayout.get } },
+  getLayout: { kind: "wired", key: "records", adapter: { answer: rec.layout.get } },
+  getParameters: { kind: "wired", key: "records", adapter: { answer: rec.parameters.get } },
   getSyncStatus: deflt("getSyncStatus"),
   getCapabilities: deflt("getCapabilities"),
   getLabelsScheme: deflt("getLabelsScheme"),
   getLabelAudit: EMPTY,
   // §4.10 sections
   getSectionCatalogue: EMPTY,
-  getSections: deflt("getSections"),
-  getSection: deflt("getSection"),
+  getSections: { kind: "wired", key: "records", adapter: { answer: sectionReads.list } },
+  getSection: { kind: "wired", key: "records", adapter: { answer: sectionReads.byId } },
 };
 
 /**
  * The writes that have a key, by route, wired one at a time (`remap/WORKFLOWS-NEEDED.md`); every
  * write not named here answers `501 { reason: "not connected yet" }` without calling anything.
- * Reopening a card (a mock-only route, A-31) and editing its draft (`records`) are not here yet.
+ * Reopening a card is not here: the actions store has no op for it (A-31, `KNOWN_GAPS.md` N8N-10).
  */
 export const WRITES: Partial<Record<RouteName, { key: WebhookKey; adapter: WebhookAdapter }>> = {
   postActionVerb: { key: "actions", adapter: { answer: actionsAnswers.answer } },
   postActionUndo: { key: "actions", adapter: { answer: actionsAnswers.undo } },
+  // a revised email draft, kept in the records store beside the card (the EA reads the revision off the answer)
+  putActionDraft: { key: "records", adapter: { answer: actionsAnswers.draft } },
   // §4.5 — what Twenty's writer holds: title, status, due date (JSTACK-DASH-tasks-write)
   postTask: { key: "tasks-write", adapter: { answer: tasksWriteAnswers.create } },
   patchTask: { key: "tasks-write", adapter: { answer: tasksWriteAnswers.patch } },
   putTask: { key: "tasks-write", adapter: { answer: tasksWriteAnswers.put } },
   postTaskComplete: { key: "tasks-write", adapter: { answer: tasksWriteAnswers.complete } },
+  // §4.5, §4.7, §4.9, §4.10, §4.14 — the records store (JSTACK-DASH-records, ADR-87)
+  putSlicers: { key: "records", adapter: { answer: rec.slicers.put } },
+  putGoals: { key: "records", adapter: { answer: rec.goals.put } },
+  putHabits: { key: "records", adapter: { answer: rec.habits.put } },
+  postHabitLog: { key: "records", adapter: { answer: rec.habits.log } },
+  putNotificationGroup: { key: "records", adapter: { answer: rec.notificationGroups.put } },
+  putQuietHours: { key: "records", adapter: { answer: rec.quietHours.put } },
+  putAutonomy: { key: "records", adapter: { answer: rec.autonomy.put } },
+  putAutonomyRules: { key: "records", adapter: { answer: rec.rules.put } },
+  putVoiceSettings: { key: "records", adapter: { answer: rec.voice.put } },
+  putFocuses: { key: "records", adapter: { answer: rec.focuses.put } },
+  putAppLayout: { key: "records", adapter: { answer: rec.appLayout.put } },
+  putLayout: { key: "records", adapter: { answer: rec.layout.put } },
+  revertLayout: { key: "records", adapter: { answer: rec.layout.revert } },
+  putParameter: { key: "records", adapter: { answer: rec.parameters.put } },
+  putSection: { key: "records", adapter: { answer: rec.sections.put } },
+  revertSection: { key: "records", adapter: { answer: rec.sections.revert } },
 };
