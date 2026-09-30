@@ -10,7 +10,7 @@
         "options": {}
       },
       "name": "Webhook",
-      "webhookId": "496bf2e7-9e56-40c6-9a5b-d3fe4be3bbfb",
+      "webhookId": "8bb84ba7-1878-4898-b54f-b4fe85cee44b",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "credentials": {
@@ -19,7 +19,7 @@
           "name": "JSTACK Webhook Auth"
         }
       },
-      "id": "452e95cb-93aa-4a53-9b0d-3e3124f9c69b",
+      "id": "8fec467f-5f8c-4106-8298-2c4512d1e296",
       "position": [
         200,
         300
@@ -32,7 +32,7 @@
       "name": "Validate Input",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "id": "664d2715-de3b-4384-9cf2-bee3747fc381",
+      "id": "79350666-05d8-447e-8912-02cef9823d5f",
       "position": [
         420,
         300
@@ -49,7 +49,7 @@
           },
           "conditions": [
             {
-              "id": "9f804672-75ca-4657-aaa7-7dc22a08c154",
+              "id": "d73d79cc-4743-4e58-b270-babd314a0be8",
               "leftValue": "={{ $json.valid }}",
               "rightValue": true,
               "operator": {
@@ -66,7 +66,7 @@
       "name": "Valid?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "id": "8437fb47-34e2-487c-886c-8ea19a60cd6e",
+      "id": "cc7f7863-473b-40ce-af2d-2089a60fcf2a",
       "position": [
         640,
         300
@@ -83,7 +83,7 @@
           },
           "conditions": [
             {
-              "id": "2e25e686-fdf9-42d1-9904-522cc33c1cac",
+              "id": "eac57f33-ea4c-42f9-bbb0-af4a8b70b053",
               "leftValue": "={{ $json.isPut }}",
               "rightValue": true,
               "operator": {
@@ -100,7 +100,7 @@
       "name": "Is Put?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "id": "34567ffc-70d6-4e41-8719-405617b4251a",
+      "id": "cccacaab-8e1a-4669-bd50-a562f171db0d",
       "position": [
         860,
         300
@@ -135,7 +135,7 @@
         }
       },
       "onError": "continueErrorOutput",
-      "id": "1707c53e-57e0-4eb2-ab8b-e44465d9289a",
+      "id": "bc95c6d9-3806-4c94-b9a6-d23b0489501f",
       "position": [
         1080,
         150
@@ -167,7 +167,7 @@
         }
       },
       "onError": "continueErrorOutput",
-      "id": "de6f1f14-f02d-4993-b22f-e347f018810e",
+      "id": "aeba3723-b45e-454e-a49b-41718273328f",
       "position": [
         1300,
         380
@@ -175,12 +175,12 @@
     },
     {
       "parameters": {
-        "jsCode": "const v = $('Validate Input').first().json;\nconst r = $input.first().json || {};\nconst UNDO_SECONDS = 12; // the app shows 10 s; the other 2 are the round trip (ADR-85, KNOWN_GAPS N8N-11)\nconst OPEN_CAP = 5;                                   // CONTRACT.md \u00a71.4\nconst err = (code, message, status_code) => [{ json: { ok: false, write: false, status_code, request_id: v.request_id, error: { code, message } } }];\nif (!(r.statusCode >= 200 && r.statusCode < 300)) return err('UPSTREAM_ERROR', 'data table answered ' + r.statusCode + ': ' + JSON.stringify(r.body || '').slice(0, 300), 502);\nconst rows = (r.body && Array.isArray(r.body.data)) ? r.body.data : [];\nconst parse = (s) => { if (!s) return null; try { return JSON.parse(s); } catch (e) { return null; } };\nconst nowMs = Date.now();\nconst nowIso = new Date(nowMs).toISOString();\nconst byId = (id) => ({ type: 'and', filters: [{ columnName: 'card_id', condition: 'eq', value: id }] });\nfunction toItem(row) {\n  const card = parse(row.card_json) || { id: row.card_id };\n  const answer = parse(row.answer_json);\n  const item = Object.assign({}, card, { state: row.state });\n  if (answer) item.answer = answer;\n  if (answer && answer.until) item.laterUntil = answer.until;\n  if (row.undo_until) item.undoUntil = row.undo_until;\n  return item;\n}\nconst ok = (data) => [{ json: { ok: true, write: false, response: { ok: true, request_id: v.request_id, data } } }];\n// Monday 08:00 Brisbane (UTC+10, no DST), the contract's default for \"later\"\nfunction nextMonday8() {\n  const b = new Date(nowMs + 10 * 3600000);\n  let days = (8 - b.getUTCDay()) % 7; if (days === 0) days = 7;\n  const t = Date.UTC(b.getUTCFullYear(), b.getUTCMonth(), b.getUTCDate() + days, 8, 0, 0) - 10 * 3600000;\n  return new Date(t).toISOString();\n}\n\nif (v.op === 'list') {\n  if (v.state === 'history') return ok({ items: rows.map(toItem) });\n  const live = rows.filter((row) => {\n    if (row.expires_at && Date.parse(row.expires_at) <= nowMs) return false;\n    if (row.state === 'open') return true;\n    if (row.state === 'later') { const a = parse(row.answer_json); return !!(a && a.until && Date.parse(a.until) <= nowMs); }\n    return false;\n  }).map((row) => Object.assign(toItem(row), { state: 'open' }));\n  live.sort((a, b) => (a.rank ?? 100) - (b.rank ?? 100));\n  return ok({ items: live.slice(0, OPEN_CAP), totalOpen: live.length });\n}\nconst row = rows[0];\nif (!row) return err('NOT_FOUND', 'card not found', 404);\nif (v.op === 'get') return ok({ item: toItem(row) });\n\nif (v.op === 'answer') {\n  const live = row.state === 'open' || (row.state === 'later');\n  if (!live) return err('CONFLICT', 'card is already ' + row.state, 409);\n  const answer = Object.assign({}, v.answer, { at: nowIso });\n  if (answer.verb === 'later' && !answer.until) answer.until = nextMonday8();\n  const newState = answer.verb === 'later' ? 'later' : 'answered';\n  const undoUntil = new Date(nowMs + UNDO_SECONDS * 1000).toISOString();\n  const card = parse(row.card_json) || {};\n  const item = Object.assign({}, card, { state: newState, answer, undoUntil });\n  if (answer.until) item.laterUntil = answer.until;\n  const data = { item, undoUntil };\n  if (answer.verb === 'approve' && card.kind === 'quote') data.status = 'outbox_user_sends';\n  return [{ json: { ok: true, write: true, updateUrl: v.updateUrl,\n    updateBody: { filter: byId(row.card_id), data: { state: newState, answer_json: JSON.stringify(answer), undo_until: undoUntil, updated_at: nowIso }, returnData: false },\n    response: { ok: true, request_id: v.request_id, data } } }];\n}\n// undo, inside the store's 12-second window only (the app's 10 s plus a round trip, ADR-85; CONTRACT.md \u00a74.3: after it, 409)\nif (row.state === 'open' || !row.undo_until) return err('CONFLICT', 'nothing to undo', 409);\nif (Date.parse(row.undo_until) < nowMs) return err('UNDO_EXPIRED', 'the undo window has passed', 409);\nconst card = parse(row.card_json) || {};\nreturn [{ json: { ok: true, write: true, updateUrl: v.updateUrl,\n  updateBody: { filter: byId(row.card_id), data: { state: 'open', answer_json: '', undo_until: '', updated_at: nowIso }, returnData: false },\n  response: { ok: true, request_id: v.request_id, data: { item: Object.assign({}, card, { state: 'open' }) } } } }];\n"
+        "jsCode": "const v = $('Validate Input').first().json;\nconst r = $input.first().json || {};\nconst UNDO_SECONDS = 12;                              // app shows 10 s; 2 s grace for the round trip (N8N-11)\nconst OPEN_CAP = 5;                                   // CONTRACT.md \u00a71.4\nconst err = (code, message, status_code) => [{ json: { ok: false, write: false, status_code, request_id: v.request_id, error: { code, message } } }];\nif (!(r.statusCode >= 200 && r.statusCode < 300)) return err('UPSTREAM_ERROR', 'data table answered ' + r.statusCode + ': ' + JSON.stringify(r.body || '').slice(0, 300), 502);\nconst rows = (r.body && Array.isArray(r.body.data)) ? r.body.data : [];\nconst parse = (s) => { if (!s) return null; try { return JSON.parse(s); } catch (e) { return null; } };\nconst nowMs = Date.now();\nconst nowIso = new Date(nowMs).toISOString();\nconst byId = (id) => ({ type: 'and', filters: [{ columnName: 'card_id', condition: 'eq', value: id }] });\nfunction toItem(row) {\n  const card = parse(row.card_json) || { id: row.card_id };\n  const answer = parse(row.answer_json);\n  const item = Object.assign({}, card, { state: row.state });\n  if (answer) item.answer = answer;\n  if (answer && answer.until) item.laterUntil = answer.until;\n  if (row.undo_until) item.undoUntil = row.undo_until;\n  return item;\n}\nconst ok = (data) => [{ json: { ok: true, write: false, response: { ok: true, request_id: v.request_id, data } } }];\n// Monday 08:00 Brisbane (UTC+10, no DST), the contract's default for \"later\"\nfunction nextMonday8() {\n  const b = new Date(nowMs + 10 * 3600000);\n  let days = (8 - b.getUTCDay()) % 7; if (days === 0) days = 7;\n  const t = Date.UTC(b.getUTCFullYear(), b.getUTCMonth(), b.getUTCDate() + days, 8, 0, 0) - 10 * 3600000;\n  return new Date(t).toISOString();\n}\n\nif (v.op === 'list') {\n  if (v.state === 'history') return ok({ items: rows.map(toItem) });\n  const live = rows.filter((row) => {\n    if (row.expires_at && Date.parse(row.expires_at) <= nowMs) return false;\n    if (row.state === 'open') return true;\n    if (row.state === 'later') { const a = parse(row.answer_json); return !!(a && a.until && Date.parse(a.until) <= nowMs); }\n    return false;\n  }).map((row) => Object.assign(toItem(row), { state: 'open' }));\n  live.sort((a, b) => (a.rank ?? 100) - (b.rank ?? 100));\n  return ok({ items: live.slice(0, OPEN_CAP), totalOpen: live.length });\n}\nconst row = rows[0];\nif (!row) return err('NOT_FOUND', 'card not found', 404);\nif (v.op === 'get') return ok({ item: toItem(row) });\n\nif (v.op === 'answer') {\n  const live = row.state === 'open' || (row.state === 'later');\n  if (!live) return err('CONFLICT', 'card is already ' + row.state, 409);\n  const answer = Object.assign({}, v.answer, { at: nowIso });\n  if (answer.verb === 'later' && !answer.until) answer.until = nextMonday8();\n  const newState = answer.verb === 'later' ? 'later' : 'answered';\n  const undoUntil = new Date(nowMs + UNDO_SECONDS * 1000).toISOString();\n  const card = parse(row.card_json) || {};\n  const item = Object.assign({}, card, { state: newState, answer, undoUntil });\n  if (answer.until) item.laterUntil = answer.until;\n  const data = { item, undoUntil };\n  if (answer.verb === 'approve' && card.kind === 'quote') data.status = 'outbox_user_sends';\n  return [{ json: { ok: true, write: true, updateUrl: v.updateUrl,\n    updateBody: { filter: byId(row.card_id), data: { state: newState, answer_json: JSON.stringify(answer), undo_until: undoUntil, updated_at: nowIso }, returnData: false },\n    response: { ok: true, request_id: v.request_id, data } } }];\n}\n// undo, inside the 10-second window only (CONTRACT.md \u00a74.3: after it, 409)\nif (row.state === 'open' || !row.undo_until) return err('CONFLICT', 'nothing to undo', 409);\nif (Date.parse(row.undo_until) < nowMs) return err('UNDO_EXPIRED', 'the undo window has passed', 409);\nconst card = parse(row.card_json) || {};\nreturn [{ json: { ok: true, write: true, updateUrl: v.updateUrl,\n  updateBody: { filter: byId(row.card_id), data: { state: 'open', answer_json: '', undo_until: '', updated_at: nowIso }, returnData: false },\n  response: { ok: true, request_id: v.request_id, data: { item: Object.assign({}, card, { state: 'open' }) } } } }];\n"
       },
       "name": "Decide",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "id": "555e16f5-54b4-40fa-b235-e5f7b6f752af",
+      "id": "d5878fff-155b-4450-b929-b799c16928ac",
       "position": [
         1520,
         380
@@ -197,7 +197,7 @@
           },
           "conditions": [
             {
-              "id": "63dc07b2-1f72-44a6-9b31-a98049157f96",
+              "id": "734d1489-9f23-4bc7-9ff8-3beecebfef75",
               "leftValue": "={{ $json.write }}",
               "rightValue": true,
               "operator": {
@@ -214,7 +214,7 @@
       "name": "Write?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "id": "9845d5f5-f4a0-4c9e-b1eb-971ed6e0bc46",
+      "id": "8779d068-5755-4109-86f2-30d7c43c2202",
       "position": [
         1740,
         380
@@ -249,7 +249,7 @@
         }
       },
       "onError": "continueErrorOutput",
-      "id": "de5e492c-2f02-4f76-8b90-90c78e5e8500",
+      "id": "a26ebc67-e120-443b-a9f6-6189e3fb59ee",
       "position": [
         1960,
         300
@@ -262,7 +262,7 @@
       "name": "Check Write",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "id": "94649b98-39ba-4135-8b21-2df19fed6c19",
+      "id": "57bfb19a-2f6e-429d-a51f-604c9b8e5324",
       "position": [
         2180,
         300
@@ -279,7 +279,7 @@
           },
           "conditions": [
             {
-              "id": "476359ba-04db-4501-b419-d99927d7ba48",
+              "id": "ce541554-e52c-49c6-aecc-ce83c7143f3d",
               "leftValue": "={{ $json.ok }}",
               "rightValue": true,
               "operator": {
@@ -296,7 +296,7 @@
       "name": "OK?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "id": "3bcfa444-f2db-420f-ab43-5fed01ee47f0",
+      "id": "13626f0a-04c8-4639-bff5-78d65e6008ce",
       "position": [
         2400,
         460
@@ -309,7 +309,7 @@
       "name": "Shape Put",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "id": "4b055882-7938-4aa0-adc8-389ff8cad491",
+      "id": "f6793cc7-4650-4fa9-8972-5b50fc5f4e16",
       "position": [
         2620,
         150
@@ -326,7 +326,7 @@
           },
           "conditions": [
             {
-              "id": "033f060d-a86e-423d-8450-9ca86ec6566b",
+              "id": "ed476278-9a69-46ec-8fcc-14c611efbb7a",
               "leftValue": "={{ $json.ok }}",
               "rightValue": true,
               "operator": {
@@ -343,7 +343,7 @@
       "name": "Put OK?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "id": "ce3cc418-97e2-4a18-a699-f3b97b50bfc6",
+      "id": "77c81dd5-d5f8-42c5-bb98-e57f0ccd5f4b",
       "position": [
         2840,
         150
@@ -360,7 +360,7 @@
       "name": "Respond Put",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "id": "f1a0f50c-9462-41b3-bb06-25af2d66982f",
+      "id": "1ba92eb0-2e62-4ffb-80e2-05843014aead",
       "position": [
         3060,
         150
@@ -377,7 +377,7 @@
       "name": "Respond 200",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "id": "58642fbb-7044-4f2d-a3dc-e18a90e863e9",
+      "id": "b251b879-7ff1-4623-b26a-de970c93274b",
       "position": [
         3280,
         330
@@ -394,7 +394,7 @@
       "name": "Respond Error",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "id": "20711b75-81ee-4bfc-a094-49917edd0180",
+      "id": "36af76dc-bea0-414f-a32d-96500136035b",
       "position": [
         3500,
         480
@@ -411,7 +411,7 @@
       "name": "Respond 502",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "id": "c99d78d3-c7f8-4762-94ab-713cd32aea78",
+      "id": "9cc745f6-b540-4500-bae8-e14a49103593",
       "position": [
         3720,
         580

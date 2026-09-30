@@ -27,6 +27,21 @@ Nine new workflows, all named `JSTACK-DASH-…`. They sit **beside** your existi
 | `undo_until` | string |
 | `updated_at` | string |
 
+**`jstack_dash_brain`**: captures, journal and chat from Josh; replies and insights from the EA.
+
+| Column | Type |
+|---|---|
+| `item_id` | string |
+| `kind` | string |
+| `text` | string |
+| `source` | string |
+| `by` | string |
+| `offline_id` | string |
+| `state` | string |
+| `data_json` | string |
+| `created_at` | string |
+| `updated_at` | string |
+
 Copy each table's **id**: it's in the browser address bar when the table is open.
 
 ## Step 2 — Import (Workflows → Import from File), one at a time
@@ -42,6 +57,7 @@ Copy each table's **id**: it's in the browser address bar when the table is open
 | `JSTACK-DASH-gmail-draft.json` | Makes a Gmail **draft**; never sends | — |
 | `JSTACK-DASH-records.json` | The settings store | Open **Validate Input** and replace `REPLACE_WITH_RECORDS_TABLE_ID` with the `jstack_dash_records` id |
 | `JSTACK-DASH-actions.json` | The Needs-you cards | Open **Validate Input** and replace `REPLACE_WITH_ACTIONS_TABLE_ID` with the `jstack_dash_actions` id |
+| `JSTACK-DASH-brain.json` | Captures, journal, Dictate to EA; the EA's replies and insights | Open **Validate Input** and replace `REPLACE_WITH_BRAIN_TABLE_ID` with the `jstack_dash_brain` id |
 
 Credentials should link by themselves, because they point at the same credentials your workflows already use: JSTACK Webhook Auth, JSTACK Twenty, JSTACK Google Calendar, JSTACK Gmail, JSTACK Dropbox and JSTACK n8n API Auth. If a node shows a red credential, pick the matching one. The n8n API key behind "JSTACK n8n API Auth" must be allowed to read and write data table rows.
 
@@ -51,15 +67,17 @@ Then **Activate** each one.
 
 ```bash
 P=http://127.0.0.1:8787/n8n; H='content-type: application/json'
-curl -s -X POST $P/calendar -H "$H" -d '{"timeMin":"2026-09-27T14:00:00Z","timeMax":"2026-10-04T14:00:00Z"}'
-curl -s -X POST $P/tasks    -H "$H" -d '{"limit":5}'
-curl -s -X POST $P/people   -H "$H" -d '{"limit":5}'
-curl -s -X POST $P/files    -H "$H" -d '{}'
-curl -s -X POST $P/records  -H "$H" -d '{"op":"put","key":"test:hello","value":{"hi":1}}'
-curl -s -X POST $P/records  -H "$H" -d '{"op":"get","key":"test:hello"}'
-curl -s -X POST $P/records  -H "$H" -d '{"op":"list","prefix":"test:"}'
-curl -s -X POST $P/actions  -H "$H" -d '{"op":"list"}'
-curl -s -X POST $P/calendar-edit -H "$H" -d '{"op":"get","eventId":"<an id from the calendar reply>"}'
+t(){ echo "== $1"; curl -s -w '\n[HTTP %{http_code}]\n' -X POST "$P/$1" -H "$H" -d "$2" | cut -c1-300; echo; }
+t calendar '{"timeMin":"2026-09-27T14:00:00Z","timeMax":"2026-10-04T14:00:00Z"}'
+t tasks    '{"limit":5}'
+t people   '{"limit":5}'
+t files    '{}'
+t records  '{"op":"put","key":"test:hello","value":{"hi":1}}'
+t records  '{"op":"get","key":"test:hello"}'
+t records  '{"op":"list","prefix":"test:"}'
+t actions  '{"op":"list"}'
+ID=$(curl -s -X POST "$P/calendar" -H "$H" -d '{"timeMin":"2026-09-27T14:00:00Z","timeMax":"2026-10-04T14:00:00Z"}' | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
+t calendar-edit "{\"op\":\"get\",\"eventId\":\"$ID\"}"
 ```
 
 Each should answer `{"ok":true,...}`.

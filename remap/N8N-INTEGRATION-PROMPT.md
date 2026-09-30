@@ -1,9 +1,6 @@
 # N8N integration prompt — paste into Claude Code at the repo root
 
-> **Do this in n8n before you paste** (5 minutes, details at the bottom under "Before you start").
-> 1. Follow `remap/IMPORT-GUIDE.md`: create the two Data Tables, import the nine `JSTACK-DASH-*` workflows, set the two table ids, and activate them.
-> 2. Create `remap/.env.local` with `N8N_BASE`, `N8N_AUTH_HEADER` and `N8N_AUTH_VALUE`.
-> 3. Start the proxy (`node remap/dev-proxy.mjs`) and run the two curl checks.
+> **Status (29 Sep):** all nine `JSTACK-DASH-*` workflows are imported and published, the two Data Tables exist, `remap/.env.local` is set, and all ten proxy keys answered `200` through `node remap/dev-proxy.mjs` (`files` answers an empty list with `root_missing: true`, because `/JSTACK` doesn't exist in Dropbox yet). Keep the proxy running while you work.
 
 ---
 
@@ -81,6 +78,15 @@ Skip this phase if `data/transport/n8n.ts` already exists from `remap/KICKOFF-PR
    - timestamps
    - any custom fields that could carry a silo or project
 
+   Already seen in the live reply (confirm them from the samples):
+   - **no priority field**
+   - custom `bucket` (`INBOX`, `DONE`…), a candidate for Board columns
+   - `waitingOn` (a string; non-empty could mean `TaskStatus` `waiting` and feed `/tasks/waiting`)
+   - `projectId` and `decisionId`
+   - `assigneeId` (often null)
+   - `createdBy.source` (`AGENT` / `API` / `WORKFLOW`, `name` e.g. `openclaw-agent`), a candidate for owner `ea`
+   - `bodyV2.markdown`, `position` and `deletedAt`
+
 **Checkpoint 2:** the inventory, and the open questions it raises. I'll answer the mapping questions before Phase 4.
 
 ## Phase 3 — Calendar, live (`GET /calendar`)
@@ -109,7 +115,8 @@ Skip this phase if `data/transport/n8n.ts` already exists from `remap/KICKOFF-PR
   | `labels` | `{ silo: "personal:josh", types: [], setBy: "source" }`, unless fixtures show personal events labelled differently |
   | `setAt` | `raw.updated ?? now` |
   | `focus` | whatever the mock's fixtures use for an event from that source |
-  | `prep`, `protectedByEa` | omitted (EA features, no source yet) |
+  | `protectedByEa` | `raw.protectedByEa` (true for blocks made by `calendar-edit` `op: "block"`) |
+  | `prep` | omitted (EA feature, no source yet) |
 - **Filter:** apply `?focus=` like the mock's `inFocus`, and keep only events whose start falls in the window (mock rule).
 - **`gaps`:** only for `view=today`, computed exactly like the mock's `gapsFor` (06:00–20:00 Brisbane, at least 60 minutes). If `data/n8n` may not import from `data/mock` (check the boundaries tests), copy the pure function, citing its source in a comment. If you do import, leave `data/mock` itself unchanged.
 - **All-day events:** check how `CalendarGrid`/`CalendarList` draw an event spanning 00:00–24:00. If it paints a full-day bar or blocks all the free gaps, **don't change the UI**. Tell me and propose options (exclude from gaps, keep in the list only…).
@@ -131,7 +138,7 @@ Start only after I've answered Checkpoint 2's mapping questions. Then write `dat
 
   | Task field | Rule |
   |---|---|
-  | `status` | `TODO`→`open`, `IN_PROGRESS`→`in_progress`, `DONE`→`done`. Anything else becomes `open`, plus one console warning naming the value. |
+  | `status` | `TODO`→`open`, `IN_PROGRESS`→`in_progress`, `DONE`→`done`, and `waiting` if Checkpoint 2 agrees that a non-empty `waitingOn` means waiting. Anything else becomes `open`, plus one console warning naming the value. |
   | `due` | `dueAt` as ISO UTC. `dueLabel` stays unset; the app composes labels itself (`lib/taskMeta.ts`, ADR-47). |
   | `owner` | Assignee → `josh` / `joce` / `ea` / `dev` through a config map of workspace-member ids. Unassigned or unknown → `josh`. |
   | `priority` | **Only from a real field.** If Twenty has none, look at how `lib/taskMeta.ts` prints priority. If every task would read "medium priority" without it being true, stop and ask me. |
@@ -175,6 +182,9 @@ For each one:
 - **Captures** (`offline: true` in `routes.ts`, e.g. task create) must pass the app's `offlineId` through, so the outbox's replays dedupe (`{ duplicate: true }`).
 - **Approve on an email card** (`kind: "quote"`): after `actions` answers, the transport calls `gmail-draft` with the card's `draft` fields and `quote` text, and returns `{ status: "outbox_user_sends" }`. Never call anything that sends.
 - **Undo:** `POST /actions/{id}/undo` calls `actions` `op: "undo"`, and the store enforces the 10-second window.
+- **`people`:** Twenty holds about **1,230 people**. Don't page through all of them on each load. Work out which people the People section and `/life` actually show (the mock handler), and propose at the checkpoint how to fetch only those, e.g. a filter the DASH people workflow should accept. Don't build that until I agree.
+- **`files`:** an empty list with `root_missing: true` is normal until `/JSTACK/` exists in Dropbox. Show the section's empty state, not an error.
+- **`memory`:** this is Josh's existing `jstack-memory-search`, not a DASH workflow. Its request and reply are in `remap/n8n/reference/JSTACK-memory-search.json`. Its silo names differ from the app's (`remap/WORKFLOWS-NEEDED.md` §1).
 - **Test each write end to end against real data**, with test records you then delete (a test task, a test event, a test draft). Tell me before any test that touches Josh's existing records.
 
 **Checkpoint 6 (per key):** what's live, the screenshots, and the error cases you checked.
@@ -205,31 +215,8 @@ Write `remap/DEPLOY_N8N.md`. It covers:
 
 ---
 
-## Before you start (for me, in n8n and on my machine)
+## Already done (for reference)
 
-1. **Import** the `JSTACK-DASH-*` workflows as described in `remap/IMPORT-GUIDE.md` (two Data Tables first, then nine imports). They're new workflows on new paths; WF-01 and everything OpenClaw uses stay untouched.
-2. **Credentials** should link automatically (same instance). If not, pick:
-   - Webhook → *JSTACK Webhook Auth*, or better, a new header-auth credential just for the dashboard, so it can be rotated on its own
-   - Google Calendar → *JSTACK Google Calendar*
-   - Twenty Tasks → *JSTACK Twenty*
-3. Open each, **Execute workflow** once with a test body to check it, then **Activate**.
-4. **Reaching n8n from this laptop.** n8n listens on the server's `localhost:5678`. If it has no public HTTPS URL, open an SSH tunnel and use `N8N_BASE=http://127.0.0.1:5678`:
-
-   ```
-   ssh -N -L 5678:localhost:5678 ubuntu@<server>
-   ```
-5. Create `remap/.env.local` (gitignored):
-
-   ```
-   N8N_BASE=http://127.0.0.1:5678
-   N8N_AUTH_HEADER=<header name from the credential>
-   N8N_AUTH_VALUE=<its value>
-   ```
-6. Run `node remap/dev-proxy.mjs`, then check both keys from Git Bash:
-
-   ```
-   curl -s -X POST http://127.0.0.1:8787/n8n/calendar -H 'content-type: application/json' -d '{"timeMin":"2026-09-27T14:00:00Z","timeMax":"2026-10-04T14:00:00Z"}'
-   curl -s -X POST http://127.0.0.1:8787/n8n/tasks -H 'content-type: application/json' -d '{"limit":5}'
-   ```
-
-   Both should answer `{"ok":true,...}`. Then start the prompt above.
+- `remap/IMPORT-GUIDE.md` has been followed: nine DASH workflows are published, and the Data Table ids are set in records and actions.
+- `remap/.env.local` points `N8N_BASE` at `https://n8n.josh.useprivate.ai`, with the dashboard's header auth.
+- The proxy test (all ten keys) passed on 29 Sep. To re-check, rerun the labelled curl script in `remap/IMPORT-GUIDE.md` Step 3.

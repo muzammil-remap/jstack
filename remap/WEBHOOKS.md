@@ -49,6 +49,7 @@ FYI for the OpenClaw/Telegram colleague, outside our scope: WF-02's approval car
 | `gmail-draft` | `jstack-dash-gmail-draft` | write (draft only) |
 | `records` | `jstack-dash-records` | write (append-only) |
 | `actions` | `jstack-dash-actions` | write |
+| `brain` | `jstack-dash-brain` | write (captures, journal, chat; EA replies and insights) |
 
 Adding a key is a deliberate change, made in **three places**: `remap/dev-proxy.mjs`, the nginx config, and the app's `data/n8n/registry.ts`. Workflows that send or return file bytes never get a key. Every DASH workflow takes `POST` JSON (with `op` where it has several), and answers `{ ok: true, request_id, data }` or `{ ok: false, error: { code, message } }`. The codes are `VALIDATION_ERROR` 400, `NOT_FOUND` 404, `CONFLICT`/`UNDO_EXPIRED` 409, `SETUP_ERROR` 500, `UPSTREAM_ERROR` and `UPSTREAM_UNREACHABLE` 502. The app's adapters map these to the contract's codes (validation → `422`).
 

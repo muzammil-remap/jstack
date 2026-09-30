@@ -40,6 +40,7 @@ export const ALLOW = {
   "gmail-draft": "jstack-dash-gmail-draft",  // drafts only
   records: "jstack-dash-records",
   actions: "jstack-dash-actions",
+  brain: "jstack-dash-brain",               // captures, journal, chat in; EA replies and insights out
 };
 
 // the originals that send or return file bytes; their DASH copies are fine
