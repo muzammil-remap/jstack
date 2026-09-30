@@ -18,6 +18,7 @@ import { Feed } from "@/components/agents/Feed";
 import { Checks } from "@/components/agents/Checks";
 import { Memory } from "@/components/brain/Memory";
 import { HealthLine } from "@/components/chrome/HealthLine";
+import AgentsScreen from "@/app/(tabs)/agents";
 import { useAgentsStore } from "@/stores/agents";
 import { useBrainStore } from "@/stores/brain";
 
@@ -67,6 +68,23 @@ describe("N8N-2 · a section with no source says so", () => {
     const view = await mount(<HealthLine testID="rail-health" style={{}} />);
     expect(view.queryByText(/all healthy/)).toBeNull();
     expect(view.queryByTestId("rail-health")).toBeNull();
+  });
+
+  it("the Agents heading: \"not connected yet\" without a source, never \"loading…\" for good", async () => {
+    const realLoad = useAgentsStore.getState().load;
+    useAgentsStore.setState({ load: async () => {} });
+    try {
+      const view = await mount(<AgentsScreen />);
+      expect(view.getByText("not connected yet")).toBeTruthy();
+      expect(view.queryByText("loading…")).toBeNull();
+      view.unmount();
+      useAgentsStore.setState({ notConnected: {} });
+      const loading = await mount(<AgentsScreen />);
+      expect(loading.getByText("loading…")).toBeTruthy();
+      loading.unmount();
+    } finally {
+      useAgentsStore.setState({ load: realLoad });
+    }
   });
 
   it("a CONNECTED section with nothing in it keeps its own empty words", async () => {

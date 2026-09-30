@@ -81,7 +81,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 
 ## 2. The map of the territory
 
-<!-- generated:start section=2 sha=7b1099c date=2026-09-30 -->
+<!-- generated:start section=2 sha=f0292d3 date=2026-09-30 -->
 
 ### `app/`
 
@@ -96,7 +96,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 | file | lines | purpose | imported by |
 |---|---|---|---|
 | `_layout.tsx` | 51 | The real tabs shell (row 6, ADR-01, ADR-07): Rail (≥768) or TabBar (<768), the mic Orb, and `MicBanner` while a microphone is open. | — |
-| `agents.tsx` | 22 | Agents — configuration only (ADR-01). | — |
+| `agents.tsx` | 24 | Agents — configuration only (ADR-01). | — |
 | `brain.tsx` | 28 | Brain — the entry/latest/memory/rules load lives here (ADR-01), reloading on every focus-chip change (FS-02, brain half). | — |
 | `index.tsx` | 53 | Today — needs/insights ship real content (row 7); allcal/calendar/ tasks/glance/close are row 8. | — |
 | `life.tsx` | 27 | Life — goals, habits, people, money, health, learning (row 13). | — |
@@ -601,7 +601,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 Endpoint → store action → component → testIDs, one block per contract group, from
 `wiring.json`.
 
-<!-- generated:start section=3 sha=7b1099c date=2026-09-30 -->
+<!-- generated:start section=3 sha=f0292d3 date=2026-09-30 -->
 
 ### agents
 
@@ -932,7 +932,7 @@ them; `tools/gen-codemap.mjs` lists any that this section does not name.
 | `tests/unit/n8nTasksWrite.test.ts` | Phase 6 · `tasks-write` (ADR-86): a title, a due day (local noon, per board zone), open/in progress/done and the completion are written in the writer's words and answered as the list maps a task, valid; the undo of a completion puts a waiting task back to Twenty's own status; a Board stage, a Gantt drag, a priority, waiting and a goal link are refused `422 { field, reason }` with nothing sent; a new task gets its own offlineId and a repeat is the first; 404/422/502 are the writer's; a refusal on the device reports nothing, a real write says online; the list is read again after a write |
 | `tests/unit/n8nRecords.test.ts` | Phase 6 · `records` (ADR-87): the store's real replies read as sent (absent, present, stale, a bad key); every settings route answers the build's default until saved, then the record; a save sends the version it read and a record saved meanwhile is 409; the namespace prefixes every key; the mock's refusals (a rule, a pinned section, a parameter's range, a locked group, a goal's silo, a habit removed); goals dropped with a history line; a day's log as a date-first key and the week's stats and streaks from it; Today's glance and close-the-day and Life from the same records; a section's edit and revert; an email card's revised draft |
 | `tests/unit/n8nFiles.test.ts` | Phase 6 · `files` (ADR-89): every page of Dropbox's /JSTACK listing, newest first, each a valid Attachment held in Dropbox (kind from the name, Josh's in an Inbox folder, a task's in the folder named for it); the app's own file filter on the device; /JSTACK not made yet is an empty list; one file by id, else 404 |
-| `tests/native/notConnected.test.tsx` | N8N-2 (ADR-90), rendered: Runs and spend, Agent issues, the feed, the checks and Brain › Memory say "Not connected yet" and none of their claims ("Nothing failing", "100%", "The Librarian runs again", "test questions"); the rail's health line draws nothing without a summary; a connected empty section keeps its own words |
+| `tests/native/notConnected.test.tsx` | N8N-2 (ADR-90), rendered: Runs and spend, Agent issues, the feed, the checks and Brain › Memory say "Not connected yet" and none of their claims ("Nothing failing", "100%", "The Librarian runs again", "test questions"); the rail's health line draws nothing without a summary; the Agents heading says "not connected yet", never "loading…" for good; a connected empty section keeps its own words |
 | `tests/unit/n8nBrain.test.ts` | ADR-91: a capture, a journal line and a Dictate line go by Josh with the offlineId and show as not yet filed, no routing made up; a capture with no words is refused; Latest in, the thread and the open replies as the store holds them, the EA's routing and labels on what it filed; read is a reply dismissed; Today's insight the newest open one with a block; Block it makes the event through calendar-edit then answers, Leave it answers, a refused block answers nothing |
 | `tests/native/orbComingSoon.test.tsx` | ADR-92: with voice off once settings load, the floating mic says "Coming soon"; with voice on it is push-to-talk |
 | `tests/unit/n8nActions.test.ts` | Phase 6 · `actions`: Needs you from the actions store's real replies — the open list valid, by rank, five at most after the focus; history answered-only, newest first, `?q=` on the title, each card's last history entry the store's answer; a card the contract cannot draw left out and named once, by id a 502; each verb sends only its fields, Approve reads the card first and an email card's approve is 501 with nothing answered; the reload after an answer asks again; a second answer, a late undo and nothing-to-undo are 409, a bad verb 422, an unknown card 404; an email card's approve answered, then drafted to its recipient (ADR-88), refused when it names no one, taken back when the draft fails; reopen 501; Today's Needs you is `GET /actions`'s answer through one call |
@@ -1417,7 +1417,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 
 ## 7. The decision index
 
-<!-- generated:start section=7 sha=7b1099c date=2026-09-30 -->
+<!-- generated:start section=7 sha=f0292d3 date=2026-09-30 -->
 
 `DECISIONS.md` — ADR-01..75, each with its status; the versioned decision files hold the full reasoning.
 
@@ -1502,7 +1502,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 
 ## 8. The test map
 
-<!-- generated:start section=8 sha=7b1099c date=2026-09-30 -->
+<!-- generated:start section=8 sha=f0292d3 date=2026-09-30 -->
 
 ### Specs
 
@@ -1750,7 +1750,7 @@ the codebase that the hand-written judgement has not caught up with. A release r
 empty — Stage 3c's `P-1` adds the release workflow and that gate with it. Until then they are
 advisory, and Stage 4 curates them.
 
-<!-- generated:start section=11 sha=7b1099c date=2026-09-30 -->
+<!-- generated:start section=11 sha=f0292d3 date=2026-09-30 -->
 
 ### New since section 6 was curated
 
