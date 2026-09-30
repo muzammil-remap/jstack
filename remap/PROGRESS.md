@@ -548,3 +548,48 @@ birthday or a travel day has no free gaps. `CalEvent` has no all-day flag, so th
 
 My recommendation: **B now** (data layer only, and it stops a birthday wiping out a day's free
 time), then **D** if a contract addition is acceptable, otherwise **C**. Nothing here is built yet.
+
+## Phase 3 follow-ups and Checkpoint 3b (30 Sep 2026)
+
+Decided: B, then C (not D). Built as separate commits:
+
+1. **Overlap, not start** (ADR-80): an event is in the window when it overlaps it; a two-day event
+   shows on both days and yesterday's shows today. Adapter only.
+2. **Gaps** (ADR-81, option B): all-day events and events Google marks free
+   (`transparency: "transparent"`) no longer take time; they stay in `/calendar`.
+3. **Week and Month fetch what the grid draws** (ADR-82): Monday–Sunday, and the month grid's own
+   days. Checked: `monthGrid` is always **35** days, never 42, so that is what is fetched (the
+   adapter reads the grid's length, so a six-row grid would be followed, still inside the 45-day
+   limit). Two defects of Josh's logged: the mock's window mismatch (`KNOWN_GAPS.md` N8N-3), and the
+   35-day grid dropping a six-row month's last day — 31 Aug 2026, 30 Nov 2026, 31 May 2027 (N8N-4).
+4. **Option C, the UI** (every edited file in `remap/CHANGESET.md`): one helper decides all-day
+   (`lib/timeGrid.ts` `isAllDay`: local midnight to a later local midnight, which the adapter
+   guarantees) and one decides the days an event covers (`eventsCovering`). A new
+   `components/today/AllDayStrip.tsx` draws a day's all-day events above its hours; `CalendarGrid.tsx`
+   keeps them out of the track, moves the hour gutter down by the strip, and puts month dots on every
+   covered day; `CalendarList.tsx` prints "all day". Option D, `CalEvent.allDay`, is written up for
+   Josh as a proposed contract addition (N8N-5).
+5. **Tests**: `tests/fixtures/n8n/calendar.cases.json` (constructed, in the exact DASH shape: a
+   one-day all-day event, a two-day one, one begun before the window, an overnight event, a free
+   one, a busy one); Week and Month across month boundaries, one across New York's DST end;
+   `tests/unit/allDay.test.ts` and `tests/native/calendarAllDay.test.tsx`. The expectations that
+   changed on purpose (start → overlap; Week Monday-first; Month the grid) are marked in the tests.
+
+Gates: `pnpm check`, `pnpm lint`, unused exports clean; `pnpm test` in both zones at the baseline
+(the 16 suites; the one extra failure in the run, CM-04's "not prose" check reading a path in my
+§4 row, was reworded and re-run green); builds pass; secret scan clean; mock re-packaged. Mock mode
+is unchanged: no fixture event runs midnight to midnight.
+
+### Checkpoint 3b — live, the browser's clock at Fri 2 Oct 10:00 Brisbane
+
+Screenshots in `remap/screens/private/checkpoint-3b/` (gitignored, real data).
+
+| View | Webhook window | All-day strip | Timed events |
+|---|---|---|---|
+| Today (Fri 2) | 1 Oct 14:00Z → 2 Oct 14:00Z | the two-day event, above the hours | the 16:00 event in its track |
+| 3 days (Fri 2 – Sun 4) | → 4 Oct 14:00Z | Fri 2 and Sat 3 (both days of it) | Fri 2 |
+| Week (Mon 28 – Sun 4) | 27 Sep 14:00Z → 4 Oct 14:00Z (Monday-first) | Fri 2 and Sat 3; the other columns keep the strip's height, hours level | Fri 2 |
+| Month (October) | 27 Sep 14:00Z → 1 Nov 14:00Z (the grid's 35 days) | dots on every covered day, e.g. Sat 3 | — |
+| Calendar card, 3 days | shared the grid's 3-day call | "all day" | "16:00" |
+
+Console: 0 messages.

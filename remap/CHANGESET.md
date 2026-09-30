@@ -4,6 +4,25 @@ One line per file. Newest phase first. Josh's own files are named with what was 
 
 **Generated files** are marked **regenerate in the target repo, don't port**: `jstack-mock-v15.html` (re-packaged from the source) and `REMAP_HANDOVER.html` (never committed changed; `remap/codemap.sh` restores it). Port the source and rebuild them there.
 
+## Phase 3 follow-ups — all-day, overlap, the grid's window (30 Sep 2026)
+
+| File | Change | Why |
+|---|---|---|
+| `jstack-app/data/n8n/adapters/calendar.ts` | overlap rule; gaps count only events that take time; Week/Month ask for the grid's days | ADR-80, ADR-81, ADR-82 |
+| `jstack-app/lib/timeGrid.ts` | **edit to an existing file (Josh's):** `isAllDay`, `eventsCovering` added | option C's one shared helper |
+| `jstack-app/components/today/AllDayStrip.tsx` | **new UI file**: the all-day strip above a day's hours | option C (`CalendarGrid.tsx` had 10 lines left of its 250) |
+| `jstack-app/components/today/CalendarGrid.tsx` | **edit to an existing file (Josh's UI):** all-day events out of the track, the strip above it, the hour gutter moved by its height, month dots on every covered day | option C |
+| `jstack-app/components/today/CalendarList.tsx` | **edit to an existing file (Josh's UI):** "all day" instead of "0:00" | option C |
+| `jstack-app/WIRING.md`, `jstack-app/wiring.json` | regenerated: the strip's testIDs in the calendar chain | `pnpm codemap` |
+| `jstack-app/tests/fixtures/n8n/calendar.cases.json` | new, constructed in the exact DASH shape | the edge cases the live week did not hold at once |
+| `jstack-app/tests/unit/n8nCalendar.test.ts` | overlap, gaps, Week/Month windows and month boundaries; the changed expectations marked | the behaviour changed on purpose |
+| `jstack-app/tests/unit/allDay.test.ts`, `jstack-app/tests/native/calendarAllDay.test.tsx` | new | option C's helper and rendering |
+| `jstack-app/CODEMAP.md` | §4 rows for the two new tests | a guard is named in §4 |
+| `DECISIONS.md` | ADR-80, ADR-81, ADR-82 | items 1–3 |
+| `KNOWN_GAPS.md` | N8N-3 (the mock's window), N8N-4 (the 35-day grid), N8N-5 (`CalEvent.allDay`, proposed) | for Josh |
+| `jstack-mock-v15.html` | re-packaged (own commit). **Generated — regenerate in the target repo, don't port** | QA-06 |
+| `remap/PROGRESS.md` | follow-ups and Checkpoint 3b | the log |
+
 ## Phase 3 — the calendar, live (30 Sep 2026)
 
 | File | Change | Why |
