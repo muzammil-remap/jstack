@@ -6,7 +6,7 @@ _(the coding agent fills this in from Phase 0)_
 
 | # | What | Where it is recorded | Fix |
 |---|---|---|---|
-| 1 | The Agents tab and the rail claim health with no source: "all healthy · $0.00", 0 runs, 100%, "Nothing failing", "The Librarian runs again at 2:00" | `KNOWN_GAPS.md` N8N-2 | the agent-stats / agent-health workflows (`remap/WORKFLOWS-NEEDED.md` 2.13, 2.14); if they are not live by then, per-section loading in `stores/agents.ts` and `stores/brain.ts` |
+| 1 | ~~The Agents tab and the rail claim health with no source~~ — **done 30 Sep** (option b, ADR-90): each such section says "Not connected yet" | `KNOWN_GAPS.md` N8N-2 | the agent-stats / agent-health workflows (`remap/WORKFLOWS-NEEDED.md` 2.13, 2.14); if they are not live by then, per-section loading in `stores/agents.ts` and `stores/brain.ts` |
 | 2 | The month grid drops the last day of a six-row month — 30 November 2026 is the first, then 31 May 2027 | `KNOWN_GAPS.md` N8N-4 | a 42-day grid in `lib/time.ts` `monthGrid` (Josh's code; the calendar adapter already follows the grid's length) |
 | 3 | At 820 px the Today Calendar card's heading runs into its links ("CALENDAR" over "today · 3 days · google"); the mock does the same | `KNOWN_GAPS.md` N8N-9 | Josh's layout (`components/today/CalendarList.tsx`); no change for now |
 
@@ -1042,3 +1042,22 @@ decide**: wait, or wire it with the sensitive types always excluded and his own 
 None of the writes wired in Phase 6 has a capability flag (`Capabilities` has none for Needs you,
 tasks, the settings or Life), so none was flipped. `calendarWrite` (Help: "Writing back to your
 calendar") and `fileStore` ("Opening a picked file attachment") stay off: neither is true.
+
+## N8N-2 — no section claims health it has no source for (30 Sep 2026)
+
+Option (b), ADR-90. On n8n the Agents summary, spend, issues, feed and security checks and Brain's
+memory proposals and hit rate answer `501`; the Agents and Brain stores record that per section
+(`lib/loadError.ts` `orNotConnected`), so one missing source no longer replaces the whole tab — and
+each of those sections shows "Not connected yet" (`components/chrome/NotConnected.tsx`):
+
+| Before | Now |
+|---|---|
+| rail: "all healthy · $0.00" | nothing (the line draws nothing without a summary) |
+| Agents › Runs and spend: 0 runs, 100%, $0.00, 0 issues | "Not connected yet" |
+| Agents › Agent issues: "Nothing failing. Every check ran when it should." | "Not connected yet" |
+| Agents › feed, Security checks: empty lists | "Not connected yet" |
+| Brain › Memory: "All caught up. The Librarian runs again at 2:00." · "0 of 0 test questions right" | "Not connected yet" |
+
+Proved: `tests/native/notConnected.test.tsx` (rendered: the line, none of the claims, the rail empty,
+and a connected empty section keeping its own words) and `tests/unit/n8nConfig.test.ts` (through the
+n8n provider: the flags set, the tab's `loadError` null, Portals loaded).

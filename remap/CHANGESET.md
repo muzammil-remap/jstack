@@ -4,6 +4,25 @@ One line per file. Newest phase first. Josh's own files are named with what was 
 
 **Generated files** are marked **regenerate in the target repo, don't port**: `jstack-mock-v15.html` (re-packaged from the source) and `REMAP_HANDOVER.html` (never committed changed; `remap/codemap.sh` restores it). Port the source and rebuild them there.
 
+## N8N-2 — per-section loading (30 Sep 2026)
+
+| File | Change | Why |
+|---|---|---|
+| `jstack-app/lib/loadError.ts` | `orNotConnected` / `NOT_CONNECTED`: a read's `501` recorded for its section | ADR-90 |
+| `jstack-app/components/chrome/NotConnected.tsx` | **new UI file**: the one "Not connected yet" line | ADR-90 |
+| `jstack-app/stores/agents.ts` | the summary, spend, issues, feed and checks each recorded as not connected, not failing the tab (`notConnected`) | N8N-2 (b) |
+| `jstack-app/stores/brain.ts` | the memory proposals and hit rate likewise (`memoryNotConnected`) | N8N-2 (b) |
+| `jstack-app/components/agents/Stats.tsx`, `Spend.tsx`, `Issues.tsx`, `Feed.tsx`, `Checks.tsx`, `components/brain/Memory.tsx` | **edits to Josh's UI**: "Not connected yet" in place of the empty value's claim | N8N-2 (b), as asked |
+| `jstack-app/data/n8n/registry.ts` | those seven reads `unavailable` (501) | ADR-90 |
+| `jstack-app/tests/native/notConnected.test.tsx` | new | the sections, rendered |
+| `jstack-app/tests/unit/n8nConfig.test.ts` | a case: the stores through the n8n provider | the per-section load |
+| `jstack-app/tests/unit/n8nRoutes.test.ts` | the seven in its not-connected list | expectation changed on purpose |
+| `jstack-app/CODEMAP.md` | §4 row; maps regenerated | a guard is named in §4 |
+| `DECISIONS.md` | ADR-90 | the decision |
+| `KNOWN_GAPS.md` | N8N-2 closed | |
+| `jstack-mock-v15.html` | re-packaged (own commit). **Generated — regenerate in the target repo, don't port** | QA-06 |
+| `remap/PROGRESS.md` | the section; must-fix row 1 done | |
+
 ## Phase 6 · `people`, `gmail-draft`, `files`, `memory` (30 Sep 2026)
 
 | File | Change | Why |
