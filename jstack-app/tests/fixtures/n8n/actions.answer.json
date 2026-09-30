@@ -1,0 +1,61 @@
+{
+  "ok": true,
+  "request_id": "dash-p6-05",
+  "data": {
+    "item": {
+      "id": "dashtest-p6-curl",
+      "type": "Test",
+      "kind": "opts",
+      "title": "DASH test card (curl) � REMAP, ignore",
+      "state": "answered",
+      "rank": 1,
+      "options": [
+        {
+          "text": "Option one",
+          "why": "a REMAP wiring test � nothing happens"
+        },
+        {
+          "text": "Option two",
+          "why": "a REMAP wiring test � nothing happens"
+        },
+        {
+          "text": "Option three",
+          "why": "a REMAP wiring test � nothing happens"
+        }
+      ],
+      "recommended": 1,
+      "why": "REMAP dashboard wiring test (dashtest) � not from the EA",
+      "sources": [],
+      "expiresAt": "2026-10-02T07:00:00.000Z",
+      "thenWhat": "expires Fri 5pm � then nothing (test card)",
+      "silence": "silence does nothing",
+      "verb": "Go with",
+      "toast": "Went with option {n} � DASH test",
+      "history": [],
+      "receipt": {
+        "cost": 0,
+        "model": "none",
+        "sources": 0,
+        "seconds": 0
+      },
+      "labels": {
+        "silo": "personal:josh",
+        "types": [],
+        "setBy": "content"
+      },
+      "setAt": "2026-09-30T06:15:02.687Z",
+      "focus": "personal",
+      "answer": {
+        "verb": "never",
+        "option": null,
+        "revision": null,
+        "rule": null,
+        "until": null,
+        "via": "app",
+        "at": "2026-09-30T06:15:32.870Z"
+      },
+      "undoUntil": "2026-09-30T06:15:42.870Z"
+    },
+    "undoUntil": "2026-09-30T06:15:42.870Z"
+  }
+}

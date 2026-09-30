@@ -19,6 +19,7 @@ const N8N_CONFIG = { DATA_SOURCE: "n8n", USE_API_ADAPTER: true, API_BASE_URL: nu
 const REPLIES: Record<string, string> = {
   calendar: JSON.stringify({ ok: true, data: sample("calendar.cases").data }),
   tasks: JSON.stringify({ ok: true, data: sample("tasks.page1").data }),
+  actions: JSON.stringify({ ok: true, data: sample("actions.empty").data }),
 };
 
 let fetched: string[] = [];
@@ -96,7 +97,7 @@ describe("ADR-83 · the n8n transport holds every call while the gate is shut", 
     const answers = await Promise.all(calls);
     expect(answers.map((a) => a.status)).toEqual([200, 200, 200, 200]);
     expect(contractErrors(answers[0].json, "/today")).toEqual([]);
-    expect([...fetched].sort()).toEqual(["calendar", "tasks"]);
+    expect([...fetched].sort()).toEqual(["actions", "calendar", "tasks"]);
   });
 });
 
@@ -111,7 +112,7 @@ describe("ADR-83 · through the provider, on the session's own gate", () => {
     session.useSessionStore.getState().unlock();
     const composite: TodayComposite = await today;
     expect(composite.todayDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-    expect([...fetched].sort()).toEqual(["calendar", "tasks"]);
+    expect([...fetched].sort()).toEqual(["actions", "calendar", "tasks"]);
 
     session.useSessionStore.getState().relock();
     const again = provider.getAdapter().getCapabilities();

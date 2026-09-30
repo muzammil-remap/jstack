@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "error": {
+    "code": "CONFLICT",
+    "message": "card is already answered"
+  },
+  "request_id": "dash-p6-08"
+}

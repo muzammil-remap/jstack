@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "error": {
+    "code": "NOT_FOUND",
+    "message": "card not found"
+  },
+  "request_id": "dash-p6-10"
+}

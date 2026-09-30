@@ -33,7 +33,8 @@ const ok = (data: unknown) => () => ({ status: 200, text: async () => JSON.strin
 beforeEach(() => {
   jest.useFakeTimers({ now: new Date("2026-10-02T02:00:00.000Z"), advanceTimers: true });
   fetched = [];
-  replies = { calendar: ok(sample("calendar.cases").data), tasks: ok(page1) };
+  // the Needs-you store's real empty reply: the cards themselves are n8nActions.test.ts's
+  replies = { calendar: ok(sample("calendar.cases").data), tasks: ok(page1), actions: ok(sample("actions.empty").data) };
   globalThis.fetch = jest.fn(async (url: string) => {
     const key = String(url).split("/").pop() ?? "";
     fetched.push(key);
@@ -79,7 +80,7 @@ describe("Phase 5 · the Today composite from the live sources", () => {
     expect({ tasks: work.tasks, events: work.calendar.events }).toEqual({ tasks: [], events: [] });
   });
 
-  it("what has no source says nothing: no cards, no lines, no delta even when asked, the glance and the close at nothing", async () => {
+  it("what has no source says nothing: no lines, no delta even when asked, the glance and the close at nothing — and an empty store, no cards", async () => {
     const { transport } = load();
     const today = (await get(transport, "/today", { since: "2026-10-01T00:00:00.000Z" })).json as TodayComposite;
     expect({ needsYou: today.needsYou, since: today.since, endLine: today.endLine, delta: today.delta, insight: today.insight, glance: today.glance, close: today.close }).toEqual({
@@ -96,7 +97,7 @@ describe("Phase 5 · the Today composite from the live sources", () => {
   it("one cold load of Today and the calendar grid runs each workflow once", async () => {
     const { transport, time } = load();
     await Promise.all([get(transport, "/today"), get(transport, "/calendar", { view: "today", anchor: time.todayKey() }), get(transport, "/tasks", { view: "list" }), get(transport, "/tasks/waiting")]);
-    expect(fetched.sort()).toEqual(["calendar", "tasks"]);
+    expect(fetched.sort()).toEqual(["actions", "calendar", "tasks"]);
   });
 });
 

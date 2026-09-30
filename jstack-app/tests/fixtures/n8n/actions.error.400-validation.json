@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "verb must be one of approve, revise, later, never, teach"
+  },
+  "request_id": "dash-p6-11"
+}

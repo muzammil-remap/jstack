@@ -15,6 +15,7 @@ import type { DataProvider } from "@/data/DataProvider";
 import type { TransportRequest, TransportResponse } from "@/data/transport/Transport";
 import { DEFAULTS } from "./defaults";
 import { calendarAdapter } from "./adapters/calendar";
+import { actionsAnswers } from "./adapters/actions";
 import { tasksAnswers } from "./adapters/tasks";
 import { todayAnswer } from "./adapters/today";
 
@@ -65,11 +66,11 @@ export const READS: Partial<Record<RouteName, ReadRow>> = {
   getAuthNonce: deflt("getAuthNonce"),
   getSession: deflt("getSession"),
   // §4.2 today
-  getToday: { kind: "derived", uses: ["calendar", "tasks"], answer: todayAnswer },
+  getToday: { kind: "derived", uses: ["calendar", "tasks", "actions"], answer: todayAnswer },
   getReview: EMPTY,
-  // §4.3 decisions — the Needs-you store arrives with the `actions` key (Phase 6)
-  getActions: EMPTY,
-  getAction: EMPTY,
+  // §4.3 decisions — the Needs-you store (JSTACK-DASH-actions)
+  getActions: { kind: "wired", key: "actions", adapter: { answer: actionsAnswers.list } },
+  getAction: { kind: "wired", key: "actions", adapter: { answer: actionsAnswers.byId } },
   // §4.4 calendar
   getCalendar: { kind: "wired", key: "calendar", adapter: calendarAdapter },
   getEvent: EMPTY,
@@ -145,8 +146,11 @@ export const READS: Partial<Record<RouteName, ReadRow>> = {
 };
 
 /**
- * The writes that have a key, by route. Empty until each write's workflow is wired, one at a time
- * (`remap/WORKFLOWS-NEEDED.md`); every write not named here answers `501 { reason: "not connected
- * yet" }` without calling anything.
+ * The writes that have a key, by route, wired one at a time (`remap/WORKFLOWS-NEEDED.md`); every
+ * write not named here answers `501 { reason: "not connected yet" }` without calling anything.
+ * Reopening a card (a mock-only route, A-31) and editing its draft (`records`) are not here yet.
  */
-export const WRITES: Partial<Record<RouteName, { key: WebhookKey; adapter: WebhookAdapter }>> = {};
+export const WRITES: Partial<Record<RouteName, { key: WebhookKey; adapter: WebhookAdapter }>> = {
+  postActionVerb: { key: "actions", adapter: { answer: actionsAnswers.answer } },
+  postActionUndo: { key: "actions", adapter: { answer: actionsAnswers.undo } },
+};

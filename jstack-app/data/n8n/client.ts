@@ -17,7 +17,8 @@
  *    the workflow dedupes on — repeating any other write could apply it twice.
  *  - **One request per page load.** A read with the same key and body within 30 seconds shares the
  *    first one's answer, so `/today` and `/calendar` asking for the same window run the workflow
- *    once. A failure is forgotten at once, so the next ask tries again.
+ *    once. A failure is forgotten at once, so the next ask tries again, and so is every shared read
+ *    of a key a write goes to — the reload after answering a card must see it answered.
  */
 import { API_TIMEOUT_MS, N8N_BASE_URL } from "@/data/config";
 import { guardTransport } from "@/data/pins";
@@ -54,6 +55,10 @@ const STATUS_FOR: Record<string, number> = {
 
 const SHARE_MS = 30_000;
 const shared = new Map<string, { at: number; answer: Promise<unknown> }>();
+
+function forget(key: WebhookKey): void {
+  for (const id of shared.keys()) if (id.startsWith(`${key} `)) shared.delete(id);
+}
 
 /** The same body always prints the same way, whatever order its keys were written in. */
 function stable(value: unknown): string {
@@ -139,7 +144,14 @@ async function send(key: WebhookKey, body: Record<string, unknown>, retry: boole
  * body carries an `offlineId`.
  */
 export function callWebhook(key: WebhookKey, body: Record<string, unknown>, opts: { write?: boolean } = {}): Promise<unknown> {
-  if (opts.write === true) return send(key, body, typeof body.offlineId === "string" && body.offlineId !== "");
+  if (opts.write === true) {
+    // a write changes what its key's reads would say: the reload after it asks again, and a read
+    // that was in flight beside it is dropped once it settles, whichever way it went
+    forget(key);
+    const sent = send(key, body, typeof body.offlineId === "string" && body.offlineId !== "");
+    sent.then(() => forget(key), () => forget(key));
+    return sent;
+  }
 
   const at = Date.now();
   for (const [k, entry] of shared) if (at - entry.at >= SHARE_MS) shared.delete(k);

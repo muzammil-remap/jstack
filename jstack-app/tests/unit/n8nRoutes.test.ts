@@ -22,10 +22,17 @@ import type { TransportRequest } from "@/data/transport/Transport";
 jest.mock("@/data/n8n/client", () => {
   const actual = jest.requireActual("@/data/n8n/client");
   const { sample: fixture } = jest.requireActual("./n8nContract");
-  const SAMPLES: Record<string, string> = { calendar: "calendar", tasks: "tasks.page1" };
+  // the actions store answers by `op`: the open list, or for `get` its card — and for an id it does
+  // not hold, its real refusal (tests/fixtures/n8n/actions.error.404-not-found.json)
+  const card = fixture("actions.get").data as { item: { id: string } };
+  const SAMPLES: Record<string, (body: { op?: string; id?: string }) => unknown> = {
+    calendar: () => fixture("calendar").data,
+    tasks: () => fixture("tasks.page1").data,
+    actions: (body) => (body.op !== "get" ? fixture("actions.open").data : body.id === card.item.id ? card : Promise.reject(new actual.N8nError(404, "NOT_FOUND", "card not found"))),
+  };
   return {
     ...actual,
-    callWebhook: jest.fn(async (key: string) => (SAMPLES[key] != null ? fixture(SAMPLES[key]).data : Promise.reject(new Error(`unit test: callWebhook("${key}") is not stubbed`)))),
+    callWebhook: jest.fn(async (key: string, body: { op?: string; id?: string }) => (SAMPLES[key] != null ? SAMPLES[key](body) : Promise.reject(new Error(`unit test: callWebhook("${key}") is not stubbed`)))),
   };
 });
 // eslint-disable-next-line @typescript-eslint/no-require-imports -- the jest.mock above replaces this module
@@ -117,10 +124,10 @@ describe("ADR-76 · every GET the n8n transport answers is the contract's", () =
     }
   });
 
-  it("only live rows reached a webhook: calendar and tasks", () => {
+  it("only live rows reached a webhook: actions, calendar and tasks", () => {
     const live = Object.values(READS).flatMap((row) => (row?.kind === "wired" && row.adapter != null ? [row.key] : []));
-    expect(live).toEqual(["calendar", "tasks"]);
-    expect([...reached].sort()).toEqual(["calendar", "tasks"]);
+    expect(live).toEqual(["actions", "actions", "calendar", "tasks"]);
+    expect([...reached].sort()).toEqual(["actions", "calendar", "tasks"]);
   });
 });
 
