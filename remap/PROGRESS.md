@@ -817,6 +817,8 @@ The table was empty before the test (no open cards, no history): the EA has writ
 |---|---|---|
 | `dashtest-p6-curl` | 30 Sep 06:15 UTC, `op: "put"` by curl | Never (06:15), undone, Never again (06:15) — answered |
 | `dashtest-p6-ui` | 30 Sep 06:15 UTC, put again at 06:16 with its title's UTF-8 intact | Never in the app (06:22), undone, Never again (06:22) — answered |
+| `dashtest-p6-undo12` | 30 Sep 07:48 UTC, `op: "put"` (the N8N-11 re-check) | Never (07:48); the undo 11.6 s later was refused — answered |
+
 
 `dashtest-p6-missing` was only ever ASKED for (the 404 and the 422) — there is no row. No other
 card was touched: every call named a `dashtest-` id, and `never` is the only verb sent.
@@ -895,3 +897,13 @@ default), then `POST /lock` answers `501`; its dialog says "Nothing was locked �
 not connected yet" and the app stays as it was — unlocked and working. It cannot reach the
 emergency-locked screen on n8n; if it ever did, Recover now says its refusal instead of sticking on
 "recovering". `KNOWN_GAPS.md` N8N-1 corrected (it said "local only").
+
+## N8N-11 — the undo window at 12 s (30 Sep 2026)
+
+Decided: the actions store keeps an answer undoable for 12 s while the app shows 10 (ADR-85);
+`remap/n8n/JSTACK-DASH-actions.json` now holds `UNDO_SECONDS = 12`. **The re-check did not see it
+live**: a new test card (`dashtest-p6-undo12`) answered Never at 07:48:50 UTC came back with
+`undoUntil` exactly 10 s after its answer, and the undo 11.6 s later was refused
+(`UNDO_EXPIRED`). The deployed Decide node still answers 10 s — the change needs saving (and the
+workflow re-activating) in n8n. Nothing in the app depends on it; re-checked before the final
+report.

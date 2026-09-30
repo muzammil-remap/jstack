@@ -4,6 +4,15 @@ One line per file. Newest phase first. Josh's own files are named with what was 
 
 **Generated files** are marked **regenerate in the target repo, don't port**: `jstack-mock-v15.html` (re-packaged from the source) and `REMAP_HANDOVER.html` (never committed changed; `remap/codemap.sh` restores it). Port the source and rebuild them there.
 
+## N8N-11 — the undo window at 12 s (30 Sep 2026)
+
+| File | Change | Why |
+|---|---|---|
+| `remap/n8n/JSTACK-DASH-actions.json` | `UNDO_SECONDS = 12` in the Decide node, and its comment | the record matches the decision; REMAP's own workflow copy |
+| `DECISIONS.md` | ADR-85 | the decision |
+| `KNOWN_GAPS.md` | N8N-11: decided, open until the deployed workflow answers 12 s | the re-check found 10 s |
+| `remap/PROGRESS.md` | the re-check; `dashtest-p6-undo12` in the test-card list | |
+
 ## The hand test's crash — a refused write is said, never an unhandled rejection (30 Sep 2026)
 
 "Uncaught Error: contract error 501: not connected yet" from a Board drag into Done and from Dictate
