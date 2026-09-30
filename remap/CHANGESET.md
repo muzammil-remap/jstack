@@ -4,6 +4,17 @@ One line per file. Newest phase first. Josh's own files are named with what was 
 
 **Generated files** are marked **regenerate in the target repo, don't port**: `jstack-mock-v15.html` (re-packaged from the source) and `REMAP_HANDOVER.html` (never committed changed; `remap/codemap.sh` restores it). Port the source and rebuild them there.
 
+## Phase 2 — the real webhooks, samples and the Twenty inventory (30 Sep 2026)
+
+| File | Change | Why |
+|---|---|---|
+| `jstack-app/tests/fixtures/n8n/calendar.json`, `calendar.empty.json`, `calendar.month.json` | new: redacted DASH calendar replies (this week, a window with nothing, 45 days) | the Phase 3 adapter is tested against real shapes |
+| `jstack-app/tests/fixtures/n8n/tasks.page1.json`, `tasks.empty.json` | new: redacted DASH tasks replies (the only page, and the reply past the end) | the Phase 4 adapter and its paging loop |
+| `remap/redact-samples.mjs` | new: the redactor, with its refuse-on-leak check | samples are re-taken as webhooks change; never commit an unredacted one |
+| `remap/PROGRESS.md` | Phase 2 section: the calls, the calendar shape, the Twenty field inventory, the open questions | Checkpoint 2 |
+| `.gitignore` | `remap/n8n/reference/` and `remap/screens/private/` | Josh's original workflows carry his Telegram chat id; real-data screenshots never go into git |
+| `KNOWN_GAPS.md` | N8N-2 marked "must fix before Josh sees the dashboard", with the decided fallback | answer to Checkpoint 2 |
+
 ## Phase 1 follow-ups — the answers to Checkpoint 1 (30 Sep 2026)
 
 | File | Change | Why |

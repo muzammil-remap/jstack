@@ -40,3 +40,8 @@ jstack-app/tests/lint-guard-scratch-*/
 Thumbs.db
 desktop.ini
 *.log
+
+# REMAP: Josh's original n8n workflows — a local reference only; they carry his Telegram chat id
+remap/n8n/reference/
+# REMAP: screenshots of the app on Josh's real data — for checkpoint review, never committed
+remap/screens/private/

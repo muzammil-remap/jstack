@@ -347,3 +347,132 @@ origin: 0.
 
 Port 4173 is still held by a `serve:web` node process started 28 Sep (the setup session); it serves
 `~/.jstack-dist` from disk, so the mock capture above used it. Not stopped.
+
+## Phase 2 — the real webhooks, samples and the Twenty inventory (30 Sep 2026)
+
+Read-only calls through the running dev proxy (`127.0.0.1:8787`); nothing written anywhere.
+
+| Call | Body | Answer |
+|---|---|---|
+| `calendar` | `{"timeMin":"2026-09-29T14:00:00.000Z","timeMax":"2026-10-06T14:00:00.000Z","maxResults":250}` (Brisbane today 00:00 + 7 days) | 200, `ok`, 3 events |
+| `calendar` | the same week's shape in January 1990 | 200, `ok`, 0 events |
+| `calendar` | 45 days from today, `maxResults` 500 (the month view's reach) | 200, `ok`, 26 events |
+| `tasks` | `{"limit":60}` | 200, `ok`, 29 tasks, `totalCount` 29, `hasNextPage` false — **there is no page 2** |
+| `tasks` | `{"limit":60,"cursor":<page 1's endCursor>}` | 200, `ok`, 0 tasks — the real "past the end" reply, used as the empty sample |
+
+The replies carry no `request_id` back (keys: `ok`, `duration_ms`, `data`); the DASH reply shape
+echoes it only when the request sends one.
+
+### Samples (`jstack-app/tests/fixtures/n8n/`)
+
+`calendar.json`, `calendar.empty.json`, `calendar.month.json` (the 45-day reply, for the Month
+view), `tasks.page1.json`, `tasks.empty.json`. No `tasks.page2.json`: there is no second page.
+
+Redacted by `remap/redact-samples.mjs` from raw replies kept outside the repository: titles, names,
+free text, bodies (markdown syntax and blocknote structure kept, words replaced), locations, meet
+links, Google links (their `eid` encodes the calendar's address), the search vector, and ids
+(mapped consistently, so a recurring event's instances and a cursor's id still line up). Kept as
+they came: timestamps, enums, counts, flags, time zones, and the names of software actors
+(`openclaw-agent`, `jstack-n8n`, `Workflow`, `Standard`). The tool refuses to write while any
+replaced original of 4+ characters survives in any output; a second, independent pass over every
+field confirmed only those kept kinds are verbatim. No email address in any fixture; secret scan
+clean.
+
+### Calendar, as the DASH reply gives it
+
+Per event: `id`, `title`, `start`, `end`, `allDay`, `timeZone`, `location`, `meet_link`, `htmlLink`,
+`attendees_count`, `transparency`, `eventType`, `recurringEventId`, `updated`, `protectedByEa`,
+`calendarId` — exactly `remap/n8n/JSTACK-DASH-calendar-read.json`'s "Shape Events".
+
+- **All-day events are common**: 2 of this week's 3, 12 of the 45 days' 26. `start`/`end` are then
+  bare dates with the end exclusive (one sample runs 2 Oct → 4 Oct: two days), and `timeZone` is
+  null. This is Phase 3's all-day decision.
+- Timed events carry an offset (`+10:00`); time zones seen: `Australia/Brisbane`,
+  `Australia/Sydney`, null.
+- `eventType`: `default`, `fromGmail`, `birthday` (contacts' birthdays, all-day).
+- `transparency`: `opaque` and `transparent` (free/busy — relevant to gaps).
+- Recurring instances: id `<base>_<instant>` with `recurringEventId` = the base.
+- No event without an `end`; none `protectedByEa` yet; `updated` always present.
+
+### Twenty tasks — the field inventory (29 records, every one present on every record)
+
+| Field | Type | Values seen | Could fill |
+|---|---|---|---|
+| `id` | uuid | — | `Task.id`; the Twenty link `…/object/task/<id>` |
+| `title` | string | — | `Task.title` |
+| `status` | enum string | `TODO` ×6, `DONE` ×23. **`IN_PROGRESS` never seen** (Twenty's third standard value) | `Task.status` |
+| `bucket` | custom enum, nullable | `INBOX` ×8, `DONE` ×20, null ×1. **Not kept in step with `status`**: 2 tasks are `DONE` but still `INBOX`, 1 `DONE` has none | `Task.column` (Board), if its options are the kanban stages |
+| `waitingOn` | string, `""` when unset | non-empty on 2 tasks, both `TODO`/`INBOX`, both a short name | `status: "waiting"` and `Task.waitingOn.who` → `/tasks/waiting` |
+| `dueAt` | ISO UTC instant, nullable | 17 set, 12 null; 2 of the 6 open tasks have one. Clock parts vary (`07:00Z`, `12:00Z` ×4, `21:00Z`, `09:55Z`…) | `Task.due` |
+| `assigneeId` | uuid, nullable | **null on all 29** | `Task.owner` (via workspace members) |
+| `createdBy` | `{ source, workspaceMemberId, name, context }` | `AGENT`/`openclaw-agent` ×25, `WORKFLOW`/`Workflow` ×3, `API`/`jstack-n8n` ×1; `workspaceMemberId` null on all | `Task.owner` "ea"? `Task.metaParts.note`? |
+| `updatedBy` | the same | `API`/`openclaw-agent` ×25, `API`/`jstack-n8n` ×2, `APPLICATION`/`Standard` ×1, `MANUAL`/a person ×1 (one with a `workspaceMemberId`) | `Task.completedBy` for a done task? |
+| `position` | integer | distinct, −48 … 0 | the List's order |
+| `bodyV2` | `{ blocknote: JSON string \| null, markdown: string }` | 11 with a body (headings, bullets, numbered lists, bold), 18 empty | nothing on `Task` holds a body; the task card has no description field |
+| `projectId` | uuid, nullable | null on all 29 | `Task.project` (needs the project's name, a second read) |
+| `decisionId` | uuid, nullable | null on all 29 | — (a link to a decision record?) |
+| `createdAt`, `updatedAt` | ISO UTC | — | `setAt` (updatedAt); `completedAt` for a done task? |
+| `deletedAt` | null | null on all (REST leaves soft-deleted records out) | — |
+| `searchVector` | Postgres tsvector string | — | nothing |
+
+**Absent:** any priority field; `taskTargets` (links to people and companies — Twenty returns
+relations only at `depth=1`, and the DASH workflow calls `/rest/tasks` without it); an assignee
+object; any silo, focus, project name or label signal; start/end dates; a completion timestamp;
+subtasks.
+
+### Open questions — Phase 4 waits on these
+
+1. **Priority** is required by the contract and printed on every task ("medium priority"), and
+   Twenty has none. Options: (a) a `priority` select added to Twenty's task object (Josh's
+   workspace) and passed through; (b) derive it (`dueAt` within 48 h → high?) — an invented claim;
+   (c) a change to how `lib/taskMeta.ts` prints a priority the source does not have (a UI edit).
+   Which?
+2. **Status**: is a non-empty `waitingOn` `waiting` (so those two tasks show in Waiting on and the
+   Waiting column)? And should `IN_PROGRESS` → `in_progress` stay mapped for when it appears?
+3. **`bucket` and the Board**: what are its options in Twenty (the sample shows only `INBOX` and
+   `DONE`)? Is it the kanban field the Board's columns should mirror (`GET /tasks/columns` from its
+   options), or leave the default five columns and ignore `bucket`? A task `DONE` in `INBOX` — which
+   wins?
+4. **Owner**: nobody is assigned. Default everything to `josh`, or `ea` when `createdBy.source` is
+   `AGENT` (25 of 29 were made by OpenClaw)? Which workspace-member ids are Josh and Joce, if
+   assignment starts being used?
+5. **Silo / focus**: no field says which silo a task is in, so the Personal/Family/Work chips cannot
+   filter tasks. One default silo for every task (`work`? `personal:josh`?), or a custom field in
+   Twenty?
+6. **Waiting rows** need `days` waiting: count from `updatedAt`, `createdAt`, or leave the task out
+   of `/tasks/waiting` until Twenty records when the wait began?
+7. **Done tasks**: `completedAt` from `updatedAt` for a `DONE` task (approximate — any later edit
+   moves it), or leave it unset? And the 23 done tasks feed the Done view: all of them, or only
+   recent?
+8. **`dueAt` clock times**: are the `12:00Z` ones (22:00 in Brisbane) meant as "due that day"? If
+   OpenClaw writes date-only dues at noon UTC, the app would show "10pm".
+9. **Links to people/companies (`taskTargets`)**: worth a DASH tasks-read change to call Twenty
+   with `depth=1`? It would add the relations to every record (and the payload grows).
+10. **Bodies**: Twenty holds a markdown body on 11 tasks; the contract's `Task` has no field for it,
+    so it would not show anywhere. Leave it, or is it wanted somewhere (Josh's call — no new UI)?
+
+### Answers (30 Sep) — each to be one switch in the tasks adapter
+
+> **Must fix before Josh sees the dashboard:** the Agents tab and the rail still claim health with
+> no source ("all healthy · $0.00", 0 runs, 100%, "Nothing failing"). Decision: leave it (option a)
+> until agent-stats / agent-health are live; if they are not by then, per-section loading in
+> `stores/agents.ts` and `stores/brain.ts` (option b). `KNOWN_GAPS.md` N8N-2.
+
+1. **Priority**: map a Twenty SELECT `priority` (HIGH / MEDIUM / LOW) when present; never invent one.
+   Until then, if `lib/taskMeta.ts` prints "medium priority" on every task, the smallest edit that
+   prints priority only when it came from a real value — or stop if that needs a contract change.
+2. **Waiting**: a non-empty `waitingOn` on a task that is not `DONE` → `waiting`, and it feeds
+   `/tasks/waiting` with `waitingOn` as the who/what; days from the most honest timestamp, or none.
+3. **Board**: columns mirror `bucket`'s options in Twenty's order; `status` decides done-ness when
+   the two disagree; moving a card is a write (Phase 6).
+4. **Owner**: `josh` until `assigneeId` is used; `createdBy` = openclaw-agent does not make it `ea`.
+5. **Silo / focus**: `personal:josh` with the mock's focus for that silo; map a Twenty SELECT `area`
+   (PERSONAL / FAMILY / WORK) when present.
+6. **Completion time**: unset if optional; `updatedAt` on `DONE` only if required, commented as an
+   approximation.
+7. **The rest**: the most conservative option that states nothing Twenty does not hold; each listed
+   at Checkpoint 4.
+
+Housekeeping the same day: the raw unredacted replies were deleted from the session scratchpad
+(re-fetch through the proxy when needed); `remap/n8n/reference/` and `remap/screens/private/`
+(screenshots of the app on real data) are in `.gitignore`.
