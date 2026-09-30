@@ -18,6 +18,7 @@ import { useRulesStore } from "@/stores/rules";
 import { useSessionStore } from "@/stores/session";
 import { unpackPayload } from "@/layout/dialogKit";
 import { space } from "@/theme/tokens";
+import { sayRefused } from "@/lib/optimistic";
 
 export function TeachSheet({ payload, onClose }: { payload: string | undefined; onClose: () => void }) {
   const addAutonomyRule = useRulesStore((s) => s.add);
@@ -31,6 +32,9 @@ export function TeachSheet({ payload, onClose }: { payload: string | undefined; 
     setSaving(true);
     try {
       await addAutonomyRule(text.trim(), id);
+    } catch (e) {
+      sayRefused(e); // the sheet stays open with the rule in it
+      return;
     } finally {
       setSaving(false);
     }

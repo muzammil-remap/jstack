@@ -14,6 +14,7 @@ import { useSessionStore } from "@/stores/session";
 import { packPayload } from "@/layout/dialogKit";
 import { RichText } from "@/lib/richText";
 import { space } from "@/theme/tokens";
+import { sayRefused } from "@/lib/optimistic";
 
 /** "1 rule" / "2 rules", and an explicit plural where -s is wrong ("misses"). */
 function plural(n: number, one: string, many = `${one}s`): string {
@@ -70,7 +71,7 @@ export function Memory() {
                     `edit` (small outlined)"; README Components lists ok/edit
                     under `.js-btn-sm`. As bare links they were the least
                     visible controls in the app's busiest queue. */}
-                <BtnSm testID={`proposal-ok-${p.id}`} label="ok" onPress={() => void resolveProposal(p.id, "ok")} />
+                <BtnSm testID={`proposal-ok-${p.id}`} label="ok" onPress={() => void resolveProposal(p.id, "ok").catch(sayRefused)} />
                 <BtnSm testID={`proposal-edit-${p.id}`} label="edit" outlined onPress={() => openModal("proposal-edit", p.id)} />
               </View>
             </Row>

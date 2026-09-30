@@ -33,6 +33,7 @@ import { useSessionStore } from "@/stores/session";
 import { useTodayStore } from "@/stores/today";
 import { space } from "@/theme/tokens";
 import type { Block } from "@/data/types";
+import { sayRefused } from "@/lib/optimistic";
 
 /** one line saying what a block is and where its content comes from. */
 const BLOCK_NOUN: Record<string, string> = {
@@ -131,7 +132,7 @@ export function ConfigureDialog({ id, onClose }: { id: string; onClose: () => vo
       if (config.showWithin != null) patch.showWithin = Number(showWithin) || 0;
       writes.push(saveSectionConfig(id, patch));
     }
-    void Promise.all(writes).then(onClose);
+    void Promise.all(writes).then(onClose, sayRefused);
   };
 
   const revert = () => {
@@ -140,7 +141,7 @@ export function ConfigureDialog({ id, onClose }: { id: string; onClose: () => vo
     // there has ever been — so Revert on one simply closes.
     if (section != null && proposalCard == null) writes.push(revertSection(id));
     if (config != null) writes.push(revertSectionConfig(id));
-    void Promise.all(writes).then(onClose);
+    void Promise.all(writes).then(onClose, sayRefused);
   };
 
   return (

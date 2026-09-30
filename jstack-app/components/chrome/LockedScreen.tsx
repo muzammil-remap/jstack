@@ -16,6 +16,7 @@ import { useSessionStore } from "@/stores/session";
 import { radius, space } from "@/theme/tokens";
 import { useTokens } from "@/theme/ThemeProvider";
 import { Z } from "@/layout/zorder";
+import { sayRefused } from "@/lib/optimistic";
 
 /** `onUnlock` is unused here on purpose: the whole gate backdrop
  * (`Gate.tsx`'s outer Pressable, testID "facelock") is the tap target,
@@ -98,7 +99,14 @@ export function LockedEmergency() {
       showToast(`Cancelled — recovery needs ${FRESH_CHECK}`);
       return;
     }
-    await recover(recoveryKey.trim(), auth.nonce, auth.biometricAssertion);
+    try {
+      await recover(recoveryKey.trim(), auth.nonce, auth.biometricAssertion);
+    } catch (e) {
+      // refused or unreachable: still locked, and the button works again (it used to stay "recovering" for good)
+      setRecovering(false);
+      sayRefused(e);
+      return;
+    }
     setRecovering(false);
     showToast("Secrets rotated · your session restored · agents resuming one at a time");
   };

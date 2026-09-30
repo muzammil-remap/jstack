@@ -69,7 +69,8 @@ export function useAppBoot(): void {
     // P-1: offline shell loading. Production web only — a worker in the test
     // build would serve Playwright a cached shell between specs.
     registerServiceWorker();
-    void useSettingsStore.getState().load(); // notifications, quiet hours, autonomy, voice, focuses, appLayout, capabilities
+    // unreadable, `loaded` stays false and every settings save says "haven't loaded" (A4R6-11) rather than an unhandled rejection
+    void useSettingsStore.getState().load().catch(() => undefined); // notifications, quiet hours, autonomy, voice, focuses, appLayout, capabilities
     // The health line lives in the RAIL and the phone header, i.e. on every
     // tab — but only app/(tabs)/agents.tsx used to load the summary it reads,
     // so until Agents was opened the chrome asserted "all healthy · $0.00"
@@ -105,7 +106,7 @@ export function useAppBoot(): void {
       // A4R9-10: only the undo the toast still offers — a plain toast that took
       // its place hid the Undo button, and Ctrl+Z reverted what was off the screen
       onUndo: () => {
-        if (useSessionStore.getState().toast?.undoLabel != null) void undoLatest();
+        if (useSessionStore.getState().toast?.undoLabel != null) void undoLatest().catch(() => undefined); // a failed revert re-offers itself (A4R7-12)
       },
       // A4R9-01/02: the card's own verbs (`lib/cardVerbs.ts`), and only where its
       // buttons are there to press — Today showing, nothing over it, online

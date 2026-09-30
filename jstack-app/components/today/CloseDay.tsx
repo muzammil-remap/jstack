@@ -16,6 +16,7 @@ import { useLifeStore } from "@/stores/life";
 import { micIsOpen, micStateLabel, useDictation } from "@/stores/mic";
 import { useTodayStore } from "@/stores/today";
 import { space } from "@/theme/tokens";
+import { sayRefused } from "@/lib/optimistic";
 
 export function CloseDay() {
   const journalRef = useRef<TextInput | null>(null);
@@ -95,7 +96,7 @@ export function CloseDay() {
                   : {
                       onPress: () => {
                         stopMicFor("journal"); // MC-07: send is an exit path (A4R11-02)
-                        void submitJournal("typed");
+                        void submitJournal("typed").catch(sayRefused); // the store gives the words back
                       },
                     })}
               />

@@ -14,6 +14,7 @@ import { useSessionStore } from "@/stores/session";
 import { useSettingsStore } from "@/stores/settings";
 import { radius, space } from "@/theme/tokens";
 import { useTokens } from "@/theme/ThemeProvider";
+import { sayRefused } from "@/lib/optimistic";
 
 export function EaLayoutBanner({ tab }: { tab: TabId }) {
   const c = useTokens();
@@ -43,7 +44,7 @@ export function EaLayoutBanner({ tab }: { tab: TabId }) {
       <Btn
         testID="ea-layout-revert"
         label="Revert"
-        onPress={() => void revertLayout(tab).then(() => showToast("Reverted to your arrangement"))}
+        onPress={() => void revertLayout(tab).then(() => showToast("Reverted to your arrangement"), sayRefused)}
       />
     </View>
   );

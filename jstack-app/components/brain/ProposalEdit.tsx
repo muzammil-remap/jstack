@@ -9,6 +9,7 @@ import { Dialog } from "@/components/chrome/Dialog";
 import { useBrainStore } from "@/stores/brain";
 import { stripTags } from "@/lib/richText";
 import { space } from "@/theme/tokens";
+import { sayRefused } from "@/lib/optimistic";
 
 export function ProposalEdit({ id, onClose }: { id: string; onClose: () => void }) {
   const proposals = useBrainStore((s) => s.proposals);
@@ -28,7 +29,7 @@ export function ProposalEdit({ id, onClose }: { id: string; onClose: () => void 
         style={{ marginTop: space[4], alignSelf: "flex-start" }}
         {...(text.trim() === ""
           ? { disabledReason: "Write something first" }
-          : { onPress: () => void resolveProposal(id, "edit", text.trim()).then(onClose) })}
+          : { onPress: () => void resolveProposal(id, "edit", text.trim()).then(onClose, sayRefused) })}
       />
       <Txt kind="meta" style={{ marginTop: space[3] }}>Your edit also teaches the Librarian.</Txt>
     </Dialog>

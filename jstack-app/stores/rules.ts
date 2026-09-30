@@ -15,6 +15,7 @@
  */
 import { create } from "zustand";
 import { getAdapter } from "@/data/provider";
+import { saveWith } from "@/lib/optimistic";
 import type { AutonomyRule } from "@/data/types";
 
 type RulesState = {
@@ -23,7 +24,8 @@ type RulesState = {
    *  nobody has asked for are different things to a whole-set write. */
   loaded: boolean;
   load: () => Promise<void>;
-  put: (next: AutonomyRule[]) => Promise<void>;
+  /** `false` when refused — said in a toast, nothing changed */
+  put: (next: AutonomyRule[]) => Promise<boolean>;
   add: (text: string, from?: string) => Promise<void>;
 };
 
@@ -50,10 +52,7 @@ export const useRulesStore = create<RulesState>((set, get) => ({
    * no text and a scope it has never heard of, and a store that set its own
    * array would show a rule the server rejected.
    */
-  put: async (next) => {
-    const saved = await getAdapter().putAutonomyRules(next);
-    set({ rules: saved.rules });
-  },
+  put: (next) => saveWith(() => getAdapter().putAutonomyRules(next), (saved) => set({ rules: saved.rules })),
 
   /**
    * ST-04: teach, from anywhere. One line becomes a standing rule, appended

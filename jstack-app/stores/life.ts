@@ -7,6 +7,7 @@
 import { create } from "zustand";
 import { getAdapter } from "@/data/provider";
 import { recordLoad } from "@/lib/loadError";
+import { attempt, REFUSED } from "@/lib/optimistic";
 import { isQueued } from "@/data/transport/outbox";
 import { useSessionStore } from "@/stores/session";
 import { useSyncStore } from "@/stores/sync";
@@ -86,20 +87,22 @@ export const useLifeStore = create<LifeState>((set, get) => ({
    * and a composite that carried them would put archived habits one careless
    * `.map` away from the Life card. */
   loadArchivedHabits: async () => {
-    const all = await getAdapter().getHabits(true);
+    const all = await getAdapter().getHabits(true).catch(() => null); // unreadable: "Add habit" offers what it had
+    if (all == null) return;
     set({ archivedHabits: all.filter((h) => h.archived === true) });
   },
 
   loadHabitStats: async (period, anchor) => {
     // LH-1: `anchor` says WHICH month or year, and it was declared on the
     // route and never read until this row — the `files.recentDays` shape.
-    const habitStats = await getAdapter().getHabitStats(period, anchor);
-    set({ habitStats });
+    const habitStats = await getAdapter().getHabitStats(period, anchor).catch(() => null); // unreadable: the strip stays as it was
+    if (habitStats != null) set({ habitStats });
   },
 
   logHabit: async (habitId, date, done) => {
     const adapter = getAdapter();
-    await adapter.postHabitLog(habitId, date, done);
+    // a tap nothing awaits: refused, nothing is ticked and the refusal is said
+    if ((await attempt(() => adapter.postHabitLog(habitId, date, done))) === REFUSED) return;
     set((s) => {
       const idx = s.habitLogs.findIndex((l) => l.habitId === habitId && l.date === date);
       const log: HabitLog = { habitId, date, done };

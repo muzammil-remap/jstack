@@ -20,6 +20,7 @@
 import { create } from "zustand";
 import { getAdapter } from "@/data/provider";
 import { recordLoad, recordLoadAs } from "@/lib/loadError";
+import { attempt, REFUSED } from "@/lib/optimistic";
 import { offlineCopy, rememberLastSeen } from "@/lib/lastSeen";
 import { useSessionStore } from "@/stores/session";
 import { EMPTY_FILTERS, serializeFilters, type TaskFilters } from "@/data/taskFilters";
@@ -130,11 +131,12 @@ export const useTasksStore = create<TasksState>((set, get) => ({
     set({ openCount: rows.length });
   }),
   loadProjects: async () => {
-    const all = await getAdapter().getTasks({ view: "board" });
+    const all = await getAdapter().getTasks({ view: "board" }).catch(() => null); // unreadable: the filter keeps its list
+    if (all == null) return;
     set({ projects: [...new Set(all.map((t) => t.project).filter((p): p is string => p != null))].sort() });
   },
   nudge: async (id) => {
-    await getAdapter().postTaskNudge(id);
+    if ((await attempt(() => getAdapter().postTaskNudge(id))) === REFUSED) return;
     useSessionStore.getState().showToast("Nudge drafted · in Gmail Drafts · never sends itself");
   },
 }));

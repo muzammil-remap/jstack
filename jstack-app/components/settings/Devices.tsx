@@ -17,6 +17,7 @@ import { formatWhen } from "@/lib/time";
 import { useSessionStore } from "@/stores/session";
 import { useSettingsStore } from "@/stores/settings";
 import { FRESH_CHECK } from "@/lib/unlockCopy";
+import { sayRefused } from "@/lib/optimistic";
 
 export function Devices({ onClose }: { onClose: () => void }) {
   const devices = useSettingsStore((s) => s.devices);
@@ -29,7 +30,12 @@ export function Devices({ onClose }: { onClose: () => void }) {
       showToast(`Cancelled — revoking a device needs ${FRESH_CHECK}`);
       return;
     }
-    await revokeDevice(id, auth.nonce, auth.biometricAssertion);
+    try {
+      await revokeDevice(id, auth.nonce, auth.biometricAssertion);
+    } catch (e) {
+      sayRefused(e); // still listed: nothing was revoked
+      return;
+    }
     showToast("Device revoked");
   };
 

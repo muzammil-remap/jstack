@@ -176,23 +176,23 @@ export const useTodayStore = create<TodayState>((set, get) => ({
   },
   loadCalendar: async (focus) => {
     const { calView, calAnchor } = get();
-    const calendar = await getAdapter().getCalendar(calView, resolveAnchor(calAnchor), focus);
-    set({ calendar });
+    const calendar = await getAdapter().getCalendar(calView, resolveAnchor(calAnchor), focus).catch(() => null); // unreadable: as it was
+    if (calendar != null) set({ calendar });
   },
 
   loadReview: async (anchor) => {
-    const review = await getAdapter().getReview(anchor);
-    set({ review });
+    const review = await getAdapter().getReview(anchor).catch(() => null); // unreadable: the dialog stays as it was
+    if (review != null) set({ review });
   },
   loadThreeDay: async (focus) => {
     const today = get().composite?.todayDate;
     if (today == null) return;
-    const threeDay = await getAdapter().getCalendar("3day", today, focus);
-    set({ threeDay });
+    const threeDay = await getAdapter().getCalendar("3day", today, focus).catch(() => null);
+    if (threeDay != null) set({ threeDay });
   },
   loadHistory: async (q) => {
-    const history = await getAdapter().getActions("history", { q });
-    set({ history });
+    const history = await getAdapter().getActions("history", { q }).catch(() => null);
+    if (history != null) set({ history });
   },
   saveDraft: async (id, body) => {
     await getAdapter().putActionDraft(id, { body });

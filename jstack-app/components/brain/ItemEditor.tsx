@@ -12,6 +12,7 @@ import { useBrainStore } from "@/stores/brain";
 import { formatWhen } from "@/lib/time";
 import { personLabel } from "@/lib/taskMeta";
 import { space } from "@/theme/tokens";
+import { sayRefused } from "@/lib/optimistic";
 
 export function ItemEditor({ id, onClose }: { id: string; onClose: () => void }) {
   const latestIn = useBrainStore((s) => s.latestIn);
@@ -36,7 +37,7 @@ export function ItemEditor({ id, onClose }: { id: string; onClose: () => void })
         testID="item-editor-save"
         label="Save"
         style={{ marginTop: space[4], alignSelf: "flex-start" }}
-        {...(text.trim() === "" ? { disabledReason: "Write something first" } : { onPress: () => void saveItemEdit(id, text).then(onClose) })}
+        {...(text.trim() === "" ? { disabledReason: "Write something first" } : { onPress: () => void saveItemEdit(id, text).then(onClose, sayRefused) })}
       />
       {itemVersions.length > 0 && (
         <View testID="item-editor-versions" style={{ marginTop: space[5] }}>

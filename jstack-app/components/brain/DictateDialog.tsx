@@ -32,6 +32,7 @@ import { Field, FieldButton, Meta, Txt } from "@/theme/ui";
 import { useDictateStore } from "@/stores/dictate";
 import { micIsOpen, micStateLabel, useDictation } from "@/stores/mic";
 import { space } from "@/theme/tokens";
+import { sayRefused } from "@/lib/optimistic";
 
 export function DictateDialog({ onClose }: { onClose: () => void }) {
   const chat = useDictateStore((s) => s.chat);
@@ -78,7 +79,11 @@ export function DictateDialog({ onClose }: { onClose: () => void }) {
 
   const submit = () => {
     if (text.trim() === "") return;
-    void sendChat(text);
+    // not heard: said, and the words come back unless something new was typed
+    void sendChat(text).catch((e: unknown) => {
+      sayRefused(e);
+      setText((now) => (now === "" ? text : now));
+    });
     setText("");
     setInterim(false);
   };

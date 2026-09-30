@@ -6,6 +6,7 @@
 import { create } from "zustand";
 import { ContractError } from "@/data/ApiAdapter";
 import { getAdapter } from "@/data/provider";
+import { attempt, REFUSED } from "@/lib/optimistic";
 import { recordLoad } from "@/lib/loadError";
 import { useSessionStore } from "@/stores/session";
 import { refetchFor } from "@/stores/today";
@@ -71,25 +72,26 @@ export const useAgentsStore = create<AgentsState>((set, get) => ({
 
   loadDerived: async () => {
     const adapter = getAdapter();
-    const [summary, checks, feed] = await Promise.all([adapter.getAgentSummary(), adapter.getSecurityChecks(), adapter.getAgentFeed(24)]);
-    set({ summary, checks, feed });
+    const read = await Promise.all([adapter.getAgentSummary(), adapter.getSecurityChecks(), adapter.getAgentFeed(24)]).catch(() => null);
+    if (read != null) set({ summary: read[0], checks: read[1], feed: read[2] }); // unreadable after a write: as it was
   },
 
   loadSchedules: async () => {
     // F-65 (P-10): the store short-circuits once it has them, so the Settings
     // card can ask on every mount without a deps disable
     if (get().schedules.length > 0) return;
-    const schedules = await getAdapter().getSchedules();
-    set({ schedules });
+    const schedules = await getAdapter().getSchedules().catch(() => null); // unreadable: the card stays as it was
+    if (schedules != null) set({ schedules });
   },
 
   loadHistory: async (q) => {
-    const history = await getAdapter().getActions("history", { q });
-    set({ history });
+    const history = await getAdapter().getActions("history", { q }).catch(() => null); // unreadable: the list stays as it was
+    if (history != null) set({ history });
   },
+  // the verbs below are taps nothing awaits: a refusal is said (`attempt`), never an unhandled rejection
   reopenAction: async (id) => {
     const card = get().history.find((a) => a.id === id);
-    await getAdapter().postActionReopen(id);
+    if ((await attempt(() => getAdapter().postActionReopen(id))) === REFUSED) return;
     set((s) => ({ history: s.history.filter((a) => a.id !== id) }));
     // A4R7-03: a reopen takes the answer's effect back on the server, so the
     // device refetches what the card touched — the third door B-174 missed
@@ -114,7 +116,8 @@ export const useAgentsStore = create<AgentsState>((set, get) => ({
     // off the open list — so it chooses a position now instead of deciding
     // whether an undo exists (B-190's lesson, one store over).
     const index = get().issues.findIndex((i) => i.id === id);
-    const saved = await getAdapter().postAgentIssueAction(id, action);
+    const saved = await attempt(() => getAdapter().postAgentIssueAction(id, action));
+    if (saved === REFUSED) return;
     set((s) => ({ issues: saved.state === "open" ? s.issues.map((i) => (i.id === id ? saved : i)) : s.issues.filter((i) => i.id !== id) }));
     // WPF-7: the Undo is offered before the reload, so a reload that fails does not take it away
     useSessionStore.getState().pushUndo(ISSUE_TOAST[action], async () => {
@@ -140,7 +143,8 @@ export const useAgentsStore = create<AgentsState>((set, get) => ({
     await get().loadDerived();
   },
   runCheck: async (id) => {
-    const saved = await getAdapter().postSecurityCheckRun(id);
+    const saved = await attempt(() => getAdapter().postSecurityCheckRun(id));
+    if (saved === REFUSED) return;
     set((s) => ({ checks: s.checks.map((c) => (c.id === id ? saved : c)) }));
     await get().loadDerived();
   },
@@ -148,17 +152,20 @@ export const useAgentsStore = create<AgentsState>((set, get) => ({
     set({ spend: await getAdapter().putAgentCaps(caps, { nonce, biometricAssertion }) });
   },
   pauseSchedule: async (id) => {
-    const saved = await getAdapter().postSchedulePause(id);
+    const saved = await attempt(() => getAdapter().postSchedulePause(id));
+    if (saved === REFUSED) return;
     set((s) => ({ schedules: s.schedules.map((sc) => (sc.id === id ? saved : sc)) }));
     useSessionStore.getState().showToast("Paused · resume any time");
   },
   resumeSchedule: async (id) => {
-    const saved = await getAdapter().postScheduleResume(id);
+    const saved = await attempt(() => getAdapter().postScheduleResume(id));
+    if (saved === REFUSED) return;
     set((s) => ({ schedules: s.schedules.map((sc) => (sc.id === id ? saved : sc)) }));
     useSessionStore.getState().showToast("Resumed");
   },
   runSchedule: async (id) => {
-    const saved = await getAdapter().postScheduleRun(id);
+    const saved = await attempt(() => getAdapter().postScheduleRun(id));
+    if (saved === REFUSED) return;
     set((s) => ({ schedules: s.schedules.map((sc) => (sc.id === id ? saved : sc)) }));
     useSessionStore.getState().showToast("Running now · the result lands in the feed");
   },

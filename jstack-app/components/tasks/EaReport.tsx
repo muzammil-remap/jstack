@@ -26,12 +26,13 @@ export function EaReport({ task }: { task: Task }) {
   const report = task.report;
   if (report == null) return null;
 
+  // a refused report has said why (the store's toast): nothing to confirm, nothing to open
   const onRevise = async () => {
-    await submitReport(task.id, "revise");
+    if ((await submitReport(task.id, "revise")) == null) return;
     useSessionStore.getState().showToast("Revision requested · the EA redoes the flagged part");
   };
   const onTeach = async () => {
-    await submitReport(task.id, "teach");
+    if ((await submitReport(task.id, "teach")) == null) return;
     openSheet("teach", packPayload(task.id, task.title));
   };
 

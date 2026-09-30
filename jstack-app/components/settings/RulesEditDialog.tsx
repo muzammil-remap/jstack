@@ -83,7 +83,7 @@ export function RulesEditDialog({ payload, onClose }: { payload?: string; onClos
   // blank "Add a rule" over an empty set, and its save replaced every standing
   // rule with one. It asks for the set itself, and saves nothing until it has it.
   useEffect(() => {
-    void useRulesStore.getState().load();
+    void useRulesStore.getState().load().catch(() => undefined); // unreadable: `loaded` stays false and the editor saves nothing
   }, []);
 
   return (
@@ -115,7 +115,8 @@ export function RulesEditDialog({ payload, onClose }: { payload?: string; onClos
         // closes — the same two shapes every other editor on this component has
         const saving = putAutonomyRules(next);
         if (next.length < rules.length) return;
-        void saving.then(() => {
+        void saving.then((saved) => {
+          if (!saved) return; // refused: the store has said why
           showToast(view === "edit" ? "Rule saved" : "Rule added");
           onClose();
         });

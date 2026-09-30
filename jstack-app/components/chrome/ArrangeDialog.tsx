@@ -18,6 +18,7 @@ import { useSectionsStore } from "@/stores/sections";
 import { useSettingsStore } from "@/stores/settings";
 import { space } from "@/theme/tokens";
 import { ARRANGE_NAME_COL } from "@/lib/labelColumn";
+import { sayRefused } from "@/lib/optimistic";
 
 // AR-04: Today can never be hidden — it's the tab a hidden-current-tab
 // falls back to, so it isn't one of the choices here.
@@ -55,12 +56,12 @@ export function ArrangeDialog({ payload, onClose }: { payload?: string; onClose:
     if (j < 0 || j >= order.length) return;
     const next = [...order];
     [next[idx], next[j]] = [next[j], next[idx]];
-    void putLayout(tab, { order: next });
+    void putLayout(tab, { order: next }).catch(sayRefused);
   };
 
   const toggleHidden = (id: string) => {
     const next = hidden.includes(id) ? hidden.filter((x) => x !== id) : [...hidden, id];
-    void putLayout(tab, { hidden: next });
+    void putLayout(tab, { hidden: next }).catch(sayRefused);
   };
 
   const hiddenTabs = appLayout?.hiddenTabs ?? [];
@@ -73,11 +74,11 @@ export function ArrangeDialog({ payload, onClose }: { payload?: string; onClose:
         onClose();
         router.navigate("/");
       }
-    });
+    }, sayRefused);
   };
 
   const revert = () => {
-    void Promise.all([revertLayout(tab), putAppLayout({ hiddenTabs: [], showFocusRow: true })]).then(() => showToast("Reverted to yesterday"));
+    void Promise.all([revertLayout(tab), putAppLayout({ hiddenTabs: [], showFocusRow: true })]).then(() => showToast("Reverted to yesterday"), sayRefused);
   };
 
   return (
@@ -140,7 +141,7 @@ export function ArrangeDialog({ payload, onClose }: { payload?: string; onClose:
             testID="arrange-focus-row"
             accessibilityLabel="Show the focus row"
             value={appLayout?.showFocusRow ?? true}
-            onValueChange={(v) => void putAppLayout({ showFocusRow: v })}
+            onValueChange={(v) => void putAppLayout({ showFocusRow: v }).catch(sayRefused)}
           />
         </Row>
         {HIDEABLE_TABS.map((t, i) => (

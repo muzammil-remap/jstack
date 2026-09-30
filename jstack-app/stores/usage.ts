@@ -54,8 +54,8 @@ export const useUsageStore = create<UsageState>((set, get) => ({
   },
 
   loadTask: async (id) => {
-    const summary = await getAdapter().getTaskUsage(id);
-    set((s) => ({ forTask: { ...s.forTask, [id]: summary } }));
+    const summary = await getAdapter().getTaskUsage(id).catch(() => null); // unreadable: the card shows no usage line
+    if (summary != null) set((s) => ({ forTask: { ...s.forTask, [id]: summary } }));
   },
 
   /**

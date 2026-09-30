@@ -32,6 +32,7 @@ import { useSessionStore } from "@/stores/session";
 import { useTaskCardStore } from "@/stores/taskCard";
 import { space } from "@/theme/tokens";
 import type { Goal } from "@/data/types";
+import { sayRefused } from "@/lib/optimistic";
 
 type Mode = "read" | "add-task" | "pick-task";
 
@@ -98,7 +99,8 @@ export function GoalDetail({ id, onClose }: { id: string; onClose: () => void })
         // straight onto the card: a task created from a goal is one you are
         // about to say more about
         openTask(task.id);
-      });
+      })
+      .catch(sayRefused);
   };
 
   return (

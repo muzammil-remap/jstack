@@ -17,6 +17,7 @@ import { micIsOpen, micStateLabel } from "@/stores/mic";
 import { useSessionStore } from "@/stores/session";
 import { bp, space } from "@/theme/tokens";
 import { useLayout } from "@/theme/useLayout";
+import { sayRefused } from "@/lib/optimistic";
 
 export function Entry() {
   const dumpDraft = useBrainStore((s) => s.dumpDraft);
@@ -74,7 +75,8 @@ export function Entry() {
     // it as `typed` would drop the provenance and with it the extraction and
     // the triage card.
     const pending = useBrainStore.getState().shareDraft;
-    await dump(pending != null ? "share" : "typed", undefined, undefined, ids.length > 0 ? ids : undefined, pending?.url);
+    // refused: the store has given the words back to the field; the toast says why
+    await dump(pending != null ? "share" : "typed", undefined, undefined, ids.length > 0 ? ids : undefined, pending?.url).catch(sayRefused);
   };
 
   return (

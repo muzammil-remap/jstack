@@ -19,6 +19,7 @@ import { useSyncStore } from "@/stores/sync";
 import { useTheme, useTokens } from "@/theme/ThemeProvider";
 import { radius, space } from "@/theme/tokens";
 import type { ThemeMode } from "@/stores/device";
+import { sayRefused } from "@/lib/optimistic";
 
 const THEMES: { key: ThemeMode; label: string }[] = [
   { key: "auto", label: "Auto" },
@@ -43,7 +44,12 @@ export function Appearance() {
 
   const exportAll = useSettingsStore((s) => s.exportAll);
   const doExport = async () => {
-    await exportAll();
+    try {
+      await exportAll();
+    } catch (e) {
+      sayRefused(e);
+      return;
+    }
     showToast("Export started · you'll get a link when it's ready");
   };
 

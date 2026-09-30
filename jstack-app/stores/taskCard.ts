@@ -22,6 +22,7 @@
 import { create } from "zustand";
 import { getAdapter } from "@/data/provider";
 import { isQueued } from "@/data/transport/outbox";
+import { attempt, REFUSED } from "@/lib/optimistic";
 import { useSessionStore } from "@/stores/session";
 import { useSyncStore } from "@/stores/sync";
 import { useTaskEditsStore } from "@/stores/taskEdits";
@@ -44,7 +45,7 @@ type TaskCardState = {
   openTask: (id: string | null) => void;
   loadDetailTask: (id: string) => Promise<void>;
   acceptTask: (id: string) => Promise<void>;
-  submitReport: (id: string, verb: "accept" | "revise" | "teach", note?: string) => Promise<TaskReport>;
+  submitReport: (id: string, verb: "accept" | "revise" | "teach", note?: string) => Promise<TaskReport | null>; // null: refused, and said
   /**
    * TK-10 — the one tick, for every surface that has one.
    *
@@ -121,15 +122,16 @@ export const useTaskCardStore = create<TaskCardState>((set, get) => ({
 
   openTask: (openTaskId) => set({ openTaskId, detailTask: openTaskId == null ? null : get().detailTask }),
   loadDetailTask: async (id) => {
-    const detailTask = await getAdapter().getTask(id);
-    set({ detailTask });
+    const detailTask = await getAdapter().getTask(id).catch(() => undefined); // unreadable: the card keeps its copy
+    if (detailTask !== undefined) set({ detailTask });
   },
   acceptTask: async (id) => {
-    await getAdapter().postTaskAccept(id);
+    if ((await attempt(() => getAdapter().postTaskAccept(id))) === REFUSED) return;
     await Promise.all([get().loadDetailTask(id), reloadList()]);
   },
   submitReport: async (id, verb, note) => {
-    const report = await getAdapter().postTaskReport(id, verb, note);
+    const report = await attempt(() => getAdapter().postTaskReport(id, verb, note));
+    if (report === REFUSED) return null;
     await get().loadDetailTask(id);
     return report;
   },
@@ -138,7 +140,7 @@ export const useTaskCardStore = create<TaskCardState>((set, get) => ({
     // reopening is a plain status change — nothing cascades, so it goes
     // through the same optimistic path as any other field edit
     if (task.status === "done") {
-      await useTaskEditsStore.getState().patchTask(task.id, { status: "open" });
+      await useTaskEditsStore.getState().patchTask(task.id, { status: "open" }).then((refusal) => refusal != null && useSessionStore.getState().showToast(refusal.reason));
       void useTodayStore.getState().load();
       return;
     }
@@ -156,7 +158,8 @@ export const useTaskCardStore = create<TaskCardState>((set, get) => ({
     // null on Today (no list, no card) and the completion was written with no
     // undo and no toast (B-26, then A4R3-04 one call deeper; BUGLOG_v22.md B-190).
     const before = findTask(id) ?? subject;
-    const result = await getAdapter().postTaskComplete(id, includeSubtasks);
+    const result = await attempt(() => getAdapter().postTaskComplete(id, includeSubtasks));
+    if (result === REFUSED) return set({ pendingComplete: null }); // nothing ticked: a dragged card stays in its column
     // A4R6-04: offline it is QUEUED — nothing on a server to undo yet, so no
     // undo (lib/optimistic.ts rule 2); the tick shows here, the outbox carries it
     if (isQueued(result)) {
@@ -183,7 +186,7 @@ export const useTaskCardStore = create<TaskCardState>((set, get) => ({
   },
 
   delegate: async (id, to, scope) => {
-    await getAdapter().postTaskDelegate(id, to, scope);
+    if ((await attempt(() => getAdapter().postTaskDelegate(id, to, scope))) === REFUSED) return;
     await Promise.all([reloadList(), get().openTaskId === id ? get().loadDetailTask(id) : Promise.resolve()]);
   },
 

@@ -28,8 +28,8 @@ export const useDictateStore = create<DictateState>((set) => ({
   chat: [],
 
   loadChatThread: async () => {
-    const { turns } = await getAdapter().getChatThread();
-    set({ chat: turns });
+    const thread = await getAdapter().getChatThread().catch(() => null); // unreadable: the thread stays as it was
+    if (thread != null) set({ chat: thread.turns });
   },
 
   sendChat: async (text) => {
@@ -37,8 +37,17 @@ export const useDictateStore = create<DictateState>((set) => ({
     // Josh's turn goes up immediately and the EA's follows: a dictated line
     // that only appeared once the answer came back would leave a person
     // wondering whether the app heard them.
-    set((s) => ({ chat: [...s.chat, { from: "josh", text }] }));
-    const { reply, sources } = await getAdapter().postChat(text);
+    const turn = { from: "josh" as const, text };
+    set((s) => ({ chat: [...s.chat, turn] }));
+    let answered;
+    try {
+      answered = await getAdapter().postChat(text);
+    } catch (e) {
+      // not heard: the line comes off the thread, and the dialog gives the words back (`DictateDialog`)
+      set((s) => ({ chat: s.chat.filter((t) => t !== turn) }));
+      throw e;
+    }
+    const { reply, sources } = answered;
     set((s) => ({ chat: [...s.chat, { from: "ea", text: reply, sources }] }));
   },
 }));

@@ -108,7 +108,8 @@ export function SlicerEditDialog({ payload, onClose }: { payload?: string; onClo
         // closes — the same two shapes the focus editor has
         const saving = putSlicers(next);
         if (next.length < slicers.length) return;
-        void saving.then(() => {
+        void saving.then((saved) => {
+          if (!saved) return; // refused: the store has said why
           showToast(view === "edit" ? "Slicer saved" : "Slicer added");
           onClose();
         });

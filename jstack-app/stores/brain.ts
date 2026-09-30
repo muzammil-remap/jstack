@@ -7,6 +7,7 @@
 import { create } from "zustand";
 import { getAdapter } from "@/data/provider";
 import { recordLoad } from "@/lib/loadError";
+import { attempt, REFUSED } from "@/lib/optimistic";
 import { offlineCopy, rememberLastSeen } from "@/lib/lastSeen";
 import { keptShare, shareKey } from "@/lib/shareDraft";
 import { isQueued } from "@/data/transport/outbox";
@@ -152,8 +153,8 @@ export const useBrainStore = create<BrainState>((set, get) => ({
       set({ findAnswer: null, findResults: [] });
       return;
     }
-    const { answer, results } = await getAdapter().getBrainSearch(q);
-    set({ findAnswer: answer, findResults: results });
+    const found = await attempt(() => getAdapter().getBrainSearch(q)); // asked by a person: a failure is said
+    if (found !== REFUSED) set({ findAnswer: found.answer, findResults: found.results });
   },
 
   resolveProposal: async (id, verb, text) => {
@@ -172,7 +173,7 @@ export const useBrainStore = create<BrainState>((set, get) => ({
   openItemEditor: async (id) => {
     set({ editingItemId: id, itemVersions: [] });
     if (id != null) {
-      const itemVersions = await getAdapter().getBrainItemVersions(id);
+      const itemVersions = await getAdapter().getBrainItemVersions(id).catch(() => []); // unreadable: no earlier versions to offer
       set({ itemVersions });
     }
   },

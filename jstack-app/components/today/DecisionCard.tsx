@@ -24,6 +24,7 @@ import { fragment, noOrphan } from "@/lib/richText";
 import { radius, space, type as typeScale } from "@/theme/tokens";
 import { useTokens } from "@/theme/ThemeProvider";
 import type { ActionItem } from "@/data/types";
+import { sayRefused } from "@/lib/optimistic";
 
 export function DecisionCard({ card }: { card: ActionItem }) {
   const c = useTokens();
@@ -45,7 +46,7 @@ export function DecisionCard({ card }: { card: ActionItem }) {
   // desktop keys call too — a key cannot answer differently from its button
   const onTeach = () => {
     setMenuOpen(false);
-    void answer(card.id, { verb: "teach", rule: "" });
+    void answer(card.id, { verb: "teach", rule: "" }).catch(sayRefused);
     // payload carries both id (for POST /rules `from`) and title (for the
     // sheet's "From: <title>" line) — the card is gone from `needsYou` by
     // the time the sheet opens, so it can't be looked up again there.
@@ -143,7 +144,7 @@ export function DecisionCard({ card }: { card: ActionItem }) {
               ? {
                   onPress: () => {
                     setMenuOpen(false);
-                    void answer(card.id, { verb: "never" });
+                    void answer(card.id, { verb: "never" }).catch(sayRefused);
                   },
                 }
               : { disabledReason: OFFLINE_REASON })}

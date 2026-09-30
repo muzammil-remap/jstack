@@ -24,6 +24,7 @@ import { useTodayStore } from "@/stores/today";
 import { formatWhen } from "@/lib/time";
 import { space } from "@/theme/tokens";
 import { useTokens } from "@/theme/ThemeProvider";
+import { sayRefused } from "@/lib/optimistic";
 
 export function Insight() {
   const c = useTokens();
@@ -51,14 +52,14 @@ export function Insight() {
                 <BtnPrimary
                   testID="insight-block"
                   label={insight.primary.label}
-                  onPress={() => void answerInsight(insight.id, insight.primary.action as "block" | "leave")}
+                  onPress={() => void answerInsight(insight.id, insight.primary.action as "block" | "leave").catch(sayRefused)}
                 />
                 <Btn
                   testID="insight-leave"
                   label={insight.secondary.label}
                   textStyle={{ color: c.muted }}
                   style={{ borderColor: "transparent" }}
-                  onPress={() => void answerInsight(insight.id, insight.secondary.action as "block" | "leave")}
+                  onPress={() => void answerInsight(insight.id, insight.secondary.action as "block" | "leave").catch(sayRefused)}
                 />
               </View>
             </>

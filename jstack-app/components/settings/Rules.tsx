@@ -27,7 +27,7 @@ export function Rules() {
   // a rule can arrive while the app is open — answering a `rule` card writes
   // one server-side, and `RELOAD` has no `settings` kind to carry it back
   React.useEffect(() => {
-    void load();
+    void load().catch(() => undefined); // unreadable: the card stays as it was
   }, [load]);
 
   return (

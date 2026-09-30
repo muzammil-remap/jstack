@@ -12,6 +12,7 @@ import { create } from "zustand";
 import { ContractError } from "@/data/ApiAdapter";
 import { getAdapter } from "@/data/provider";
 import { localCapabilitiesFallback } from "@/data/capabilities";
+import { saveWith, sayRefused } from "@/lib/optimistic";
 import { useSectionsStore } from "@/stores/sections";
 import { useSessionStore } from "@/stores/session";
 import type {
@@ -132,32 +133,29 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
         useSessionStore.getState().showToast("Security notifications are always on · by design");
         return false;
       }
-      throw e;
+      sayRefused(e);
+      return false;
     }
   },
   putQuietHours: async (q) => {
     if (refusedUnloaded(get)) return false;
-    set({ quietHours: await getAdapter().putQuietHours(q) });
-    return true;
+    return saveWith(() => getAdapter().putQuietHours(q), (quietHours) => set({ quietHours }));
   },
   putAutonomy: async (settings) => {
     if (refusedUnloaded(get)) return false;
-    set({ autonomy: await getAdapter().putAutonomy(settings) });
-    return true;
+    return saveWith(() => getAdapter().putAutonomy(settings), (autonomy) => set({ autonomy }));
   },
   putVoice: async (settings) => {
     if (refusedUnloaded(get)) return false;
-    set({ voice: await getAdapter().putVoiceSettings(settings) });
-    return true;
+    return saveWith(() => getAdapter().putVoiceSettings(settings), (voice) => set({ voice }));
   },
   putFocuses: async (focuses) => {
     if (refusedUnloaded(get)) return false;
-    set({ focuses: await getAdapter().putFocuses(focuses) });
-    return true;
+    return saveWith(() => getAdapter().putFocuses(focuses), (focuses) => set({ focuses }));
   },
   loadLayout: async (tab) => {
-    const layout = await getAdapter().getLayout(tab);
-    set((s) => ({ layouts: { ...s.layouts, [tab]: layout } }));
+    const layout = await getAdapter().getLayout(tab).catch(() => null); // unreadable: the tab keeps its default arrangement
+    if (layout != null) set((s) => ({ layouts: { ...s.layouts, [tab]: layout } }));
   },
   putLayout: async (tab, layout) => {
     const next = await getAdapter().putLayout(tab, layout);
@@ -176,8 +174,8 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     set((s) => ({ layouts: { ...s.layouts, [tab]: next } }));
   },
   loadDevices: async () => {
-    const { devices } = await getAdapter().getSession();
-    set({ devices });
+    const session = await getAdapter().getSession().catch(() => null); // unreadable: the list stays as it was
+    if (session != null) set({ devices: session.devices });
   },
   revokeDevice: async (id, nonce, biometricAssertion) => {
     // PU-05: a revoked device that keeps receiving notifications is a revoked

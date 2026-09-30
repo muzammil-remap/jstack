@@ -30,6 +30,7 @@ import { useAgentsStore } from "@/stores/agents";
 import { useSessionStore } from "@/stores/session";
 import { space } from "@/theme/tokens";
 import { FRESH_CHECK } from "@/lib/unlockCopy";
+import { sayRefused } from "@/lib/optimistic";
 
 /** Five digits: $99,999 a month is already far past anything this app is for,
  * and a cap nobody can read is a cap nobody checks. */
@@ -68,11 +69,17 @@ export function CapsDialog({ onClose }: { onClose: () => void }) {
       showToast(`Cancelled — editing caps needs ${FRESH_CHECK}`);
       return;
     }
-    await putCaps(
-      Object.entries(caps).map(([agent, cap]) => ({ agent, cap: Number(cap) || 0 })),
-      auth.nonce,
-      auth.biometricAssertion,
-    );
+    try {
+      await putCaps(
+        Object.entries(caps).map(([agent, cap]) => ({ agent, cap: Number(cap) || 0 })),
+        auth.nonce,
+        auth.biometricAssertion,
+      );
+    } catch (e) {
+      setSaving(false);
+      sayRefused(e); // the caps as typed stay in the dialog
+      return;
+    }
     setSaving(false);
     onClose();
   };

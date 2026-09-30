@@ -20,12 +20,45 @@
  * its 200-line cap and because the second caller (subtasks) arrived one row
  * after the first.
  */
+import { ContractError } from "@/data/ApiAdapter";
 import { isQueued } from "@/data/transport/outbox";
 import { useSessionStore } from "@/stores/session";
 import { useSyncStore } from "@/stores/sync";
 
 /** the server's `422 { field, reason }`, as a control can use it */
 export type Refusal = { field?: string; reason: string };
+
+/**
+ * A request nothing waits on — a tap's write, a dialog's own read — that fails says so, in the
+ * words `layout/SectionRenderer.tsx`'s verbs already use ("Couldn't · <the server's reason>"),
+ * and never becomes an unhandled rejection. Putting back what it changed on screen is its
+ * caller's part (REMAP, the hand test of 30 Sep: a `501` from an unwired write crashed the page).
+ */
+export function sayRefused(e: unknown): void {
+  const reason = e instanceof ContractError ? e.reason : undefined;
+  useSessionStore.getState().showToast(reason ? `Couldn't · ${reason}` : "Couldn't · try again");
+}
+
+/** What `attempt` answers for a request that failed, once the failure has been said. */
+export const REFUSED: unique symbol = Symbol("refused");
+
+/** A request's answer, or `REFUSED` after `sayRefused` — for the store writes a tap starts and nothing awaits. */
+export async function attempt<T>(request: () => Promise<T>): Promise<T | typeof REFUSED> {
+  try {
+    return await request();
+  } catch (e) {
+    sayRefused(e);
+    return REFUSED;
+  }
+}
+
+/** A save whose answer the store keeps: `true` once kept, `false` when refused and said — `stores/settings.ts`'s rule (A4R6-11). */
+export async function saveWith<T>(request: () => Promise<T>, keep: (saved: T) => void): Promise<boolean> {
+  const saved = await attempt(request);
+  if (saved === REFUSED) return false;
+  keep(saved);
+  return true;
+}
 
 export async function optimisticWrite<T extends object>(opts: {
   /** the record as it stands, to read the overwritten fields off */

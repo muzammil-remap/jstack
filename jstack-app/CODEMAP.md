@@ -81,7 +81,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 
 ## 2. The map of the territory
 
-<!-- generated:start section=2 sha=8a4d35e date=2026-09-30 -->
+<!-- generated:start section=2 sha=5943c14 date=2026-09-30 -->
 
 ### `app/`
 
@@ -106,7 +106,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 
 | file | lines | purpose | imported by |
 |---|---|---|---|
-| `CapsDialog.tsx` | 125 | CapsDialog — AG-01/AG-02/SEC-07: the monthly hard stop on what each agent may spend. | `layout/dialogs.tsx` |
+| `CapsDialog.tsx` | 132 | CapsDialog — AG-01/AG-02/SEC-07: the monthly hard stop on what each agent may spend. | `layout/dialogs.tsx` |
 | `Checks.tsx` | 90 | Checks — Agents' "Security checks (cannot be hidden)" card (AG-06/07): the fixed seven; a failing check's status carries an accent-ink "· see agent issues" suffix and an alert dot (AG-06). | `layout/registry.tsx` |
 | `EmergencyLock.tsx` | 145 | EmergencyLock — Agents' "Emergency" card (AG-11/AG-12): hold the button 1.2s (an early release resets the hint), then a confirm dialog with four rows; confirming needs a fresh biometric assertion (SEC-07) before `session.lock()` calls `POST /lock`. | `layout/dialogs.tsx`, `layout/registry.tsx` |
 | `Feed.tsx` | 47 | Feed — Agents' "Last 24 hours" card (AG-05): ok/muted/alert dots, the time, text, meta. | `layout/registry.tsx` |
@@ -122,28 +122,28 @@ stacking order. And a green test you have not seen fail is not evidence.
 
 | file | lines | purpose | imported by |
 |---|---|---|---|
-| `DictateDialog.tsx` | 136 | DictateDialog (TS-04) — "Dictate to EA", the typed-or-spoken thread. | `layout/dialogs.tsx` |
-| `Entry.tsx` | 146 | Entry — Brain's column-1 "entry" section: the mind-dump box (BR-01), mic (VO-01) and send buttons, and Talk with EA / Dictate to EA — mock v11's `brain()` bundles all four into one card block. | `layout/registry.tsx` |
+| `DictateDialog.tsx` | 141 | DictateDialog (TS-04) — "Dictate to EA", the typed-or-spoken thread. | `layout/dialogs.tsx` |
+| `Entry.tsx` | 148 | Entry — Brain's column-1 "entry" section: the mind-dump box (BR-01), mic (VO-01) and send buttons, and Talk with EA / Dictate to EA — mock v11's `brain()` bundles all four into one card block. | `layout/registry.tsx` |
 | `FilesArchive.tsx` | 154 | FilesArchive (X-1, FL-03/FL-04) — Brain › Files "all". | `layout/dialogs.tsx` |
 | `Find.tsx` | 124 | Find — Brain's search field (BR-04, GS-05). | `layout/registry.tsx` |
-| `ItemEditor.tsx` | 55 | ItemEditor — BR-05's "edit" dialog for a Latest-in capture: saving appends a version (`PUT /brain/items/{id}`, `GET /brain/items/{id}/versions` grows). | `layout/dialogs.tsx` |
+| `ItemEditor.tsx` | 56 | ItemEditor — BR-05's "edit" dialog for a Latest-in capture: saving appends a version (`PUT /brain/items/{id}`, `GET /brain/items/{id}/versions` grows). | `layout/dialogs.tsx` |
 | `LatestIn.tsx` | 156 | LatestIn — Brain's "Latest in" (BR-05, RP-06): title, ONE meta line (what the Librarian decided, then the source and the time), then the record's data labels as tags. | `layout/registry.tsx` |
-| `Memory.tsx` | 100 | Memory — Brain's proposals card (BR-06..08) plus the hit-rate row (BR-09), which mock v11 appends inside the SAME card rather than a separate one. | `layout/registry.tsx` |
+| `Memory.tsx` | 101 | Memory — Brain's proposals card (BR-06..08) plus the hit-rate row (BR-09), which mock v11 appends inside the SAME card rather than a separate one. | `layout/registry.tsx` |
 | `MemoryHistoryDialog.tsx` | 50 | MemoryHistoryDialog (O-1, OP-03) — Memory's "all". | `layout/dialogs.tsx` |
-| `ProposalEdit.tsx` | 36 | ProposalEdit — BR-07's "edit" dialog for a Memory proposal: "Save my version" posts `{verb:"edit", text}`, which also teaches the Librarian. | `layout/dialogs.tsx` |
+| `ProposalEdit.tsx` | 37 | ProposalEdit — BR-07's "edit" dialog for a Memory proposal: "Save my version" posts `{verb:"edit", text}`, which also teaches the Librarian. | `layout/dialogs.tsx` |
 | `TalkScreen.tsx` | 246 | TalkScreen — "Talk with EA" as a full-screen surface (V-2, VP-04..VP-07). | `layout/dialogs.tsx` |
 
 ### `components/chrome/`
 
 | file | lines | purpose | imported by |
 |---|---|---|---|
-| `ArrangeDialog.tsx` | 157 | ArrangeDialog (AR-01..05) — opened from Header's Arrange button (`session.ts`'s `modal === "arrange"`, payload = tab id, TabScreen.tsx). | `layout/dialogs.tsx` |
+| `ArrangeDialog.tsx` | 158 | ArrangeDialog (AR-01..05) — opened from Header's Arrange button (`session.ts`'s `modal === "arrange"`, payload = tab id, TabScreen.tsx). | `layout/dialogs.tsx` |
 | `BottomBanner.tsx` | 93 | BottomBanner (F-42, P-8) — the floating bar `MicBanner` and `TalkBanner` both wore: an overlay on every tab, above the tab bar on a phone and along the foot of the content on a desktop, the frosted bar surface. | 4 files |
 | `Columns.tsx` | 96 | `<Columns>` (ADR-01, ADR-07) — the three breakpoint rules, straight from the pack's `.cols` CSS (design/tokens/components.css lines 100-104): under 768 one column, sections in full registry order (not grouped by column); 768–1179 two columns (`1.3fr 1fr`) where column 3's sections stack directly under column 1 (its own `.col:nth-child(3){grid-column:1; grid-row:2}`) and column 2 stands alone beside them; 1180+ three columns (`1.3fr 1fr .95fr`, gap 18), content max-width 1500 (RL-04). | `layout/TabScreen.tsx` |
 | `DemoWatermark.tsx` | 155 | DemoWatermark (I-1, ID-02) — the one line that says this is not real data. | `app/_layout.tsx` |
 | `Dialog.tsx` | 96 | `<Dialog>` (RL-06) — phone: full screen. | 32 files |
 | `DialogHost.tsx` | 140 | Renders whichever dialogs are open, from `layout/dialogs.tsx` (S-3, SM-05/NR-02/RL-06). | `app/_layout.tsx` |
-| `EaLayoutBanner.tsx` | 50 | EaLayoutBanner (AR-06) — shown on a tab whose layout the EA last set (`Layout.managedBy === "ea"`), with the reason and a one-tap revert back to Josh's own arrangement. | `layout/TabScreen.tsx` |
+| `EaLayoutBanner.tsx` | 51 | EaLayoutBanner (AR-06) — shown on a tab whose layout the EA last set (`Layout.managedBy === "ea"`), with the reason and a one-tap revert back to Josh's own arrangement. | `layout/TabScreen.tsx` |
 | `ErrorBoundary.tsx` | 101 | Recovery instead of white screens (spec §15.11, NR-03/04). | `app/_layout.tsx`, `components/chrome/DialogHost.tsx` |
 | `ExternalLinkDialog.tsx` | 31 | ExternalLinkDialog — the confirmation every outbound link goes through before leaving the app (TD-04's "google" link today; Tasks' "open in Twenty" and Agents' portal tiles reuse this in later rows). | `layout/dialogs.tsx` |
 | `FindDialog.tsx` | 170 | FindDialog (K-1, GS-02..GS-07) — the app's one global search. | `layout/dialogs.tsx` |
@@ -155,7 +155,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `Help.tsx` | 74 | "What works in this build" (GL-08) — every flag from `capabilities()` with its honest status, and every registry section hidden because its `feed` capability is off (ADR-06: a section without a feed hides itself and is listed here, not silently dropped). | `layout/dialogs.tsx` |
 | `Icon.tsx` | 32 | Every icon in the app is one of these — a Material Symbols Rounded glyph (weight 300) rendered as an SVG path (ADR-09). | 22 files |
 | `LiveMicOrb.tsx` | 132 | The LIVE mic — `.js-mic.is-live` in the pack, `.mic-live` in mock v11: width:42; height:42; border-radius:50%; background: var(--marker); color:#fff; animation: jsPulse 1.4s var(--ease) infinite and README, Components: "Listening: 42px circle, Marker fill, white filled glyph, **pulse ring 1.4s**." AUDIT_v2.md A-05: none of that existed. | `components/brain/TalkScreen.tsx`, `components/tasks/WorkMark.tsx`, `theme/ui/fieldButton.tsx` |
-| `LockedScreen.tsx` | 140 | LockedScreen — the two locked-screen states (mock v11 `#lock`, line 281 default / line 556 emergency), rendered by `<FaceIDGate>` once `locked` is true. | `components/chrome/Gate.tsx` |
+| `LockedScreen.tsx` | 148 | LockedScreen — the two locked-screen states (mock v11 `#lock`, line 281 default / line 556 emergency), rendered by `<FaceIDGate>` once `locked` is true. | `components/chrome/Gate.tsx` |
 | `MicBanner.tsx` | 74 | MicBanner (V-1, ADR-49 / MC-03) — the microphone you walked away from. | 4 files |
 | `Orb.tsx` | 169 | `.js-mic` (design/tokens/components.css) — the floating mic, push-to-talk. | `app/(tabs)/_layout.tsx`, `components/brain/DictateDialog.tsx`, `layout/TabScreen.tsx` |
 | `PrivacyShield.tsx` | 23 | PrivacyShield (F-70, P-8 — out of `app/_layout.tsx`, which sat at 99/100). | `app/_layout.tsx` |
@@ -168,7 +168,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `TabBar.tsx` | 63 | The floating phone tab bar (<768, RL-01): inset 14px, height 60, `.js-bar` surface (frosted, blur 24). | `app/(tabs)/_layout.tsx` |
 | `TabUnavailable.tsx` | 30 | TabUnavailable (A-2, WP-A) — what a tab says when its load failed and there is nothing from before to show. | `layout/TabScreen.tsx` |
 | `TalkBanner.tsx` | 76 | TalkBanner (V-2) — the conversation you walked away from. | `components/chrome/DialogHost.tsx`, `components/chrome/MicBanner.tsx` |
-| `Toast.tsx` | 212 | `.js-toast` (design/tokens/components.css) — a pill toast with an optional undo ring counting down from `motion.undoSeconds` (10) to 0. | 6 files |
+| `Toast.tsx` | 213 | `.js-toast` (design/tokens/components.css) — a pill toast with an optional undo ring counting down from `motion.undoSeconds` (10) to 0. | 6 files |
 | `icons.generated.ts` | 136 | generated by tools/gen-icons.mjs from node_modules/@material-symbols/svg-300/rounded — do not edit | 5 files |
 | `watermarkText.ts` | 26 | The demo watermark's words, in a file with no React and no react-native import (I-1, ID-02). | 6 files |
 
@@ -179,7 +179,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `BrainItemDetail.tsx` | 83 | BrainItemDetail (O-1, OP-01/OP-02) — what a Brain row opens. | `layout/dialogs.tsx` |
 | `DecisionDetail.tsx` | 76 | DecisionDetail (O-1, OP-04) — what an Agents › History row opens. | `layout/dialogs.tsx` |
 | `FileDetail.tsx` | 102 | FileDetail (O-1's shell, filled by X-1 — FL-02) — what a file row opens. | `layout/dialogs.tsx` |
-| `GoalDetail.tsx` | 210 | GoalDetail (O-1, filled at LG-1) — what a Life › Goals row opens, and what "All goals" opens an archived one into. | `layout/dialogs.tsx` |
+| `GoalDetail.tsx` | 212 | GoalDetail (O-1, filled at LG-1) — what a Life › Goals row opens, and what "All goals" opens an archived one into. | `layout/dialogs.tsx` |
 | `IssueDetail.tsx` | 53 | IssueDetail (O-1, OP-05) — what an Agents › Issues row opens. | `layout/dialogs.tsx` |
 | `LearningDetail.tsx` | 53 | LearningDetail (O-1, OP-06) — what a Life › Learning row opens. | `layout/dialogs.tsx` |
 | `QueuedItemDetail.tsx` | 40 | QueuedItemDetail (O-1, OP-02) — what a QUEUED Latest in row opens. | `layout/dialogs.tsx` |
@@ -190,7 +190,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 
 | file | lines | purpose | imported by |
 |---|---|---|---|
-| `ConfigureDialog.tsx` | 223 | ConfigureDialog — the "configure" link on a section (LF-09, and B-2's §4.10 half). | `layout/dialogs.tsx` |
+| `ConfigureDialog.tsx` | 224 | ConfigureDialog — the "configure" link on a section (LF-09, and B-2's §4.10 half). | `layout/dialogs.tsx` |
 | `GoalEditDialog.tsx` | 151 | GoalEditDialog — the goals are a set Josh edits (LG-1, LG-01). | `layout/dialogs.tsx` |
 | `Goals.tsx` | 66 | Goals — Life's "Goals" card (LF-01): area at 500 weight, the status line under it, "behind" rendered in accent ink. | `layout/registry.tsx` |
 | `GoalsAllDialog.tsx` | 54 | GoalsAllDialog (LG-04) — Goals' "all": every goal that is no longer in play. | `layout/dialogs.tsx` |
@@ -210,16 +210,16 @@ stacking order. And a green test you have not seen fail is not evidence.
 
 | file | lines | purpose | imported by |
 |---|---|---|---|
-| `Appearance.tsx` | 132 | Appearance — Settings' "Appearance and account" card (SE-08): theme segmented control, Devices summary + "manage" (opens the Devices dialog), "Hide sensitive figures" (privacy blur, GL-04), Export (capability-gated), and a second, compact "Hold to lock" — the mock carries this control twice (here and on Agents' own Emergency card, both wired to the same global hold handler), so this one reuses `lib/holdToLock.ts` and the same root-mounted confirm dialog. | `components/settings/SettingsSheet.tsx` |
+| `Appearance.tsx` | 138 | Appearance — Settings' "Appearance and account" card (SE-08): theme segmented control, Devices summary + "manage" (opens the Devices dialog), "Hide sensitive figures" (privacy blur, GL-04), Export (capability-gated), and a second, compact "Hold to lock" — the mock carries this control twice (here and on Agents' own Emergency card, both wired to the same global hold handler), so this one reuses `lib/holdToLock.ts` and the same root-mounted confirm dialog. | `components/settings/SettingsSheet.tsx` |
 | `Autonomy.tsx` | 48 | Autonomy — Settings' "Autonomy" card (SE-05): six card types, each a three-way Ask me / Propose / Auto segmented control persisted via `PUT /settings/autonomy`. | `components/settings/SettingsSheet.tsx` |
 | `ChipSetEditDialog.tsx` | 190 | ChipSetEditDialog — one dialog for "a named set the person edits" (S-3). | 5 files |
 | `ChipSetForm.tsx` | 159 | ChipSetForm — the FORM half of `ChipSetEditDialog` (S-3, split at LG-1). | `components/settings/ChipSetEditDialog.tsx` |
-| `Devices.tsx` | 52 | Devices — SE-08/LK-06: lists every device with a revoke action (SEC-07-gated, a fresh biometric assertion); the current device can't revoke itself. | `layout/dialogs.tsx` |
+| `Devices.tsx` | 58 | Devices — SE-08/LK-06: lists every device with a revoke action (SEC-07-gated, a fresh biometric assertion); the current device can't revoke itself. | `layout/dialogs.tsx` |
 | `FocusEditDialog.tsx` | 78 | FocusEditDialog — FS-04/SE-07: one dialog for all three entry points — FocusChips' tune icon (`payload` undefined → the manage-all list), Settings' per-row "edit" (`payload` = a focus id), and "Add a focus" (`payload === "new"`). | `layout/dialogs.tsx` |
 | `Focuses.tsx` | 37 | Focuses — Settings' "Focus filters" card (SE-07): rows with "edit" (fixed focuses read "always present" instead); "Add a focus" opens the editor (FS-04) — both route through `FocusEditDialog`. | `components/settings/SettingsSheet.tsx` |
-| `Notifications.tsx` | 198 | Notifications — Settings' notification matrix (SE-02/SE-03, RP-04): ten groups × 4 devices, each cell a `<Switch>`; the Security group is locked server-side (423) and toasts instead of flipping; the quiet-hours footer line is built from `GET /settings/quiet-hours`, not a fixed string (LF-06-style, this row's own equivalent of A-28). | `components/settings/SettingsSheet.tsx` |
+| `Notifications.tsx` | 199 | Notifications — Settings' notification matrix (SE-02/SE-03, RP-04): ten groups × 4 devices, each cell a `<Switch>`; the Security group is locked server-side (423) and toasts instead of flipping; the quiet-hours footer line is built from `GET /settings/quiet-hours`, not a fixed string (LF-06-style, this row's own equivalent of A-28). | `components/settings/SettingsSheet.tsx` |
 | `Rules.tsx` | 67 | Rules — Settings' "Rules for my EA" card (ST-1, ST-02). | `components/settings/SettingsSheet.tsx` |
-| `RulesEditDialog.tsx` | 125 | RulesEditDialog — the standing instructions Josh has given his EA (ST-1, ST-02). | `components/settings/Rules.tsx`, `layout/dialogs.tsx` |
+| `RulesEditDialog.tsx` | 126 | RulesEditDialog — the standing instructions Josh has given his EA (ST-1, ST-02). | `components/settings/Rules.tsx`, `layout/dialogs.tsx` |
 | `Schedules.tsx` | 108 | Schedules — Settings' "Schedules" card (SE-04): the seven routines and EA tasks, cadence in accent ink, pause/resume flips the row (state-driven, unlike the mock's always-"pause" static link), run posts and toasts. | `components/settings/SettingsSheet.tsx` |
 | `Security.tsx` | 102 | Security — Settings' parameters card (L-1, LK-03, defaults table #7). | `components/settings/SettingsSheet.tsx` |
 | `SettingsSheet.tsx` | 134 | SettingsSheet — SE-01/SE-09: opens from the rail (desktop) or the header button (phone); scrim, X, or Esc closes (Esc already routes through app/_layout.tsx's global shortcut → closeAll()). | `layout/dialogs.tsx` |
@@ -239,7 +239,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `CompleteConfirm.tsx` | 65 | CompleteConfirm — ticking a task that is not finished (T-3, ADR-42, TK-10). | `layout/dialogs.tsx` |
 | `DelegatePicker.tsx` | 66 | DelegatePicker — who takes the task (T-2, TK-07). | `layout/dialogs.tsx` |
 | `DoneSearch.tsx` | 40 | DoneSearch — Tasks' Done segment (TK-07): a search field filtering done rows server-side (`?q=`), "No matches." when none, done rows keep their EA meta and cost (TaskRow's own `meta` string already carries that). | `components/tasks/TaskViews.tsx` |
-| `EaReport.tsx` | 69 | EaReport — the task detail's "The EA's report" card (TK-10): title, quote, file chips, flagged count; Looks right / Revise / Teach → `POST /tasks/{id}/report`. | `components/tasks/TaskDetail.tsx` |
+| `EaReport.tsx` | 70 | EaReport — the task detail's "The EA's report" card (TK-10): title, quote, file chips, flagged count; Looks right / Revise / Teach → `POST /tasks/{id}/report`. | `components/tasks/TaskDetail.tsx` |
 | `Files.tsx` | 91 | Files.tsx (X-1, FL-01/FL-02, UP-01) — the task card's files. | `components/tasks/TaskDetail.tsx` |
 | `FilterDialog.tsx` | 186 | FilterDialog — TK-14: Priority / Status / Project / Owner / Due, multi-select; applied chips with ✕; Clear all; composes with the slicer (AND across groups, OR within — `stores/tasks.ts` serialises the same shape `data/mock/handlers/tasks.ts` applies). | `layout/dialogs.tsx` |
 | `Gantt.tsx` | 196 | Gantt — Tasks' timeline (G-1, ADR-46): a real axis, swimlanes by project, and bars you can move. | `components/tasks/Board.tsx`, `components/tasks/TaskViews.tsx`, `components/tasks/WaitingOn.tsx` |
@@ -250,7 +250,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `GanttUnscheduled.tsx` | 190 | GanttUnscheduled — the lane for tasks with no dates, and the drag that gives them one (G-1, GT-07). | `components/tasks/Gantt.tsx`, `components/tasks/GanttChart.tsx` |
 | `RangeChip.tsx` | 45 | RangeChip — the first item of the slicer row, on every task view (F-1, TF-01/TF-02, ADR-44). | `components/tasks/SlicerRow.tsx` |
 | `RangeDialog.tsx` | 101 | RangeDialog — the presets behind the range chip (F-1, TF-02, ADR-44). | `layout/dialogs.tsx` |
-| `SlicerEditDialog.tsx` | 118 | SlicerEditDialog — the slicer chips are a list Josh edits (F-1, TF-06, ADR-44). | `layout/dialogs.tsx` |
+| `SlicerEditDialog.tsx` | 119 | SlicerEditDialog — the slicer chips are a list Josh edits (F-1, TF-06, ADR-44). | `layout/dialogs.tsx` |
 | `SlicerRow.tsx` | 148 | SlicerRow — the one row of controls above every task view (F-1, TF-05, ADR-44). | `components/tasks/TaskViews.tsx` |
 | `SubtaskMenu.tsx` | 102 | SubtaskMenu — the ⋮ on a subtask (T-2, TK-09). | `layout/dialogs.tsx` |
 | `Subtasks.tsx` | 85 | Subtasks — the task detail's subtasks card (TK-08/09): "N of M done" hint, owner tags, an EA-dashed checkbox; "+ subtask" adds a titled one via `POST /tasks/{id}/subtasks`. | `components/tasks/TaskDetail.tsx` |
@@ -269,17 +269,17 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `AllDayStrip.tsx` | 50 | AllDayStrip — the all-day events covering one day of the calendar grid, in a strip above its hours (REMAP, option C at Checkpoint 3): an all-day event has no hours, and drawn in the time track it landed above the card. | `components/today/CalendarGrid.tsx` |
 | `CalendarGrid.tsx` | 243 | CalendarGrid — Today's "All calendars" (CG-01..08): a segmented Today/ 3 days/Week/Month control over a time-grid or a month dot-grid, from `GET /calendar`. | `layout/registry.tsx` |
 | `CalendarList.tsx` | 113 | CalendarList — Today's "Calendar" list card (TD-04): time, title, a prep line in accent ink, free gaps as muted lines; hint "today · 3 days · google". | `layout/registry.tsx` |
-| `CloseDay.tsx` | 108 | CloseDay — Today's "Close the day" (TD-07): nine compact habit chips sharing stores/life.ts with Life's own Habits card (LF-02); a journal field that posts to `/journal` directly (empty submissions blocked). | `layout/registry.tsx` |
+| `CloseDay.tsx` | 109 | CloseDay — Today's "Close the day" (TD-07): nine compact habit chips sharing stores/life.ts with Life's own Habits card (LF-02); a journal field that posts to `/journal` directly (empty submissions blocked). | `layout/registry.tsx` |
 | `DecisionBodies.tsx` | 183 | The bodies a decision card can carry (S-7, SM-03). | `components/today/DecisionCard.tsx` |
-| `DecisionCard.tsx` | 156 | DecisionCard — Needs you's single open card (ADR-13). | `components/today/NeedsYou.tsx` |
+| `DecisionCard.tsx` | 157 | DecisionCard — Needs you's single open card (ADR-13). | `components/today/NeedsYou.tsx` |
 | `DecisionProposals.tsx` | 93 | DecisionProposals — the bodies of the two cards the EA raises about ITS OWN behaviour (W-1, ST-1). | `components/today/DecisionBodies.tsx` |
 | `Glance.tsx` | 67 | Glance — Today's "At a glance" (TD-06): four cells (Habits, People, Money, Goals); the habits count reads stores/life.ts directly (LF-02: shares state with Life's own Habits card, no round-trip needed after a Close-the-day toggle); each cell switches to the Life tab. | `layout/registry.tsx` |
 | `HistoryDialog.tsx` | 53 | HistoryDialog — DC-01's "history" link: every answered/later/expired decision, searchable by title (mock v11 `acts.history()` line 625). | `layout/dialogs.tsx` |
-| `Insight.tsx` | 105 | Insight — Today's "From your EA" section (TD-03, RP-03): the open insight card (text, why-line, Block it / Leave it), collapsing to a one-line result once answered (mock v11 `today()` line 460), and under it the newest UNREAD reply to something Josh asked. | `layout/registry.tsx` |
+| `Insight.tsx` | 106 | Insight — Today's "From your EA" section (TD-03, RP-03): the open insight card (text, why-line, Block it / Leave it), collapsing to a one-line result once answered (mock v11 `today()` line 460), and under it the newest UNREAD reply to something Josh asked. | `layout/registry.tsx` |
 | `NeedsYou.tsx` | 96 | NeedsYou — Today's "Needs you" section (DC-01, DC-10): exactly one decision card open (the first undecided, or the one tapped), the rest as waiting rows, an end line, and a "history" link opening the history dialog (mock v11 `today()` lines 451-457). | `layout/registry.tsx` |
 | `ReviewDialog.tsx` | 78 | ReviewDialog — TD-08: the week that was (decisions, promises kept, time by focus bars), the week ahead, three things — from `GET /review`. | `layout/dialogs.tsx` |
-| `ReviseDialog.tsx` | 54 | ReviseDialog — DC-05: on an email (quote) card, Revise opens a draft editor instead of answering immediately; Save writes the edit via `PUT /actions/{id}/draft` and then answers the card as revised (same toast/undo as every other verb). | `layout/dialogs.tsx` |
-| `TeachSheet.tsx` | 59 | TeachSheet — DC-08, ST-04: one line, becomes a standing rule. | `layout/dialogs.tsx` |
+| `ReviseDialog.tsx` | 58 | ReviseDialog — DC-05: on an email (quote) card, Revise opens a draft editor instead of answering immediately; Save writes the edit via `PUT /actions/{id}/draft` and then answers the card as revised (same toast/undo as every other verb). | `layout/dialogs.tsx` |
+| `TeachSheet.tsx` | 63 | TeachSheet — DC-08, ST-04: one line, becomes a standing rule. | `layout/dialogs.tsx` |
 | `WaitingRow.tsx` | 76 | WaitingRow — an undecided card that isn't the one currently open (mock v11 `wrow()`, design/handoff.md "Today" column 1). | `components/today/NeedsYou.tsx` |
 | `YourTasks.tsx` | 51 | YourTasks — Today's "Your tasks" (TD-05): top three open tasks in focus; checkbox marks done via `PATCH /tasks/{id}` with an undo toast; hint "all" switches to the Tasks tab. | `layout/registry.tsx` |
 
@@ -287,7 +287,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 
 | file | lines | purpose | imported by |
 |---|---|---|---|
-| `ApiAdapter.ts` | 340 | ApiAdapter — the only DataProvider implementation (ADR-02). | 11 files |
+| `ApiAdapter.ts` | 340 | ApiAdapter — the only DataProvider implementation (ADR-02). | 12 files |
 | `DataProvider.ts` | 279 | DataProvider — the app ↔ backend contract, 1:1 with CONTRACT_v2.md §4. | 6 files |
 | `capabilities.ts` | 43 | Capabilities (CONTRACT_v2.md §4.9 `GET /capabilities`, ADR-16). | `stores/settings.ts` |
 | `config.swap.ts` | 34 | Swap-proof flavour of data/config.ts (BS-05). | — |
@@ -412,8 +412,8 @@ stacking order. And a green test you have not seen fail is not evidence.
 |---|---|---|---|
 | `authTokens.ts` | 98 | Token custody (spec §14.9 — SEC-05, contract §9): the refresh token lives in the Keychain (expo-secure-store, this-device-only); the access token lives in MEMORY with a 15-minute TTL and is never written to AsyncStorage/localStorage. | 4 files |
 | `autoLock.ts` | 141 | Auto-lock (spec §14.9 — SEC-03; rewritten by L-1 under ADR-41). | 5 files |
-| `boot.ts` | 158 | The app's boot sequence (S-3): everything `app/_layout.tsx` used to do in one long effect — the test hook, the two stores the shell itself reads, the keyboard and auto-lock listeners, and the desktop shortcut map. | `app/_layout.tsx` |
-| `cardVerbs.ts` | 83 | cardVerbs.ts (A-4 round 9, A4R9-01/02) — what a decision card's Approve, Revise and Later DO, in one place. | 9 files |
+| `boot.ts` | 159 | The app's boot sequence (S-3): everything `app/_layout.tsx` used to do in one long effect — the test hook, the two stores the shell itself reads, the keyboard and auto-lock listeners, and the desktop shortcut map. | `app/_layout.tsx` |
+| `cardVerbs.ts` | 84 | cardVerbs.ts (A-4 round 9, A4R9-01/02) — what a decision card's Approve, Revise and Later DO, in one place. | 9 files |
 | `clipboard.ts` | 30 | Copy to the clipboard, best effort (S-9). | `components/settings/Sync.tsx`, `components/today/DecisionBodies.tsx`, `stores/usage.ts` |
 | `decisionCopy.ts` | 62 | decisionCopy.ts (Stage 5d P-4, F-14) — the words a decision verb produces. | `components/today/DecisionCard.tsx`, `components/today/WaitingRow.tsx`, `stores/today.ts` |
 | `deltaLine.ts` | 32 | The "what changed while you were away" line (OF-09, CD-02). | `stores/today.ts` |
@@ -438,7 +438,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `money.ts` | 33 | One money formatter, so the same amount cannot read two ways on one screen. | 7 files |
 | `needsYouSchedule.ts` | 127 | needsYouSchedule.ts (WPS-1, v2.3.2) — when Today raises Needs you. | `components/settings/Schedules.tsx`, `components/today/NeedsYou.tsx`, `lib/cardVerbs.ts` |
 | `openFromUrl.ts` | 47 | openFromUrl.ts (R-1, RP-04) — a notification click opens the thing it was about. | `lib/boot.ts` |
-| `optimistic.ts` | 88 | One shape for "change it now, ask the server, be honest if the answer is no" (T-1/T-2, TK-02..TK-09). | `stores/lifeEdits.ts`, `stores/taskEdits.ts` |
+| `optimistic.ts` | 121 | One shape for "change it now, ask the server, be honest if the answer is no" (T-1/T-2, TK-02..TK-09). | 30 files |
 | `pressGate.ts` | 105 | The settle window (A4R11-01) — a press answers the control that was there, not the one that took its place. | 4 files |
 | `push.ts` | 139 | Push subscription (U-1, PU-01..05, SE-02). | `components/settings/Notifications.tsx` |
 | `pushToTalk.ts` | 81 | v2.3.2 WPR-2 — the orb's push-to-talk: one Brain session per hold. | `components/chrome/Orb.tsx` |
@@ -482,26 +482,26 @@ stacking order. And a green test you have not seen fail is not evidence.
 
 | file | lines | purpose | imported by |
 |---|---|---|---|
-| `agents.ts` | 165 | agents.ts (ADR-04) — summary, spend and caps, portals, agent issues, the feed, security checks, decision history (answered/expired ActionItems), and schedules. | 16 files |
-| `brain.ts` | 196 | brain.ts (ADR-04) — the dump draft, latest-in, memory proposals, hit rate, rules and the Find answer. | 14 files |
+| `agents.ts` | 172 | agents.ts (ADR-04) — summary, spend and caps, portals, agent issues, the feed, security checks, decision history (answered/expired ActionItems), and schedules. | 16 files |
+| `brain.ts` | 197 | brain.ts (ADR-04) — the dump draft, latest-in, memory proposals, hit rate, rules and the Find answer. | 14 files |
 | `device.ts` | 122 | device.ts (S-5, ADR-16) — what this DEVICE remembers, as opposed to what the account is set to. | 10 files |
-| `dictate.ts` | 44 | dictate.ts (W-1) — the Dictate thread, the conversation `DictateDialog` holds with the EA. | `components/brain/DictateDialog.tsx` |
+| `dictate.ts` | 53 | dictate.ts (W-1) — the Dictate thread, the conversation `DictateDialog` holds with the EA. | `components/brain/DictateDialog.tsx` |
 | `files.ts` | 154 | files.ts (X-1, §4.17) — what the app knows about files. | 7 files |
-| `life.ts` | 156 | life.ts (ADR-04) — goals, habits and their logs, people, money, health, learning, and section configs. | 15 files |
+| `life.ts` | 159 | life.ts (ADR-04) — goals, habits and their logs, people, money, health, learning, and section configs. | 15 files |
 | `lifeEdits.ts` | 129 | lifeEdits.ts (A-4 round 5) — the whole-set writes on Life, composed from the set the SERVER holds. | `components/detail/GoalDetail.tsx`, `components/life/GoalEditDialog.tsx`, `components/life/HabitEditDialog.tsx` |
 | `mic.ts` | 187 | mic.ts (V-1, ADR-49) — what the microphone is doing, for everything that has to show it. | 14 files |
 | `parameters.ts` | 111 | parameters.ts (L-1, ADR-41) — the six tunables, as the server holds them. | 12 files |
 | `replies.ts` | 60 | replies.ts (R-1, §3) — the EA's answers to captures that were questions. | 8 files |
-| `rules.ts` | 93 | rules.ts (ADR-04, ST-1) — the standing instructions Josh has given his EA. | 5 files |
+| `rules.ts` | 92 | rules.ts (ADR-04, ST-1) — the standing instructions Josh has given his EA. | 5 files |
 | `search.ts` | 94 | search.ts (K-1, §4.19) — the global Find. | `components/brain/Find.tsx`, `components/chrome/FindDialog.tsx`, `components/chrome/FindRow.tsx` |
 | `sections.ts` | 65 | §4.10 configured sections (B-2, B-3). | 6 files |
 | `session.ts` | 198 | session.ts (ADR-04) — locked/emergency, online, clock offset, the modal/sheet stack, the toast, and the undo ledger. | 108 files |
-| `settings.ts` | 196 | settings.ts (ADR-04) — notification groups × devices, quiet hours, autonomy, voice, focuses + the active one, layout per tab, capabilities. | 36 files |
+| `settings.ts` | 194 | settings.ts (ADR-04) — notification groups × devices, quiet hours, autonomy, voice, focuses + the active one, layout per tab, capabilities. | 36 files |
 | `sync.ts` | 199 | sync.ts (ADR-37, O-1) — what is waiting to reach the server, and what happened when it tried. | 16 files |
-| `taskCard.ts` | 197 | taskCard.ts (Stage 5d P-2, F-13) — the OPEN task: which one is open, its fresh copy, the tick and the confirm it can raise, the undoable completion, accept, the EA's report, delegation, and a task made from a goal's card. | 21 files |
+| `taskCard.ts` | 200 | taskCard.ts (Stage 5d P-2, F-13) — the OPEN task: which one is open, its fresh copy, the tick and the confirm it can raise, the undoable completion, accept, the EA's report, delegation, and a task made from a goal's card. | 21 files |
 | `taskEdits.ts` | 152 | taskEdits.ts (T-2/T-3) — every optimistic edit to a task or one of its subtasks, in one place. | 6 files |
-| `taskFilters.ts` | 128 | How the task list is narrowed (F-1, ADR-44) — a slice of `stores/tasks.ts`, not a store of its own. | `stores/tasks.ts` |
-| `tasks.ts` | 140 | tasks.ts (ADR-04) — the LIST: the rows, the active view/slicer/filters/range (the `taskFilters` slice), the slicer set, waiting-on rows, the board's columns, the delegatee roster, the header's open count and the project names. | 23 files |
+| `taskFilters.ts` | 132 | How the task list is narrowed (F-1, ADR-44) — a slice of `stores/tasks.ts`, not a store of its own. | `stores/tasks.ts` |
+| `tasks.ts` | 142 | tasks.ts (ADR-04) — the LIST: the rows, the active view/slicer/filters/range (the `taskFilters` slice), the slicer set, waiting-on rows, the board's columns, the delegatee roster, the header's open count and the project names. | 23 files |
 | `today.ts` | 200 | today.ts (ADR-04) — the Today composite, which decision card is open, option picks, the From-your-EA insight's local state, and the journal draft. | 24 files |
 | `ui.ts` | 77 | ui.ts (E-1) — transient chrome state of the current viewport. | 9 files |
 | `usage.ts` | 82 | usage.ts (ADR-04, ADR-43) — what the agents spent: the Agents › Usage section's month (`GET /usage`) and the open task card's runs (`GET /tasks/{id}/usage`). | `components/tasks/TaskDetail.tsx`, `layout/sources.ts`, `layout/sourcesVerbs.ts` |
@@ -596,7 +596,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 Endpoint → store action → component → testIDs, one block per contract group, from
 `wiring.json`.
 
-<!-- generated:start section=3 sha=8a4d35e date=2026-09-30 -->
+<!-- generated:start section=3 sha=5943c14 date=2026-09-30 -->
 
 ### agents
 
@@ -923,6 +923,7 @@ them; `tools/gen-codemap.mjs` lists any that this section does not name.
 | `tests/unit/n8nCalendar.test.ts` | Phase 3: `GET /calendar` from the `calendar` webhook — each view's window is `rangeFor`'s (literal instants for both board zones, turning over at the device's midnight), the redacted real replies map to a valid `CalendarWindow`, an all-day event runs midnight to midnight with Google's exclusive end, a missing end is half an hour, the mock's start-in-window, gaps and focus rules hold, and any other reply is the section's 502 |
 | `tests/unit/allDay.test.ts` | Option C: the one all-day test (the time grid's `isAllDay`: local midnight to a later local midnight; a timed hour, eleven to midnight, midnight to noon and a zero-length midnight are not) and `eventsCovering` (a two-day event on both its days and neither neighbour, an overnight event on both, a zero-length one on its instant's day) — instants from each board zone's offset |
 | `tests/native/calendarAllDay.test.tsx` | Option C, rendered: in Week a two-day all-day event sits in the strip on both its days (the empty Saturday keeps the strip's height so the hours stay level) and never in a track, a timed event stays in its track, no all-day event means no strip, and the Calendar card says "all day", never "0:00" |
+| `tests/unit/writeRefusals.test.ts` | REMAP (the hand test of 30 Sep): every write refused with `501` — a tap's write resolves, says "Couldn't · not connected yet" and leaves its store as it was (a Board drag into Done, accept, delegate, nudge, a habit, the Agents verbs, the card verbs; the settings saves answer `false`); an awaited one rejects with the 501 having put back what it changed (Dictate's line off the thread, the journal and dump drafts back); every fire-and-forget call of an awaited one carries its catch; every write route is driven or named with why nothing calls it |
 | `tests/unit/n8nActions.test.ts` | Phase 6 · `actions`: Needs you from the actions store's real replies — the open list valid, by rank, five at most after the focus; history answered-only, newest first, `?q=` on the title, each card's last history entry the store's answer; a card the contract cannot draw left out and named once, by id a 502; each verb sends only its fields, Approve reads the card first and an email card's approve is 501 with nothing answered; the reload after an answer asks again; a second answer, a late undo and nothing-to-undo are 409, a bad verb 422, an unknown card 404; reopen and the draft 501; Today's Needs you is `GET /actions`'s answer through one call |
 | `tests/unit/n8nLocked.test.ts` | ADR-83: on n8n, while the gate is shut every call waits and nothing reaches the proxy — webhook reads, local answers and keyless writes alike — while the unlocking routes and the emergency lock go through; on unlock each held call is answered and each workflow runs once; through the provider the session's own lock holds Today, `unlock()` releases it and a relock holds the next; the mock still answers under the gate |
 | `tests/unit/n8nToday.test.ts` | Phase 5: `GET /today` from the live sources — a valid TodayComposite whose calendar is exactly `GET /calendar`'s today answer, whose tasks are the first three not done in Twenty's order, with no cards, lines or delta (even when asked), the glance and the close at nothing; a failed source fails the composite; one cold load of Today, the grid and the Tasks tab runs each workflow once, counted at the fetch |
@@ -1405,7 +1406,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 
 ## 7. The decision index
 
-<!-- generated:start section=7 sha=8a4d35e date=2026-09-30 -->
+<!-- generated:start section=7 sha=5943c14 date=2026-09-30 -->
 
 `DECISIONS.md` — ADR-01..75, each with its status; the versioned decision files hold the full reasoning.
 
@@ -1490,7 +1491,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 
 ## 8. The test map
 
-<!-- generated:start section=8 sha=8a4d35e date=2026-09-30 -->
+<!-- generated:start section=8 sha=5943c14 date=2026-09-30 -->
 
 ### Specs
 
@@ -1684,6 +1685,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 | `tests/unit/work.test.ts` | ADR-42, WK-01, WK-02, WK-03, WK-04 |
 | `tests/unit/workflows.test.ts` | CD-01, CI-01, CI-02, CI-03, CM-02, LV-04, PF-04, PW-06, RR-01, RR-02, RR-03, RR-04, SEC-15, SH-03, SH-04, SH-05 |
 | `tests/unit/writePaths.test.ts` | — |
+| `tests/unit/writeRefusals.test.ts` | — |
 | `tests/unit/zorder.test.ts` | LV-05 |
 
 ### Lint rules
@@ -1731,7 +1733,7 @@ the codebase that the hand-written judgement has not caught up with. A release r
 empty — Stage 3c's `P-1` adds the release workflow and that gate with it. Until then they are
 advisory, and Stage 4 curates them.
 
-<!-- generated:start section=11 sha=8a4d35e date=2026-09-30 -->
+<!-- generated:start section=11 sha=5943c14 date=2026-09-30 -->
 
 ### New since section 6 was curated
 

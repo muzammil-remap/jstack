@@ -21,6 +21,7 @@ import { useSessionStore } from "@/stores/session";
 import { useSettingsStore } from "@/stores/settings";
 import { useTaskCardStore } from "@/stores/taskCard";
 import { useTodayStore } from "@/stores/today";
+import { sayRefused } from "@/lib/optimistic";
 
 /** the option the card shows as picked: the person's, else the recommended, else the first */
 function cardPick(card: ActionItem): 1 | 2 | 3 {
@@ -28,7 +29,7 @@ function cardPick(card: ActionItem): 1 | 2 | 3 {
 }
 
 export function approveCard(card: ActionItem): Promise<void> {
-  return useTodayStore.getState().answer(card.id, { verb: "approve", option: cardPick(card) });
+  return useTodayStore.getState().answer(card.id, { verb: "approve", option: cardPick(card) }).catch(sayRefused);
 }
 
 export function reviseCard(card: ActionItem): void {
@@ -40,11 +41,11 @@ export function reviseCard(card: ActionItem): void {
   // not consume the proposal. `ConfigureDialog` answers the card and
   // re-proposes together, so the two never come apart.
   if (card.kind === "section") return openModal("life-config", card.id);
-  void useTodayStore.getState().answer(card.id, { verb: "revise", revision: "" });
+  void useTodayStore.getState().answer(card.id, { verb: "revise", revision: "" }).catch(sayRefused);
 }
 
 export function laterCard(card: ActionItem): Promise<void> {
-  return useTodayStore.getState().answer(card.id, { verb: "later" });
+  return useTodayStore.getState().answer(card.id, { verb: "later" }).catch(sayRefused);
 }
 
 /** why a decision's verbs are off without a connection (OF-08) — the card's, the waiting row's and the menu's */

@@ -183,7 +183,8 @@ export function ToastHost() {
           accessibilityLabel={undoLabel}
           // A4R11-01: the toast arrives under the finger that raised it — a
           // second press at that point would take back the write they meant
-          onPress={(e) => (pressLands("toast-undo", e) ? void undoLatest() : undefined)}
+          // a revert that fails comes back, with this toast, while its window lasts (A4R7-12): that is the answer, not a rejection
+          onPress={(e) => (pressLands("toast-undo", e) ? void undoLatest().catch(() => undefined) : undefined)}
           // AUDIT_v2.md B4-01: this rendered 54 x 18 — the Undo control behind
           // UN-01..04 and every Done/Approved/Accepted toast, under the 36px
           // floor 01_APP_SPEC.md §13 vetoes breaking. GL-05 read PASS only

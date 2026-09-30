@@ -15,6 +15,7 @@ import { OFFLINE_REASON } from "@/lib/cardVerbs";
 import { useSessionStore } from "@/stores/session";
 import { useTodayStore } from "@/stores/today";
 import { space } from "@/theme/tokens";
+import { sayRefused } from "@/lib/optimistic";
 
 export function ReviseDialog({ id, onClose }: { id: string; onClose: () => void }) {
   const card = useTodayStore((s) => s.composite?.needsYou.find((a) => a.id === id));
@@ -30,6 +31,9 @@ export function ReviseDialog({ id, onClose }: { id: string; onClose: () => void 
     try {
       await saveDraft(id, text);
       await answer(id, { verb: "revise", revision: text });
+    } catch (e) {
+      sayRefused(e); // the dialog stays open with the words in it
+      return;
     } finally {
       setSaving(false);
     }

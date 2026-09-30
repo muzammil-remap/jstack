@@ -14,6 +14,7 @@ import { bp, space } from "@/theme/tokens";
 import { useTokens } from "@/theme/ThemeProvider";
 import { useLayout } from "@/theme/useLayout";
 import type { NotificationGroup } from "@/data/types";
+import { sayRefused } from "@/lib/optimistic";
 
 /** wider than the 40px switch itself: at exactly 40 the four toggles butted
  * into each other and the device columns read as one continuous grey bar at
@@ -183,7 +184,7 @@ export function Notifications() {
             testID="push-switch"
             accessibilityLabel="Push to this device"
             value={push === "on"}
-            onValueChange={(next: boolean) => void togglePush(next)}
+            onValueChange={(next: boolean) => void togglePush(next).catch(sayRefused)}
           />
         ) : null}
       </View>

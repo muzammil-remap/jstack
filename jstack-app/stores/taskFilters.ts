@@ -18,6 +18,7 @@ import { ContractError } from "@/data/ApiAdapter";
 import { getAdapter } from "@/data/provider";
 import { recordLoad } from "@/lib/loadError";
 import type { Slicer } from "@/data/types";
+import { attempt, REFUSED } from "@/lib/optimistic";
 
 /** the slice's data half, once — `stores/tasks.ts` spreads it into `INITIAL`, so
  * a test resets from the one declaration rather than a hand-typed copy (F-84, P-2) */
@@ -47,7 +48,8 @@ export type TaskFilterSlice = {
   clearFilters: (focus?: string) => Promise<void>;
   setRange: (range: TaskRange, focus?: string) => Promise<void>;
   loadSlicers: () => Promise<void>;
-  putSlicers: (next: Slicer[]) => Promise<void>;
+  /** `false` when refused — said in a toast, nothing changed */
+  putSlicers: (next: Slicer[]) => Promise<boolean>;
   /** TF-07: the slicer, the filters and the range all back to their defaults in
    * one tap — one control for the three things a person can narrow by, because
    * three Clears would leave two of them on. */
@@ -109,11 +111,13 @@ export function createTaskFilterSlice(
       }
     }),
     putSlicers: async (next) => {
-      const slicers = await getAdapter().putSlicers(next);
+      const slicers = await attempt(() => getAdapter().putSlicers(next));
+      if (slicers === REFUSED) return false;
       // a slicer that was selected and has just been removed cannot stay
       // selected: the chip is gone and the list would go on filtering by it
       set({ slicers, slicersLoaded: true, slicer: slicers.some((x) => x.id === get().slicer) ? get().slicer : null });
       await get().load();
+      return true;
     },
 
     clearAll: async (focus) => {
