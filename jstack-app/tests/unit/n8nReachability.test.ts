@@ -36,6 +36,8 @@ function onN8n(): { provider: Provider; adapter: Adapter; session: Session; usag
     };
     /* eslint-enable @typescript-eslint/no-require-imports */
   });
+  // the session opens locked, and a locked session's calls wait for the unlock (ADR-83) — past the gate, to reach the transport
+  loaded.session.useSessionStore.setState({ locked: false });
   return loaded;
 }
 

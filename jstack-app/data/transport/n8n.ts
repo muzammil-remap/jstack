@@ -10,6 +10,8 @@
  *  - a write with a key goes to its webhook; every other write answers `501 { reason: "not
  *    connected yet" }` and never leaves the device.
  *
+ * While the device is locked, every call but the unlocking ones waits for the unlock (ADR-83).
+ *
  * A webhook's refusal comes back as the contract's status, so `ApiAdapter` throws the same
  * `ContractError` it would for the real backend. A request nothing answered is the network's error,
  * thrown as it is, so the outbox queues it.
@@ -84,13 +86,31 @@ async function write(route: Route, asked: Asked, report: Report): Promise<Transp
   return viaWebhook(wired.key, wired.adapter, asked, true, report);
 }
 
-/** The transport, reporting the connection to `report` — `data/provider.ts` passes the session's. */
-export function createN8nTransport(report: Report = () => {}): Transport {
+/** The device gate: whether it is shut, and a promise for the moment it opens. */
+export type Gate = { locked: () => boolean; opened: () => Promise<void> };
+
+const ALWAYS_OPEN: Gate = { locked: () => false, opened: async () => {} };
+
+/**
+ * The transport, reporting the connection to `report` and holding every call while `gate` is shut —
+ * `data/provider.ts` passes the session's for both.
+ *
+ * ADR-83: a locked app gets nothing, as Josh's server gives nothing to a device that has not passed
+ * this open's passkey ceremony (`CONTRACT.md` §4, "`401` no session or locked"). The call WAITS
+ * rather than answering 401: the shell loads its settings, parameters and the mounted tab once, under
+ * the gate, and nothing loads them again on unlock, so a refusal would leave them failed. Waiting,
+ * nothing reaches the proxy until the gate opens, and then every held call goes out as it was asked.
+ * What unlocks — the nonce, the ceremony, recovery — and the emergency lock go through
+ * (`whileLocked`, the rows `lib/lockGate.ts` lets past too).
+ */
+export function createN8nTransport(report: Report = () => {}, gate: Gate = ALWAYS_OPEN): Transport {
   return async (req) => {
     for (const { route, pattern } of TABLE) {
       if (route.method !== req.method) continue;
       const m = pattern.exec(req.path);
       if (m == null) continue;
+      // re-checked after each wait: a gate that shut again before this call's turn holds it again
+      while (route.whileLocked !== true && gate.locked()) await gate.opened();
       const asked: Asked = { req, params: m.slice(1).map((p) => decodeURIComponent(p)) };
       return route.method === "GET" ? read(route, asked, report) : write(route, asked, report);
     }

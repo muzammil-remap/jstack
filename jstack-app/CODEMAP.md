@@ -79,7 +79,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 
 ## 2. The map of the territory
 
-<!-- generated:start section=2 sha=513d731 date=2026-09-30 -->
+<!-- generated:start section=2 sha=ccc2612 date=2026-09-30 -->
 
 ### `app/`
 
@@ -294,7 +294,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `labels.ts` | 135 | Data labels — silos and types on every record (spec §15.10, `DATA_LABELS.md`, contract §12.1). | 19 files |
 | `parameters.ts` | 148 | The parameter registry (ADR-41, L-1) — six tunables, in one typed table. | 5 files |
 | `pins.ts` | 52 | Certificate-pinning scaffold (spec §14.9 — SEC-08, contract §9): the SPKI pins arrive with the completed BACKEND_HANDSHAKE (30-day rotation overlap). | `data/n8n/client.ts`, `data/transport/http.ts` |
-| `provider.ts` | 87 | Provider swap point (ADR-02). | 29 files |
+| `provider.ts` | 105 | Provider swap point (ADR-02). | 29 files |
 | `routes.ts` | 329 | routes.ts — the one table (ADR-33, S-1): every endpoint, once. | 6 files |
 | `taskFilters.ts` | 135 | The task filter shape, declared ONCE (TK-14, S-2, F-1). | 14 files |
 | `types.ts` | 1553 | Wire shapes — 1:1 with CONTRACT_v2.md §3 (camelCase, ISO 8601 UTC, money as strings with `sensitivity: sens`). | 131 files |
@@ -365,7 +365,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `Transport.ts` | 43 | The one boundary between ApiAdapter and "how a request actually travels" (ADR-02). | 36 files |
 | `http.ts` | 142 | The real transport (ADR-02): fetch, the auth header and the pinning guard (SEC-08). | `data/n8n/client.ts`, `data/provider.ts` |
 | `mock.ts` | 21 | The in-process mock transport (ADR-02): routes straight into data/mock/server.ts's router — no network, no serialisation round trip, but the same request/response shape as httpTransport so ApiAdapter (and every test built against it) is oblivious to which one is live. | `data/provider.ts`, `lib/serverEvents.ts` |
-| `n8n.ts` | 119 | The n8n transport (ADR-76): the third implementation of the one boundary, beside `httpTransport` and `mockTransport`, answering every route from Josh's n8n webhooks or honestly without them. | `data/provider.ts` |
+| `n8n.ts` | 139 | The n8n transport (ADR-76): the third implementation of the one boundary, beside `httpTransport` and `mockTransport`, answering every route from Josh's n8n webhooks or honestly without them. | `data/provider.ts` |
 | `outbox.ts` | 343 | `withOutbox(inner, queue, isOnline, isEmergency)` — the transport that does not lose a capture (O-1, OF-01..07). | 19 files |
 | `reachability.ts` | 43 | `withReachability(inner, report)` — whether the server can be reached, told by the requests themselves (A-1, WP-A). | `data/provider.ts` |
 
@@ -593,7 +593,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 Endpoint → store action → component → testIDs, one block per contract group, from
 `wiring.json`.
 
-<!-- generated:start section=3 sha=513d731 date=2026-09-30 -->
+<!-- generated:start section=3 sha=ccc2612 date=2026-09-30 -->
 
 ### agents
 
@@ -920,6 +920,7 @@ them; `tools/gen-codemap.mjs` lists any that this section does not name.
 | `tests/unit/n8nCalendar.test.ts` | Phase 3: `GET /calendar` from the `calendar` webhook — each view's window is `rangeFor`'s (literal instants for both board zones, turning over at the device's midnight), the redacted real replies map to a valid `CalendarWindow`, an all-day event runs midnight to midnight with Google's exclusive end, a missing end is half an hour, the mock's start-in-window, gaps and focus rules hold, and any other reply is the section's 502 |
 | `tests/unit/allDay.test.ts` | Option C: the one all-day test (the time grid's `isAllDay`: local midnight to a later local midnight; a timed hour, eleven to midnight, midnight to noon and a zero-length midnight are not) and `eventsCovering` (a two-day event on both its days and neither neighbour, an overnight event on both, a zero-length one on its instant's day) — instants from each board zone's offset |
 | `tests/native/calendarAllDay.test.tsx` | Option C, rendered: in Week a two-day all-day event sits in the strip on both its days (the empty Saturday keeps the strip's height so the hours stay level) and never in a track, a timed event stays in its track, no all-day event means no strip, and the Calendar card says "all day", never "0:00" |
+| `tests/unit/n8nLocked.test.ts` | ADR-83: on n8n, while the gate is shut every call waits and nothing reaches the proxy — webhook reads, local answers and keyless writes alike — while the unlocking routes and the emergency lock go through; on unlock each held call is answered and each workflow runs once; through the provider the session's own lock holds Today, `unlock()` releases it and a relock holds the next; the mock still answers under the gate |
 | `tests/unit/n8nToday.test.ts` | Phase 5: `GET /today` from the live sources — a valid TodayComposite whose calendar is exactly `GET /calendar`'s today answer, whose tasks are the first three not done in Twenty's order, with no cards, lines or delta (even when asked), the glance and the close at nothing; a failed source fails the composite; one cold load of Today, the grid and the Tasks tab runs each workflow once, counted at the fetch |
 | `tests/unit/n8nTasks.test.ts` | Phase 4: the Tasks routes from Twenty — the redacted replies are valid TaskList/Task/WaitingList/ColumnList answers, the cursor is followed and capped at ten pages with one warning, every status maps (a non-empty waitingOn on a task not done is waiting; status decides done-ness over bucket; an unknown status is open with a warning), owner is josh, the priority and area switches each off and on, due is the local day of dueAt, no completion time, the Board mirrors bucket, and the mock's focus, slicer, range, filter, search and order rules hold |
 | `tests/unit/n8nReachability.test.ts` | ADR-78: on n8n a local answer and a `501` leave the session's `online` as it was and queue nothing, `GET /usage` is the Usage section's error, and a real webhook call reports offline on a network failure and online on any answer, a refusal included |
@@ -1400,7 +1401,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 
 ## 7. The decision index
 
-<!-- generated:start section=7 sha=513d731 date=2026-09-30 -->
+<!-- generated:start section=7 sha=ccc2612 date=2026-09-30 -->
 
 `DECISIONS.md` — ADR-01..75, each with its status; the versioned decision files hold the full reasoning.
 
@@ -1485,7 +1486,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 
 ## 8. The test map
 
-<!-- generated:start section=8 sha=513d731 date=2026-09-30 -->
+<!-- generated:start section=8 sha=ccc2612 date=2026-09-30 -->
 
 ### Specs
 
@@ -1613,7 +1614,8 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 | `tests/unit/n8nCalendar.test.ts` | ADR-47, ADR-76, ADR-80, ADR-82 |
 | `tests/unit/n8nClient.test.ts` | ADR-76 |
 | `tests/unit/n8nConfig.test.ts` | ADR-76, CD-14 |
-| `tests/unit/n8nReachability.test.ts` | ADR-78 |
+| `tests/unit/n8nLocked.test.ts` | ADR-83 |
+| `tests/unit/n8nReachability.test.ts` | ADR-78, ADR-83 |
 | `tests/unit/n8nRoutes.test.ts` | ADR-76, ADR-78 |
 | `tests/unit/n8nTasks.test.ts` | — |
 | `tests/unit/n8nToday.test.ts` | — |
@@ -1724,7 +1726,7 @@ the codebase that the hand-written judgement has not caught up with. A release r
 empty — Stage 3c's `P-1` adds the release workflow and that gate with it. Until then they are
 advisory, and Stage 4 curates them.
 
-<!-- generated:start section=11 sha=513d731 date=2026-09-30 -->
+<!-- generated:start section=11 sha=ccc2612 date=2026-09-30 -->
 
 ### New since section 6 was curated
 

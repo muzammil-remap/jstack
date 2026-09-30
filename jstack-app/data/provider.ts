@@ -12,7 +12,7 @@ import { webSocket, type Socket } from "@/lib/voice";
 import type { DataProvider } from "./DataProvider";
 import { httpTransport } from "./transport/http";
 import { mockTransport } from "./transport/mock";
-import { createN8nTransport, n8nVoiceSocket } from "./transport/n8n";
+import { createN8nTransport, n8nVoiceSocket, type Gate } from "./transport/n8n";
 import type { Transport } from "./transport/Transport";
 import { withOutbox, type Outbox } from "./transport/outbox";
 import { withReachability } from "./transport/reachability";
@@ -44,7 +44,7 @@ let outbox: Outbox | null = null;
  */
 function liveTransport(): Transport {
   // `=== "n8n"`, not a switch: a test that mocks data/config with only the older names leaves DATA_SOURCE undefined
-  if (DATA_SOURCE === "n8n") return createN8nTransport(reportReachable);
+  if (DATA_SOURCE === "n8n") return createN8nTransport(reportReachable, sessionGate);
   return USE_API_ADAPTER ? withReachability(httpTransport, reportReachable) : mockTransport;
 }
 
@@ -54,6 +54,24 @@ function build(): { adapter: DataProvider; outbox: Outbox } {
   const wrapped = withOutbox(inner, createQueueStore(), () => useSessionStore.getState().online, () => useSessionStore.getState().emergency);
   return { adapter: new ApiAdapter(wrapped.transport), outbox: wrapped };
 }
+
+/** ADR-83: the device gate, for the n8n transport's hold — shut while the
+ * session is `locked`, open the moment it is not. */
+const sessionGate: Gate = {
+  locked: () => useSessionStore.getState().locked,
+  opened: () =>
+    new Promise<void>((resolve) => {
+      const stop = useSessionStore.subscribe((s) => {
+        if (s.locked) return;
+        stop();
+        resolve();
+      });
+      if (!useSessionStore.getState().locked) {
+        stop();
+        resolve();
+      }
+    }),
+};
 
 /** Only a CHANGE is written: every request reports, and a store update per
  * request would wake every subscriber for nothing. */
