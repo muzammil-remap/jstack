@@ -1,0 +1,19 @@
+{
+  "label": "mock",
+  "taskFooter": "Tasks live in Twenty · open in Twenty",
+  "boardColumnsTwenty": 1,
+  "ganttOpenTwenty": 1,
+  "agentsSubtitleAndUsage": [
+    "needs attention · $0.40",
+    "RUNS TODAY",
+    "$0.40",
+    "$0.43",
+    "$0.43 of $200 this month",
+    "EA · $0.43/$150",
+    "Watchdog · $0/$20",
+    "Librarian · $0/$30"
+  ],
+  "quietHours": "Quiet hours, 9:30pm to 7am, apply to all but security.",
+  "external": [],
+  "console": []
+}

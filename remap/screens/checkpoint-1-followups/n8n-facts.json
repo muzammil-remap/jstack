@@ -1,0 +1,19 @@
+{
+  "label": "n8n",
+  "taskFooter": "Tasks live in Twenty",
+  "boardColumnsTwenty": 0,
+  "ganttOpenTwenty": 0,
+  "agentsSubtitleAndUsage": [
+    "all healthy · $0.00",
+    "RUNS TODAY",
+    "$0.00",
+    "$0",
+    "$0 of $0 this month",
+    "landing about $0",
+    "USAGE",
+    "This month"
+  ],
+  "quietHours": "Quiet hours, 11pm to 7am, apply to all but security.",
+  "external": [],
+  "console": []
+}

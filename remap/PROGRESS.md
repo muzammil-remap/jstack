@@ -284,3 +284,66 @@ Empty states that read wrong (app copy or contract-valid empties; none changed, 
 8. Settings › Schedules shows Needs you at 8:00–9:00 and 16:00–17:00, paused: the app's own
    `PAUSED_SCHEDULE` for a record with no schedule, not data.
 9. Brain's Find placeholder is "what did Andy say?" (app copy naming a fixture person).
+
+## Phase 1 follow-ups — the answers to Checkpoint 1 (30 Sep 2026)
+
+Committed on branch `remap/n8n` (from `main`); the untouched import is tagged `client-baseline`
+(`f681c9b`). Nothing is pushed.
+
+### Git
+
+- Phase 1 went in as four commits: the pre-existing REMAP docs, dev proxy and DASH exports; the
+  app work (`feat(n8n)`); the mock rebuild on its own (`chore(remap): rebuild packaged mock
+  (generated)`); the notes. `remap/n8n/reference/` is **not committed**: Josh's original workflows
+  carry his Telegram chat id. Say if you want it in anyway.
+- `remap/codemap.sh` replaces plain `pnpm codemap`: it restores `REMAP_HANDOVER.html` only while
+  `diagrams/` is missing, so once the folder is fetched the regenerated page is kept.
+- `.gitignore`: `!remap/.env.local.example`. `git check-ignore`: `remap/.env.local`,
+  `jstack-app/.env.n8n.local` and `jstack-app/.env.local` stay ignored; the example is tracked.
+
+### Empty states that read as facts (answer 3)
+
+How the app reacts, checked before choosing: `withReachability` counts any answer as the server
+reachable and only a network failure as offline; the outbox never touches a GET; a store turns any
+status ≥ 400 into its `loadError`. So `501 { reason: "not connected yet" }` is a section error, not
+"offline" — **with one defect found on the way**: the n8n transport answers most routes on the
+device, and wrapped in `withReachability` each local answer read as the server answering. With the
+proxy down, `sync.probe`'s local `GET /capabilities` would have put the session back online. The
+transport now reports reachability itself, around `callWebhook` only (ADR-78);
+`tests/unit/n8nReachability.test.ts` proves a local answer and a 501 leave `online` as it was,
+nothing is queued, and a webhook call reports false on a network failure and true on any answer
+(the old wiring, planted back, turns it red).
+
+What changed, and what could not without a UI edit — **the question for you is below**:
+
+| Route or surface | Result |
+|---|---|
+| `GET /usage` | kind `unavailable` → 501. The Usage section (a config record) survives a failed load and shows an empty card instead of "$0 this month · 0 tokens". Screenshot `n8n-agents.png` |
+| `GET /agents/summary`, `/agents/spend`, `/agents/issues`, `/agents/feed`, `/security/checks`, and the rail's "all healthy · $0.00" (fed by the summary) | **unchanged, still empty.** `stores/agents.ts` loads all seven Agents reads in one `Promise.all`, and `app/(tabs)/agents.tsx` shows the tab-level "Couldn't load · tap to retry" whenever the load failed and there is no summary. One 501 would replace the whole Agents tab — Portals and the Emergency lock card included — and leave its subtitle at "loading…". Even with the loads split, Issues, Feed and Checks render their empty copy ("Nothing failing…") for an empty list, so an honest state there needs a component change |
+| `GET /memory/hitrate`, and the "Librarian runs again at 2:00" line | **unchanged.** `stores/brain.ts` loads Latest in, proposals and the hit-rate in one `Promise.all`, and a failure with no captures replaces the whole Brain tab — the capture field and Find with it. The Librarian sentence is hard-coded in `components/brain/Memory.tsx` for any empty proposal list; no route controls it |
+| At a glance | People and Goals are required numbers in `TodayComposite.glance`, with no unknown value, so they wait for Phase 6. Money is a string and already reads blank |
+| Health's ghost | the only honest "not connected" pattern the app has: a config section's `feed` names a capability, and its ghost shows while the flag is off. The capability names are a closed list (`layout/catalogue.tsx` `FEEDS`); none fits usage or agents |
+
+### The other answers
+
+- **Answer 4, "open in Twenty":** `components/tasks/Gantt.tsx`'s `TWENTY_URL` is `TWENTY_APP_URL`
+  on a real build, `null` when that is unset, and the mock's placeholder on the mock. The three
+  links (Tasks' footer, Gantt, Board) render only when it is set; the footer's "Tasks live in
+  Twenty" stays. Mock mode is unchanged (all three links present, captured). Screenshots
+  `n8n-tasks-*.png`, `mock-tasks-*.png`.
+- **Answer 5, quiet hours:** 23:00–07:00, Security excepted, the mock's Needs-you schedule
+  (ADR-79). Checked in `JSTACK-SEND-OR-QUEUE`: its Check Quiet Hours node reads the hour with
+  `timeZone: 'Australia/Brisbane'` and holds 23:00–07:00, whatever the workflow's own Asia/Karachi
+  setting — so the two agree. The app reads quiet hours in the device's zone. Settings shows
+  "Quiet hours, 11pm to 7am, apply to all but security."
+- **Answer 6, autonomy:** every category "Ask me" (already so; recorded in ADR-79).
+
+Gates after the follow-ups: `pnpm check`, `pnpm lint`, codemap walker (the same 22), unused
+exports: clean. `pnpm test` in both zones: the same 16 failing suites and 80 failing tests as after
+Phase 1, no new failure. QA-06 went red in the board run because the mock was re-packaged after
+the tests; re-run after the rebuild, `pwa.test.ts` passes 33/33. `build-web`, `build:web:prod` and
+the mock rebuild pass (`58403ca31d5e`). Console on both builds: 0 messages; requests off the page's
+origin: 0.
+
+Port 4173 is still held by a `serve:web` node process started 28 Sep (the setup session); it serves
+`~/.jstack-dist` from disk, so the mock capture above used it. Not stopped.

@@ -4,6 +4,28 @@ One line per file. Newest phase first. Josh's own files are named with what was 
 
 **Generated files** are marked **regenerate in the target repo, don't port**: `jstack-mock-v15.html` (re-packaged from the source) and `REMAP_HANDOVER.html` (never committed changed; `remap/codemap.sh` restores it). Port the source and rebuild them there.
 
+## Phase 1 follow-ups — the answers to Checkpoint 1 (30 Sep 2026)
+
+| File | Change | Why |
+|---|---|---|
+| `jstack-app/data/n8n/registry.ts` | new kind `unavailable`; `getUsage` uses it | an empty that claims activity ("$0 · 0 tokens") answers 501 instead (ADR-78) |
+| `jstack-app/data/transport/n8n.ts` | `createN8nTransport(report)`: reachability reported around `callWebhook` only; `unavailable` → 501 | local answers were read as the server answering (ADR-78) |
+| `jstack-app/data/provider.ts` | n8n uses `createN8nTransport(reportReachable)`, not `withReachability` | the same |
+| `jstack-app/data/n8n/defaults.ts` | quiet hours 23:00–07:00 with the mock's Needs-you schedule; autonomy comment | ADR-79 |
+| `jstack-app/components/tasks/Gantt.tsx` | **edit to an existing file (Josh's UI):** `TWENTY_URL` from `TWENTY_APP_URL`, `null` on a real build without it, the placeholder kept on the mock; its "Open in Twenty" link hidden when `null` | answer 4 |
+| `jstack-app/components/tasks/TaskViews.tsx` | **edit to an existing file (Josh's UI):** the footer's "open in Twenty" hidden when `TWENTY_URL` is `null` | answer 4 (a guard at each of the three call sites) |
+| `jstack-app/components/tasks/Board.tsx` | **edit to an existing file (Josh's UI):** "Columns · edit in Twenty" hidden when `TWENTY_URL` is `null` | answer 4 (Board is now 246 of its 250 lines) |
+| `jstack-app/tests/unit/n8nReachability.test.ts` | new | ADR-78: a local answer and a 501 leave `online` alone; a webhook call reports it |
+| `jstack-app/tests/unit/n8nRoutes.test.ts` | `getUsage` added to the literal 501 list | the expectation changed on purpose (ADR-78), recorded here and in PROGRESS.md |
+| `jstack-app/CODEMAP.md` | §1 paragraph (reachability, `unavailable`), §4 row for the new test; maps regenerated | a convention changed |
+| `DECISIONS.md` | ADR-78, ADR-79 in REMAP's table | answers 3, 5, 6 |
+| `KNOWN_GAPS.md` | N8N-2 rewritten: what `unavailable` fixed and what the Agents and Brain stores prevent | answer 3 |
+| `jstack-mock-v15.html` | re-packaged again, own commit | QA-06. **Generated — regenerate in the target repo, don't port** |
+| `.gitignore` | `!remap/.env.local.example` | answer 7 |
+| `remap/.env.local.example` | now tracked (no values in it) | answer 7 |
+| `remap/PROGRESS.md` | follow-ups section | the log |
+| `remap/screens/checkpoint-1-followups/` | new: the changed sections on the n8n build and the mock build, with the facts read off each | answer 3's "screenshot every changed section" |
+
 ## Phase 1 — the n8n transport, no live calls (29 Sep 2026)
 
 ### App code (`feat(n8n): …`)
