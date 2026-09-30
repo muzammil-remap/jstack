@@ -863,3 +863,35 @@ reads); the calendar and the tasks came from the shared calls.
 3. The toast's "rule offered" after Never is the mock's copy (`lib/decisionCopy.ts`); on n8n the
    offer is the EA's to make.
 4. Test cards stay until deleted (N8N-12); the EA contract now says never to act on `dashtest-`.
+
+## The hand test's crash — a refused write (30 Sep 2026)
+
+**The bug:** a write the n8n build does not connect answers `501`, which is right, but the store
+action rejected with nothing catching it: "Uncaught Error: contract error 501: not connected yet"
+(a Board drag into Done: `moveTask` → `requestComplete` → `completeTask`; Dictate to EA:
+`sendChat`). A real server's 5xx took the same path.
+
+**The audit.** All 69 non-GET routes (`data/routes.ts`) traced to their store actions and from
+there to every call. The ones that could reject into nothing — a `void action()` from a tap, or
+an `await` in a handler with no `catch` — are the writes in `remap/CHANGESET.md`'s table, and so
+could the reads a tab or dialog starts on its own (the calendar window, the history, the review,
+schedules, layouts, devices, habits, projects, a task's usage and the boot settings load).
+Already safe: the writes through `optimisticWrite` (task fields, subtasks, the Gantt), the life
+editors, the parameter, the upload, marking a reply read, the section verbs
+(`layout/SectionRenderer.tsx`), and the Emergency lock's own dialog.
+
+**The fix** (`remap/CHANGESET.md` lists every file): the convention already in the app, applied
+where it was missing — a tap's write says "Couldn't · <reason>" and changes nothing (what it had
+moved goes back: the dragged card stays in its column, Dictate's line comes off the thread, the
+journal and dump drafts come back); an editor's save answers `false` and its dialog stays open; a
+read that fails keeps what is on screen. No UI changed shape; three helpers in `lib/optimistic.ts`.
+
+**Proved:** `tests/unit/writeRefusals.test.ts` (26), with every write answering `501` and an
+`unhandledRejection` listener on the file. With three of the fixes undone it fails 7 cases —
+the two reported paths among them.
+
+**The Emergency lock on n8n:** "Hold to lock" asks for a fresh passkey (the nonce is a local
+default), then `POST /lock` answers `501`; its dialog says "Nothing was locked · the server said:
+not connected yet" and the app stays as it was — unlocked and working. It cannot reach the
+emergency-locked screen on n8n; if it ever did, Recover now says its refusal instead of sticking on
+"recovering". `KNOWN_GAPS.md` N8N-1 corrected (it said "local only").

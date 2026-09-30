@@ -4,6 +4,45 @@ One line per file. Newest phase first. Josh's own files are named with what was 
 
 **Generated files** are marked **regenerate in the target repo, don't port**: `jstack-mock-v15.html` (re-packaged from the source) and `REMAP_HANDOVER.html` (never committed changed; `remap/codemap.sh` restores it). Port the source and rebuild them there.
 
+## The hand test's crash — a refused write is said, never an unhandled rejection (30 Sep 2026)
+
+"Uncaught Error: contract error 501: not connected yet" from a Board drag into Done and from Dictate
+to EA. Every non-GET route's caller, and every uncaught GET, was traced to the tap that starts it
+(`remap/PROGRESS.md`). The convention the app already had: a write returns its refusal and the caller
+toasts it (`lib/optimistic.ts`, `components/tasks/Board.tsx`), in the words the section verbs use
+("Couldn't · <reason>", `layout/SectionRenderer.tsx`); a read that fails keeps what is on screen
+(`loadColumns`, `loadRoster`). **Edits to Josh's code, each the smallest that closes one path:**
+
+| File | Change |
+|---|---|
+| `jstack-app/lib/optimistic.ts` | `sayRefused(e)` (the toast), `attempt(request)` (the answer, or `REFUSED` once said), `saveWith(request, keep)` (`true` kept / `false` said) |
+| `jstack-app/stores/taskCard.ts` | accept, delegate and complete (the Board drag into Done) say their refusal and change nothing; a report answers `null` when refused; reopening says its refusal; the card's re-read keeps its copy when unreadable |
+| `jstack-app/stores/tasks.ts` | nudge says its refusal; the filter's project list keeps what it had |
+| `jstack-app/stores/taskFilters.ts` | `putSlicers` answers `false` when refused |
+| `jstack-app/stores/agents.ts` | reopen, the schedule verbs, run a check and act on an issue say their refusal; the schedules, the history and the reload after a write keep what they had |
+| `jstack-app/stores/life.ts` | a habit tap says its refusal and ticks nothing; archived habits and habit stats keep what they had |
+| `jstack-app/stores/dictate.ts` | a refused Dictate line comes off the thread (and is rethrown for the dialog); the thread keeps what it had |
+| `jstack-app/stores/settings.ts` | quiet hours, autonomy, voice, focuses and a notification group answer `false` when refused and say why (the A4R6-11 rule, from "not loaded" to "refused" too); the layouts and the export still reject as Josh's tests pin, and their callers catch; the layout and device reads keep what they had |
+| `jstack-app/stores/rules.ts` | `put` answers `false` when refused; `load` still rejects (WPF-7 pins it) and its two callers catch |
+| `jstack-app/components/settings/Rules.tsx` | the rules load catches |
+| `jstack-app/stores/brain.ts` | Find says a failed search; an item's versions read empty when unreadable |
+| `jstack-app/stores/today.ts` | the calendar window, the 3-day list, the review and the history keep what they had (line-neutral: the file is at its 200-line cap) |
+| `jstack-app/stores/usage.ts` | a task's usage line is left out when unreadable |
+| `jstack-app/lib/cardVerbs.ts` | Approve, Later and Revise (the buttons and the keys) say their refusal |
+| `jstack-app/lib/boot.ts` | the boot settings load and the Ctrl+Z undo catch |
+| `jstack-app/components/chrome/Toast.tsx` | the Undo press catches (a failed revert re-offers itself, A4R7-12) |
+| `jstack-app/components/today/DecisionCard.tsx`, `Insight.tsx`, `CloseDay.tsx` | Never, Teach, the insight's two verbs and the journal send catch |
+| `jstack-app/components/today/ReviseDialog.tsx`, `TeachSheet.tsx`, `components/agents/CapsDialog.tsx`, `components/settings/Devices.tsx` | a refused save is said, and the dialog stays open with what was typed |
+| `jstack-app/components/chrome/LockedScreen.tsx` | a refused Recover is said and its button works again (it stayed on "recovering") |
+| `jstack-app/components/brain/DictateDialog.tsx` | a refused line is said and its words come back |
+| `jstack-app/components/brain/Entry.tsx`, `Memory.tsx`, `ProposalEdit.tsx`, `ItemEditor.tsx`, `components/detail/GoalDetail.tsx`, `components/life/ConfigureDialog.tsx` | the send, a proposal, an item edit, a task from a goal and the section config catch; the dialogs close only on success |
+| `jstack-app/components/chrome/ArrangeDialog.tsx`, `EaLayoutBanner.tsx`, `components/settings/Appearance.tsx`, `RulesEditDialog.tsx`, `components/tasks/SlicerEditDialog.tsx`, `components/tasks/EaReport.tsx`, `components/settings/Notifications.tsx` | the success toast only on success; the push switch catches |
+| `jstack-app/tests/unit/writeRefusals.test.ts` | new: every write 501 — no unhandled rejection, nothing left changed, every fire-and-forget call caught, every write route accounted for |
+| `jstack-app/CODEMAP.md` | §4 row for the new test; maps regenerated |
+| `KNOWN_GAPS.md` | N8N-1: what the Emergency lock does on n8n |
+| `jstack-mock-v15.html` | re-packaged (own commit). **Generated — regenerate in the target repo, don't port** |
+| `remap/PROGRESS.md` | the section on the fix |
+
 ## Phase 6 · `actions` — Needs you, live (30 Sep 2026)
 
 | File | Change | Why |
