@@ -3,10 +3,11 @@
  * it accepts, and the `CalendarWindow` it answers, against the redacted real replies in
  * `tests/fixtures/n8n/`.
  *
- * The window is `rangeFor`'s, local midnight to local midnight on the DEVICE (ADR-47), so every
- * instant below is a literal for each zone the board runs in (`jest.config.js`: New York by
- * default, Brisbane under `JSTACK_TZ`) — never recomputed with the functions under test. New York
- * is on EDT (−04:00) for every date here; DST ends on 1 November 2026.
+ * The window runs local midnight to local midnight on the DEVICE (ADR-47): `rangeFor`'s for Today
+ * and 3 days, the grid's own days for Week and Month (ADR-82). Every instant below is a literal for
+ * each zone the board runs in (`jest.config.js`: New York by default, Brisbane under `JSTACK_TZ`) —
+ * never recomputed with the functions under test. New York is on EDT (−04:00) until DST ends on
+ * 1 November 2026, EST (−05:00) after.
  */
 import { calendarAdapter } from "@/data/n8n/adapters/calendar";
 import type { Asked } from "@/data/n8n/registry";
@@ -30,6 +31,8 @@ type Zone = {
   casesToday: string[];
   /** the same day's gaps: only the events that take time (not all-day, not marked free) */
   casesGaps: FreeGap[];
+  /** Week and Month across a month boundary: anchor → [timeMin, timeMax) */
+  boundary: Record<string, [string, string]>;
 };
 
 const ZONES: Record<string, Zone> = {
@@ -38,14 +41,15 @@ const ZONES: Record<string, Zone> = {
     windows: {
       today: ["2026-09-29T14:00:00.000Z", "2026-09-30T14:00:00.000Z"],
       "3day": ["2026-09-29T14:00:00.000Z", "2026-10-02T14:00:00.000Z"],
-      week: ["2026-09-29T14:00:00.000Z", "2026-10-06T14:00:00.000Z"],
-      month: ["2026-09-29T14:00:00.000Z", "2026-10-29T14:00:00.000Z"],
+      // Monday 28 September to Monday 5 October; September's grid, Monday 31 August to Monday 5 October
+      week: ["2026-09-27T14:00:00.000Z", "2026-10-04T14:00:00.000Z"],
+      month: ["2026-08-30T14:00:00.000Z", "2026-10-04T14:00:00.000Z"],
     },
     windowsDayBefore: {
       today: ["2026-09-28T14:00:00.000Z", "2026-09-29T14:00:00.000Z"],
       "3day": ["2026-09-28T14:00:00.000Z", "2026-10-01T14:00:00.000Z"],
-      week: ["2026-09-28T14:00:00.000Z", "2026-10-05T14:00:00.000Z"],
-      month: ["2026-09-28T14:00:00.000Z", "2026-10-28T14:00:00.000Z"],
+      week: ["2026-09-27T14:00:00.000Z", "2026-10-04T14:00:00.000Z"],
+      month: ["2026-08-30T14:00:00.000Z", "2026-10-04T14:00:00.000Z"],
     },
     midnight: ["2026-09-29T13:59:59.000Z", "2026-09-29T14:00:01.000Z"],
     allDay: ["2026-10-01T14:00:00.000Z", "2026-10-03T14:00:00.000Z"],
@@ -56,20 +60,26 @@ const ZONES: Record<string, Zone> = {
       { startsAt: "2026-09-29T22:00:00.000Z", endsAt: "2026-09-30T05:00:00.000Z" },
       { startsAt: "2026-09-30T06:00:00.000Z", endsAt: "2026-09-30T10:00:00.000Z" },
     ],
+    boundary: {
+      "week 2026-10-01": ["2026-09-27T14:00:00.000Z", "2026-10-04T14:00:00.000Z"],
+      "week 2026-10-05": ["2026-10-04T14:00:00.000Z", "2026-10-11T14:00:00.000Z"],
+      "month 2026-10-15": ["2026-09-27T14:00:00.000Z", "2026-11-01T14:00:00.000Z"],
+      "month 2026-11-10": ["2026-10-25T14:00:00.000Z", "2026-11-29T14:00:00.000Z"],
+    },
   },
   "America/New_York": {
     offset: "-04:00",
     windows: {
       today: ["2026-09-30T04:00:00.000Z", "2026-10-01T04:00:00.000Z"],
       "3day": ["2026-09-30T04:00:00.000Z", "2026-10-03T04:00:00.000Z"],
-      week: ["2026-09-30T04:00:00.000Z", "2026-10-07T04:00:00.000Z"],
-      month: ["2026-09-30T04:00:00.000Z", "2026-10-30T04:00:00.000Z"],
+      week: ["2026-09-28T04:00:00.000Z", "2026-10-05T04:00:00.000Z"],
+      month: ["2026-08-31T04:00:00.000Z", "2026-10-05T04:00:00.000Z"],
     },
     windowsDayBefore: {
       today: ["2026-09-29T04:00:00.000Z", "2026-09-30T04:00:00.000Z"],
       "3day": ["2026-09-29T04:00:00.000Z", "2026-10-02T04:00:00.000Z"],
-      week: ["2026-09-29T04:00:00.000Z", "2026-10-06T04:00:00.000Z"],
-      month: ["2026-09-29T04:00:00.000Z", "2026-10-29T04:00:00.000Z"],
+      week: ["2026-09-28T04:00:00.000Z", "2026-10-05T04:00:00.000Z"],
+      month: ["2026-08-31T04:00:00.000Z", "2026-10-05T04:00:00.000Z"],
     },
     midnight: ["2026-09-30T03:59:59.000Z", "2026-09-30T04:00:01.000Z"],
     allDay: ["2026-10-02T04:00:00.000Z", "2026-10-04T04:00:00.000Z"],
@@ -78,6 +88,13 @@ const ZONES: Record<string, Zone> = {
     casesToday: ["case-before", "case-allday", "case-twoday", "case-busy", "case-tomorrow"],
     // busy: 01:00–02:00 (before the day) and 19:00–20:00 local
     casesGaps: [{ startsAt: "2026-09-30T10:00:00.000Z", endsAt: "2026-09-30T23:00:00.000Z" }],
+    boundary: {
+      "week 2026-10-01": ["2026-09-28T04:00:00.000Z", "2026-10-05T04:00:00.000Z"],
+      "week 2026-10-05": ["2026-10-05T04:00:00.000Z", "2026-10-12T04:00:00.000Z"],
+      // the grid's last day is 1 November, the night DST ends: its midnight after is EST
+      "month 2026-10-15": ["2026-09-28T04:00:00.000Z", "2026-11-02T05:00:00.000Z"],
+      "month 2026-11-10": ["2026-10-26T04:00:00.000Z", "2026-11-30T05:00:00.000Z"],
+    },
   },
 };
 
@@ -113,13 +130,31 @@ const raw = (over: Record<string, unknown>) => ({ id: "e1", title: "Event", star
     });
   });
 
+  describe("Week and Month fetch exactly the days the grid draws (ADR-82)", () => {
+    it.each(["week 2026-10-01", "week 2026-10-05", "month 2026-10-15", "month 2026-11-10"])("%s, across a month boundary", (label) => {
+      const [view, anchor] = label.split(" ");
+      const [timeMin, timeMax] = zone.boundary[label];
+      expect(calendarAdapter.body(ask({ view, anchor }))).toEqual({ timeMin, timeMax, maxResults: view === "month" ? 500 : 250 });
+    });
+
+    it("a month grid is 35 days, inside the webhook's 45-day limit — and November 2026's 30th is not in it (the grid's own limit)", () => {
+      const { timeMin, timeMax } = calendarAdapter.body(ask({ view: "month", anchor: "2026-11-10" })) as { timeMin: string; timeMax: string };
+      const days = (Date.parse(timeMax) - Date.parse(timeMin)) / 86_400_000;
+      expect(Math.round(days)).toBe(35);
+      expect(days).toBeLessThanOrEqual(45);
+    });
+  });
+
   describe("the real reply maps to the contract", () => {
-    it("this week's sample: three events, each field from its source, and a valid CalendarWindow", () => {
+    /** ADR-82: the Week is Monday to Sunday now, so Monday 5 October's event is next week's */
+    it("this week's sample: the two events of Mon 28 Sep – Sun 4 Oct, each field from its source, and a valid CalendarWindow", () => {
       const res = map(sample("calendar").data, { view: "week", anchor: "2026-09-30" });
       expect(res.status).toBe(200);
       expect(contractErrors(res.json, "/calendar")).toEqual([]);
       const events = (res.json as { events: CalEvent[]; gaps: FreeGap[] }).events;
-      expect(events.map((e) => e.id)).toEqual(["event001", "event002", "event003_20261005"]);
+      expect(events.map((e) => e.id)).toEqual(["event001", "event002"]);
+      const next = (map(sample("calendar").data, { view: "week", anchor: "2026-10-05" }).json as { events: CalEvent[] }).events;
+      expect(next.map((e) => e.id)).toEqual(["event003_20261005"]);
       expect(events[1]).toEqual({
         id: "event002",
         title: "Event B",
@@ -139,8 +174,8 @@ const raw = (over: Record<string, unknown>) => ({ id: "e1", title: "Event", star
       expect({ startsAt: events[0].startsAt, endsAt: events[0].endsAt }).toEqual({ startsAt: zone.allDay[0], endsAt: zone.allDay[1] });
     });
 
-    it("the month sample is a valid CalendarWindow too", () => {
-      const res = map(sample("calendar.month").data, { view: "month", anchor: "2026-09-30" });
+    it("the month sample is a valid CalendarWindow too (October's grid)", () => {
+      const res = map(sample("calendar.month").data, { view: "month", anchor: "2026-10-15" });
       expect(res.status).toBe(200);
       expect(contractErrors(res.json, "/calendar")).toEqual([]);
       expect((res.json as { events: CalEvent[] }).events.length).toBeGreaterThan(10);
@@ -227,7 +262,7 @@ const raw = (over: Record<string, unknown>) => ({ id: "e1", title: "Event", star
     it("?focus= narrows by silo: every event is personal", () => {
       const data = sample("calendar").data;
       const count = (focus?: string) => (map(data, { view: "week", anchor: "2026-09-30", focus }).json as { events: CalEvent[] }).events.length;
-      expect({ all: count("all"), none: count(), personal: count("personal"), work: count("work"), family: count("family") }).toEqual({ all: 3, none: 3, personal: 3, work: 0, family: 0 });
+      expect({ all: count("all"), none: count(), personal: count("personal"), work: count("work"), family: count("family") }).toEqual({ all: 2, none: 2, personal: 2, work: 0, family: 0 });
     });
   });
 

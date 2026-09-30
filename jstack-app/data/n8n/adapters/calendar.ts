@@ -5,8 +5,12 @@
  * The mock is the spec (`data/mock/handlers/calendar.ts`), and its rules are copied here rather
  * than imported, because `data/n8n/` may not import `data/mock/` (CT-03) — with one exception:
  *
- *  - the window is `rangeFor`'s: local midnight on the anchor to local midnight after it — one day
- *    for `today`, three for `3day`, seven for `week`, a calendar month for `month`;
+ *  - the window runs local midnight to local midnight: one day from the anchor for `today`, three
+ *    for `3day` (`rangeFor`'s), and for `week` and `month` exactly the days the grid draws —
+ *    Monday to Sunday of the anchor's week (`daysFor` → `weekOf`), and the anchor's month grid
+ *    (`monthGrid`, 35 days today; the webhook takes up to 45). The mock's `rangeFor` starts both at
+ *    the anchor, so on a Wednesday its week missed the Monday and Tuesday the grid draws, and its
+ *    month drew one day of data (ADR-82; the mock is left as it is);
  *  - an event is in the window when it OVERLAPS it (ADR-80). The mock keeps only events that start
  *    in the window, which its fixtures never tested: on real data a two-day event would vanish on
  *    its second day, and yesterday's two-day event would be missing today. Google returns every
@@ -20,7 +24,7 @@
  * Dates go through `lib/time.ts`, and every instant out is ISO 8601 UTC. Anything in the reply that
  * is not the shape below is a 502 for this section alone — never a guess at what was meant.
  */
-import { addDays, addMonths, atTime, now, todayKey } from "@/lib/time";
+import { addDays, atTime, monthGrid, now, todayKey, weekStart } from "@/lib/time";
 import { N8N_CALENDAR_SOURCE } from "@/data/config";
 import type { Silo } from "@/data/labels";
 import type { CalendarSource, CalendarView, CalEvent, FreeGap } from "@/data/types";
@@ -56,10 +60,12 @@ function asked(a: Asked): { view: CalendarView; anchor: string } {
   return { view, anchor: raw != null && DAY_KEY.test(raw) ? raw : todayKey() };
 }
 
-/** `data/mock/handlers/calendar.ts` `rangeFor` */
+/** `today` and `3day` as `data/mock/handlers/calendar.ts` `rangeFor`; `week` and `month` the grid's days (ADR-82) */
 function rangeFor(view: CalendarView, anchor: string): { start: Date; end: Date } {
-  const endKey = view === "3day" ? addDays(anchor, 3) : view === "week" ? addDays(anchor, 7) : view === "month" ? addMonths(anchor, 1) : addDays(anchor, 1);
-  return { start: atTime(anchor, 0), end: atTime(endKey, 0) };
+  const days = view === "month" ? monthGrid(anchor) : null;
+  const first = view === "week" ? weekStart(anchor) : days != null ? days[0] : anchor;
+  const span = view === "3day" ? 3 : view === "week" ? 7 : days != null ? days.length : 1;
+  return { start: atTime(first, 0), end: atTime(addDays(first, span), 0) };
 }
 
 /** `data/mock/handlers/calendar.ts` `gapsFor` */
