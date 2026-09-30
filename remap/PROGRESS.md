@@ -9,6 +9,7 @@ _(the coding agent fills this in from Phase 0)_
 | 1 | ~~The Agents tab and the rail claim health with no source~~ — **done 30 Sep** (option b, ADR-90): each such section says "Not connected yet" | `KNOWN_GAPS.md` N8N-2 | the agent-stats / agent-health workflows (`remap/WORKFLOWS-NEEDED.md` 2.13, 2.14); if they are not live by then, per-section loading in `stores/agents.ts` and `stores/brain.ts` |
 | 2 | The month grid drops the last day of a six-row month — 30 November 2026 is the first, then 31 May 2027 | `KNOWN_GAPS.md` N8N-4 | a 42-day grid in `lib/time.ts` `monthGrid` (Josh's code; the calendar adapter already follows the grid's length) |
 | 3 | At 820 px the Today Calendar card's heading runs into its links ("CALENDAR" over "today · 3 days · google"); the mock does the same | `KNOWN_GAPS.md` N8N-9 | Josh's layout (`components/today/CalendarList.tsx`); no change for now |
+| 4 | Settings › Autonomy says "Autonomy saved · **enforced server-side**" — nothing enforces it on n8n (found in the final check, 30 Sep) | `KNOWN_GAPS.md` N8N-21 | the EA reads the autonomy record before acting, or Josh's copy changes; no change for now |
 
 ## Open decisions for Josh
 
@@ -1129,3 +1130,69 @@ passed untouched. Screenshots in `remap/screens/private/checkpoint-6-email/`.
 
 And `dashtest-p6-email-1` joins the actions table's test cards (answered approve — the EA ignores
 `dashtest-` ids).
+
+## Final check — every tab, Settings and Find, at 1440 and 390, on live data (30 Sep 2026)
+
+**How.** A Playwright script unlocked with a virtual passkey, opened each tab plus Settings and Find, and
+clicked every button once (a repeated pattern, such as one per task row, twice). At 1440 it also clicked
+every button inside whatever that click opened. It used a Brisbane browser, the 8788 proxy and the n8n
+export. Screenshots and the JSON reports are in `remap/screens/private/final-check/`.
+
+**Nothing of Josh's was written.** Reads went through: calendar, tasks, files, the list/get ops of
+actions, brain and calendar-edit, and records get/list. Records saves went through only for keys under a
+`dashtest-` namespace. Every other write was answered in the browser with a `503` ("held by the REMAP
+check") and never reached the proxy: task ticks (`tasks-write`), and at 1440 also the records saves
+(a guard too strict for the new namespace). So the app's own refusal path is what showed.
+
+| | 1440 | 390 |
+|---|---|---|
+| Buttons clicked (+ inside what they opened) | 178 (+222) | 183 |
+| Page errors | 0 | 0 |
+| "Something broke" screens | 0 | 0 |
+| Console errors or warnings | only Chrome logging the held `503`s (116) | only the held `503`s (4) |
+| Writes held in the browser | 116 (records, tasks-write) | 4 (tasks-write) |
+
+What else it saw:
+- Every held write toasted "Couldn't · held by the REMAP check" and put the screen back.
+- Every unwired write toasted "Couldn't · not connected yet":
+  - Draft a nudge
+  - *reopen* in Decision history
+  - *configure › save*
+  - editing a Brain item
+- Usage's *Copy as CSV* toasted "Nothing to copy".
+- The rows not clicked were Tasks' List rows and Gantt bars, once an earlier click had switched the
+  view away from them. Today's task ticks and Board cards cover the same code.
+- On the phone, Find is a full-screen view and closed with its own button. "Type" in Close the day
+  focuses the journal field, which hides the tab bar while you type; it isn't a stuck screen.
+
+**Found, and done:**
+- **The Agents heading said "loading…" for good.** No summary ever comes on n8n. It now says "not
+  connected yet" (`app/(tabs)/agents.tsx`, one case in `tests/native/notConnected.test.tsx`, N8N-2),
+  checked live at both sizes on a rebuilt export, console empty.
+- **Settings › Autonomy toasts "Autonomy saved · enforced server-side"**, and nothing enforces it. That's
+  Josh's copy, so it isn't changed: must-fix row 4, `KNOWN_GAPS.md` N8N-21.
+
+**The first attempt (09:08 UTC)** clicked everything inside Arrange and the focus editor, including
+hide-section, hide-tab and remove-focus. Those saved, under the `dashtest-p6/` namespace (REMAP's, not
+Josh's), a layout with the other tabs hidden. There were no errors, but the rest of that run couldn't
+reach the other tabs. The rerun used a fresh namespace, `dashtest-p6c/`, and skipped those toggles,
+each of which had already been clicked once without an error.
+
+**Test records to delete — the records data table:** every key starting `dashtest-p6/` and every key
+starting `dashtest-p6c/`.
+
+### Today, section by section (1440 and 390)
+
+| Section | State |
+|---|---|
+| Needs you | **works** (actions store; approve → Gmail draft, checked end to end) — **empty until the EA writes** cards (0 now) |
+| From your EA · insight and replies | **works** (Block it, Leave it, Dismiss checked on test items) — **empty until the EA writes** |
+| From your EA · Talk with EA | **coming soon** (its own screen says voice isn't in this build) |
+| From your EA · Dictate to EA | **works** (brain `chat`; the EA's answer arrives later, in the thread) |
+| All calendars (Today · 3 days · Week · Month) | **works** (Google Calendar) |
+| Calendar (the list) | **works**; *google* opens Google Calendar |
+| Your tasks | **works** (Twenty; a tick completes the task — checked on a test task, held in this check) |
+| At a glance | Habits and Goals **work** (records store); People **empty until a source** (N8N-17, Josh's decision); Money **later (V5)** |
+| Close the day | **works**: the habit chips (records store), "How was today?" (brain `journal`); its mic is the device's own dictation |
+| The floating mic | **coming soon** (toast) |
+| The header: Review the week, focus chips, Arrange, Help, Theme | **works** (Arrange and focuses save to the records store) |

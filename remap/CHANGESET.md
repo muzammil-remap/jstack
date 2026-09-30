@@ -4,6 +4,17 @@ One line per file. Newest phase first. Josh's own files are named with what was 
 
 **Generated files** are marked **regenerate in the target repo, don't port**: `jstack-mock-v15.html` (re-packaged from the source) and `REMAP_HANDOVER.html` (never committed changed; `remap/codemap.sh` restores it). Port the source and rebuild them there.
 
+## The final check, the Agents heading, RUN-LOCAL (30 Sep 2026)
+
+| File | Change | Why |
+|---|---|---|
+| `jstack-app/app/(tabs)/agents.tsx` | **edit to Josh's screen**: the heading says "not connected yet" when the summary has no source, instead of "loading…" for good | N8N-2 (ADR-90); found by the final check |
+| `jstack-app/tests/native/notConnected.test.tsx` | one case: the heading with no source, and "loading…" while one is on its way (fails without the edit) | REMAP's own test |
+| `jstack-app/CODEMAP.md` | its §4 row | a guard is named in §4 |
+| `remap/RUN-LOCAL.md` | new: start the proxy and the app, open, unlock, Brisbane time, what to check on each tab, what not to click | item 4c |
+| `KNOWN_GAPS.md` | N8N-2 note; N8N-21 (the autonomy toast's "enforced server-side") | found by the final check |
+| `remap/PROGRESS.md` | the final check; must-fix row 4; the test namespaces | the record |
+
 ## The `brain` key, the voice "not yet", the email approve (30 Sep 2026)
 
 | File | Change | Why |
