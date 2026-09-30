@@ -28,6 +28,8 @@ type Zone = {
   day: [string, string];
   /** `calendar.cases.json`, today on 30 September: the ids that overlap the device's day */
   casesToday: string[];
+  /** the same day's gaps: only the events that take time (not all-day, not marked free) */
+  casesGaps: FreeGap[];
 };
 
 const ZONES: Record<string, Zone> = {
@@ -49,6 +51,11 @@ const ZONES: Record<string, Zone> = {
     allDay: ["2026-10-01T14:00:00.000Z", "2026-10-03T14:00:00.000Z"],
     day: ["2026-09-29T20:00:00.000Z", "2026-09-30T10:00:00.000Z"],
     casesToday: ["case-before", "case-overnight", "case-allday", "case-twoday", "case-free", "case-busy"],
+    // busy: the overnight event until 08:00 and 15:00–16:00; the free 12:00 hour and the all-day ones do not count
+    casesGaps: [
+      { startsAt: "2026-09-29T22:00:00.000Z", endsAt: "2026-09-30T05:00:00.000Z" },
+      { startsAt: "2026-09-30T06:00:00.000Z", endsAt: "2026-09-30T10:00:00.000Z" },
+    ],
   },
   "America/New_York": {
     offset: "-04:00",
@@ -69,6 +76,8 @@ const ZONES: Record<string, Zone> = {
     day: ["2026-09-30T10:00:00.000Z", "2026-10-01T00:00:00.000Z"],
     // New York's 30 September is 04:00Z to 04:00Z: the Brisbane-offset timed cases fall elsewhere
     casesToday: ["case-before", "case-allday", "case-twoday", "case-busy", "case-tomorrow"],
+    // busy: 01:00–02:00 (before the day) and 19:00–20:00 local
+    casesGaps: [{ startsAt: "2026-09-30T10:00:00.000Z", endsAt: "2026-09-30T23:00:00.000Z" }],
   },
 };
 
@@ -196,6 +205,23 @@ const raw = (over: Record<string, unknown>) => ({ id: "e1", title: "Event", star
         { startsAt: iso("15:00:00"), endsAt: iso("20:00:00") },
       ]);
       expect((map({ events }, { view: "3day", anchor: "2026-09-30" }).json as { gaps: FreeGap[] }).gaps).toEqual([]);
+    });
+
+    it("gaps count only the events that take time: all-day and free (transparent) events leave them alone", () => {
+      const iso = (clock: string) => new Date(local(clock)).toISOString();
+      const whole = [{ startsAt: zone.day[0], endsAt: zone.day[1] }];
+      const gapsOf = (events: unknown[]) => (map({ events }, { view: "today", anchor: "2026-09-30" }).json as { gaps: FreeGap[] }).gaps;
+      expect(gapsOf([raw({ id: "a", start: "2026-09-30", end: "2026-10-01", allDay: true, transparency: "opaque" })])).toEqual(whole);
+      expect(gapsOf([raw({ id: "f", transparency: "transparent" })])).toEqual(whole);
+      expect(gapsOf([raw({ id: "b", transparency: "opaque" })])).toEqual([
+        { startsAt: iso("06:00:00"), endsAt: iso("09:00:00") },
+        { startsAt: iso("10:00:00"), endsAt: iso("20:00:00") },
+      ]);
+      expect(gapsOf([raw({ id: "c", transparency: undefined })]).length).toBe(2); // no transparency: busy, as Google's default is
+    });
+
+    it("the live-shaped cases' gaps", () => {
+      expect((map(sample("calendar.cases").data, { view: "today", anchor: "2026-09-30" }).json as { gaps: FreeGap[] }).gaps).toEqual(zone.casesGaps);
     });
 
     it("?focus= narrows by silo: every event is personal", () => {

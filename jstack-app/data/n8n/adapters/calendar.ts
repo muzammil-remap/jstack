@@ -12,7 +12,10 @@
  *    its second day, and yesterday's two-day event would be missing today. Google returns every
  *    event that overlaps the window, so this is the adapter's rule alone;
  *  - `?focus=` narrows by silo, as `inFocus` does (`data/n8n/focus.ts`);
- *  - `gaps` exist only for `today`: `gapsFor`'s idle stretches of an hour or more, 06:00 to 20:00.
+ *  - `gaps` exist only for `today`: `gapsFor`'s idle stretches of an hour or more, 06:00 to 20:00 —
+ *    counting only the events that take time. An all-day event (a birthday, a travel day, a public
+ *    holiday) and an event Google marks free (`transparency: "transparent"`) do not, so neither
+ *    empties the day of its free time. The mock counts every event; its fixtures hold neither kind.
  *
  * Dates go through `lib/time.ts`, and every instant out is ISO 8601 UTC. Anything in the reply that
  * is not the shape below is a 502 for this section alone — never a guess at what was meant.
@@ -42,7 +45,10 @@ const LABELLING: Record<CalendarSource, { silo: Silo; focus: string }> = {
   family: { silo: "family1", focus: "family" },
 };
 
-type RawEvent = { id: string; title: string; start: string; end: string | null; allDay: boolean; htmlLink?: unknown; updated?: unknown; protectedByEa?: unknown };
+type RawEvent = { id: string; title: string; start: string; end: string | null; allDay: boolean; transparency?: unknown; htmlLink?: unknown; updated?: unknown; protectedByEa?: unknown };
+
+/** Whether an event takes time out of the day: not all-day, and not marked free in Google. */
+const takesTime = (r: RawEvent) => !r.allDay && r.transparency !== "transparent";
 
 function asked(a: Asked): { view: CalendarView; anchor: string } {
   const view = VIEWS.includes(a.req.query?.view as CalendarView) ? (a.req.query?.view as CalendarView) : "today";
@@ -128,8 +134,9 @@ export const calendarAdapter: WebhookAdapter = {
 
     const { view, anchor } = asked(a);
     const { start, end } = rangeFor(view, anchor);
-    const inWindow = (events as RawEvent[]).map(toEvent).filter((e) => overlaps(e, start, end));
-    const shown = inFocus(inWindow, a.req.query?.focus);
-    return { status: 200, json: { events: shown, gaps: view === "today" ? gapsFor(anchor, shown) : [] } };
+    const inWindow = (events as RawEvent[]).map((r) => ({ event: toEvent(r), busy: takesTime(r) })).filter(({ event }) => overlaps(event, start, end));
+    const shown = inFocus(inWindow.map(({ event }) => event), a.req.query?.focus);
+    const busy = new Set(inWindow.filter((p) => p.busy).map((p) => p.event));
+    return { status: 200, json: { events: shown, gaps: view === "today" ? gapsFor(anchor, shown.filter((e) => busy.has(e))) : [] } };
   },
 };
