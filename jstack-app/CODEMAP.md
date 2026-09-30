@@ -79,7 +79,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 
 ## 2. The map of the territory
 
-<!-- generated:start section=2 sha=2ab26b2 date=2026-09-30 -->
+<!-- generated:start section=2 sha=1cac523 date=2026-09-30 -->
 
 ### `app/`
 
@@ -264,8 +264,9 @@ stacking order. And a green test you have not seen fail is not evidence.
 
 | file | lines | purpose | imported by |
 |---|---|---|---|
-| `CalendarGrid.tsx` | 240 | CalendarGrid — Today's "All calendars" (CG-01..08): a segmented Today/ 3 days/Week/Month control over a time-grid or a month dot-grid, from `GET /calendar`. | `layout/registry.tsx` |
-| `CalendarList.tsx` | 112 | CalendarList — Today's "Calendar" list card (TD-04): time, title, a prep line in accent ink, free gaps as muted lines; hint "today · 3 days · google". | `layout/registry.tsx` |
+| `AllDayStrip.tsx` | 50 | AllDayStrip — the all-day events covering one day of the calendar grid, in a strip above its hours (REMAP, option C at Checkpoint 3): an all-day event has no hours, and drawn in the time track it landed above the card. | `components/today/CalendarGrid.tsx` |
+| `CalendarGrid.tsx` | 243 | CalendarGrid — Today's "All calendars" (CG-01..08): a segmented Today/ 3 days/Week/Month control over a time-grid or a month dot-grid, from `GET /calendar`. | `layout/registry.tsx` |
+| `CalendarList.tsx` | 113 | CalendarList — Today's "Calendar" list card (TD-04): time, title, a prep line in accent ink, free gaps as muted lines; hint "today · 3 days · google". | `layout/registry.tsx` |
 | `CloseDay.tsx` | 108 | CloseDay — Today's "Close the day" (TD-07): nine compact habit chips sharing stores/life.ts with Life's own Habits card (LF-02); a journal field that posts to `/journal` directly (empty submissions blocked). | `layout/registry.tsx` |
 | `DecisionBodies.tsx` | 183 | The bodies a decision card can carry (S-7, SM-03). | `components/today/DecisionCard.tsx` |
 | `DecisionCard.tsx` | 156 | DecisionCard — Needs you's single open card (ADR-13). | `components/today/NeedsYou.tsx` |
@@ -352,7 +353,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 
 | file | lines | purpose | imported by |
 |---|---|---|---|
-| `calendar.ts` | 128 | `GET /calendar` from Google Calendar, through the `calendar` webhook (JSTACK-DASH-calendar-read) — the request built, and the reply guarded and mapped into the contract's `CalendarWindow`. | `data/n8n/registry.ts` |
+| `calendar.ts` | 148 | `GET /calendar` from Google Calendar, through the `calendar` webhook (JSTACK-DASH-calendar-read) — the request built, and the reply guarded and mapped into the contract's `CalendarWindow`. | `data/n8n/registry.ts` |
 
 ### `data/transport/`
 
@@ -452,7 +453,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `testBuild.ts` | 13 | Test-build gateway — the ONLY door to test-only capability (SEC-01, TM-01). | `components/chrome/ErrorBoundary.tsx`, `lib/boot.ts`, `lib/pwa.ts` |
 | `testHook.ts` | 484 | e2e state hook (web only): Playwright asserts on STORE STATE, never logs. | `lib/testBuild.ts` |
 | `time.ts` | 428 | One time library, one basis: **the device's own time zone** (ADR-47, D-1). | 66 files |
-| `timeGrid.ts` | 75 | The calendar time grid's geometry (S-8). | `components/today/CalendarGrid.tsx`, `stores/today.ts` |
+| `timeGrid.ts` | 101 | The calendar time grid's geometry (S-8). | 4 files |
 | `unlockCopy.ts` | 68 | The words for the unlock mechanism, in one place, because they differ by platform and are shown on four surfaces. | 5 files |
 | `usage.ts` | 122 | The lines the app draws about what an agent run cost (T-4, ADR-43). | 6 files |
 | `voice.ts` | 46 | The live voice stack (V-1, CONTRACT_v21.md §4.11, ADR-24). | 7 files |
@@ -495,7 +496,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 | `taskEdits.ts` | 152 | taskEdits.ts (T-2/T-3) — every optimistic edit to a task or one of its subtasks, in one place. | 6 files |
 | `taskFilters.ts` | 128 | How the task list is narrowed (F-1, ADR-44) — a slice of `stores/tasks.ts`, not a store of its own. | `stores/tasks.ts` |
 | `tasks.ts` | 140 | tasks.ts (ADR-04) — the LIST: the rows, the active view/slicer/filters/range (the `taskFilters` slice), the slicer set, waiting-on rows, the board's columns, the delegatee roster, the header's open count and the project names. | 23 files |
-| `today.ts` | 200 | today.ts (ADR-04) — the Today composite, which decision card is open, option picks, the From-your-EA insight's local state, and the journal draft. | 23 files |
+| `today.ts` | 200 | today.ts (ADR-04) — the Today composite, which decision card is open, option picks, the From-your-EA insight's local state, and the journal draft. | 24 files |
 | `ui.ts` | 77 | ui.ts (E-1) — transient chrome state of the current viewport. | 9 files |
 | `usage.ts` | 82 | usage.ts (ADR-04, ADR-43) — what the agents spent: the Agents › Usage section's month (`GET /usage`) and the open task card's runs (`GET /tasks/{id}/usage`). | `components/tasks/TaskDetail.tsx`, `layout/sources.ts`, `layout/sourcesVerbs.ts` |
 | `voice.ts` | 199 | The live voice session, as app state (V-2, §4.11). | 6 files |
@@ -504,9 +505,9 @@ stacking order. And a green test you have not seen fail is not evidence.
 
 | file | lines | purpose | imported by |
 |---|---|---|---|
-| `ThemeProvider.tsx` | 68 | Theme mode reads stores/settings.ts (ADR-04), which persists it through lib/encryptedStore.ts (ADR-16: "theme mode and privacy blur are per- device local", never the server). | 80 files |
+| `ThemeProvider.tsx` | 68 | Theme mode reads stores/settings.ts (ADR-04), which persists it through lib/encryptedStore.ts (ADR-16: "theme mode and privacy blur are per- device local", never the server). | 81 files |
 | `tokens.ts` | 348 | generated by tools/gen-tokens.mjs from design/tokens — do not edit (see design/DISCREPANCIES.md for the three values this script overrides) | 127 files |
-| `ui.tsx` | 26 | UI primitives — the barrel (S-2, ADR-33). | 125 files |
+| `ui.tsx` | 26 | UI primitives — the barrel (S-2, ADR-33). | 126 files |
 | `useLayout.ts` | 41 | The one hook allowed to read the window width (ADR-07; enforced by eslint-rules/no-window-dimensions.js everywhere else). | 30 files |
 | `useReducedMotion.ts` | 22 | prefers-reduced-motion (GL-06): orb breathing + screen animations disabled. | `components/chrome/LiveMicOrb.tsx`, `components/chrome/Orb.tsx` |
 
@@ -589,7 +590,7 @@ stacking order. And a green test you have not seen fail is not evidence.
 Endpoint → store action → component → testIDs, one block per contract group, from
 `wiring.json`.
 
-<!-- generated:start section=3 sha=2ab26b2 date=2026-09-30 -->
+<!-- generated:start section=3 sha=1cac523 date=2026-09-30 -->
 
 ### agents
 
@@ -634,7 +635,7 @@ Endpoint → store action → component → testIDs, one block per contract grou
 
 | endpoint | store action | component | testIDs |
 |---|---|---|---|
-| `GET /calendar` | `today.loadCalendar`, `today.loadThreeDay` | `CalendarGrid`, `CalendarList` | `cal-day-`, `cal-event-`, `cal-hour-rule-`, `cal-legend` +11 |
+| `GET /calendar` | `today.loadCalendar`, `today.loadThreeDay` | `CalendarGrid`, `CalendarList` | `cal-allday-`, `cal-allday-event-`, `cal-day-`, `cal-event-` +13 |
 | `GET /events/{id}` | — | — | — |
 | `PATCH /events/{id}` | — | — | — |
 | `DELETE /events/{id}` | — | — | — |
@@ -914,6 +915,8 @@ them; `tools/gen-codemap.mjs` lists any that this section does not name.
 | `tests/unit/n8nClient.test.ts` | ADR-76: `callWebhook` POSTs JSON to `<base>/<key>` with no auth header, maps a DASH refusal to the contract's status (VALIDATION_ERROR → 422), retries once on a network failure or 5xx and never on a 4xx, times out as a network failure, and shares one request per key and body for 30 s — never for a write |
 | `tests/unit/n8nAllowList.test.ts` | ADR-76: the registry's webhook keys and the dev proxy's `ALLOW` are one set, no key or proxy path is a workflow that sends or returns file bytes, and no app source names a webhook path |
 | `tests/unit/n8nCalendar.test.ts` | Phase 3: `GET /calendar` from the `calendar` webhook — each view's window is `rangeFor`'s (literal instants for both board zones, turning over at the device's midnight), the redacted real replies map to a valid `CalendarWindow`, an all-day event runs midnight to midnight with Google's exclusive end, a missing end is half an hour, the mock's start-in-window, gaps and focus rules hold, and any other reply is the section's 502 |
+| `tests/unit/allDay.test.ts` | Option C: the one all-day test (`lib/timeGrid.ts` `isAllDay`: local midnight to a later local midnight; a timed hour, eleven to midnight, midnight to noon and a zero-length midnight are not) and `eventsCovering` (a two-day event on both its days and neither neighbour, an overnight event on both, a zero-length one on its instant's day) — instants from each board zone's offset |
+| `tests/native/calendarAllDay.test.tsx` | Option C, rendered: in Week a two-day all-day event sits in the strip on both its days (the empty Saturday keeps the strip's height so the hours stay level) and never in a track, a timed event stays in its track, no all-day event means no strip, and the Calendar card says "all day", never "0:00" |
 | `tests/unit/n8nReachability.test.ts` | ADR-78: on n8n a local answer and a `501` leave the session's `online` as it was and queue nothing, `GET /usage` is the Usage section's error, and a real webhook call reports offline on a network failure and online on any answer, a refusal included |
 | `tests/unit/n8nConfig.test.ts` | ADR-76: `EXPO_PUBLIC_DATA_SOURCE` defaults to the mock, `n8n` turns `USE_API_ADAPTER` on, and on n8n the provider routes through the n8n transport — no fixtures, a keyless write refused with 501, a voice socket that closes |
 | `tests/unit/useLayout.test.ts` | The three breakpoints, and that nothing else reads the window size |
@@ -1392,7 +1395,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 
 ## 7. The decision index
 
-<!-- generated:start section=7 sha=2ab26b2 date=2026-09-30 -->
+<!-- generated:start section=7 sha=1cac523 date=2026-09-30 -->
 
 `DECISIONS.md` — ADR-01..75, each with its status; the versioned decision files hold the full reasoning.
 
@@ -1477,7 +1480,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 
 ## 8. The test map
 
-<!-- generated:start section=8 sha=2ab26b2 date=2026-09-30 -->
+<!-- generated:start section=8 sha=1cac523 date=2026-09-30 -->
 
 ### Specs
 
@@ -1529,6 +1532,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 
 | test | acceptance IDs named |
 |---|---|
+| `tests/native/calendarAllDay.test.tsx` | — |
 | `tests/native/collapse.test.tsx` | CL-01, CL-02, CL-03, GL-00, GL-05 |
 | `tests/native/dictateOrb.test.tsx` | — |
 | `tests/native/encryptedStore.test.ts` | WPA-16 |
@@ -1543,6 +1547,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 | `tests/native/screens.test.tsx` | AA-05, ADR-47, BR-05, CB-04, CD-04, CD-18, GL-00, GL-07, JQ-06, LF-06, LL-03, MC-07, NR-04, OF-08, OP-06, TD-02, TE-03, VP-11 |
 | `tests/native/sections.test.tsx` | CB-01, CB-02, CB-04, NR-04, SH-06 |
 | `tests/native/secureStore.test.ts` | — |
+| `tests/unit/allDay.test.ts` | — |
 | `tests/unit/audit-check.test.ts` | SH-02, SH-07 |
 | `tests/unit/autoLock.test.ts` | ADR-41, LK-01, MC-07 |
 | `tests/unit/bnCaptureCarried.test.ts` | ADR-06, BN-02, BR-05, BR-11 |
@@ -1600,7 +1605,7 @@ header, a size limit in `tests/unit/sizes.test.ts`, an ADR.
 | `tests/unit/mic.test.ts` | ADR-49, MC-01, MC-06, MC-07, MC-08, MC-09, TD-05 |
 | `tests/unit/micAwake.test.ts` | MC-01, VP-07 |
 | `tests/unit/n8nAllowList.test.ts` | ADR-76 |
-| `tests/unit/n8nCalendar.test.ts` | ADR-47, ADR-76 |
+| `tests/unit/n8nCalendar.test.ts` | ADR-47, ADR-76, ADR-80, ADR-82 |
 | `tests/unit/n8nClient.test.ts` | ADR-76 |
 | `tests/unit/n8nConfig.test.ts` | ADR-76, CD-14 |
 | `tests/unit/n8nReachability.test.ts` | ADR-78 |
@@ -1712,7 +1717,7 @@ the codebase that the hand-written judgement has not caught up with. A release r
 empty — Stage 3c's `P-1` adds the release workflow and that gate with it. Until then they are
 advisory, and Stage 4 curates them.
 
-<!-- generated:start section=11 sha=2ab26b2 date=2026-09-30 -->
+<!-- generated:start section=11 sha=1cac523 date=2026-09-30 -->
 
 ### New since section 6 was curated
 

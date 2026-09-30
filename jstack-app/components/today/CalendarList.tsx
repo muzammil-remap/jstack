@@ -17,6 +17,7 @@ import { packPayload } from "@/layout/dialogKit";
 import { useSettingsStore } from "@/stores/settings";
 import { useTodayStore } from "@/stores/today";
 import { formatTime } from "@/lib/time";
+import { isAllDay } from "@/lib/timeGrid";
 import { useTokens } from "@/theme/ThemeProvider";
 
 const GOOGLE_CALENDAR_URL = "https://calendar.google.com/";
@@ -43,7 +44,7 @@ export function CalendarList() {
     ...events.map((e) => ({
       key: e.id,
       at: new Date(e.startsAt).getTime(),
-      time: formatTime(e.startsAt),
+      time: isAllDay(e) ? "all day" : formatTime(e.startsAt),
       node: (
         <View style={{ flex: 1 }}>
           <Txt>{e.title}</Txt>

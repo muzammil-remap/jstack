@@ -16,7 +16,7 @@
  * arithmetic on an instant already resolved to the day being drawn, not a
  * reading of a wall clock (`tests/unit/date-basis.test.ts`).
  */
-import { addDays, addMonths, dayKey, hourOfDay, weekOf } from "@/lib/time";
+import { addDays, addMonths, atTime, dayKey, hourOfDay, weekOf } from "@/lib/time";
 import type { CalendarView } from "@/data/types";
 
 export const HOUR_START = 6;
@@ -72,4 +72,30 @@ export function eventsOn<T extends { startsAt: string }>(events: T[], key: strin
   // slice put every morning on the previous column and the grid rendered
   // empty for the day it was showing.
   return events.filter((e) => dayKey(new Date(e.startsAt)) === key);
+}
+
+/**
+ * An all-day event: it starts at a local midnight and ends at a later one. `CalEvent` carries no
+ * all-day flag (a proposed contract addition, `KNOWN_GAPS.md` N8N-5), and the n8n calendar adapter
+ * writes every all-day event exactly so — Google's dates at local midnight, the end exclusive — so
+ * this ONE helper is how the grid, the month dots and the Calendar card tell. A timed event that
+ * happens to run from one midnight to another reads as all-day too; that is the price of no flag.
+ */
+export function isAllDay(e: { startsAt: string; endsAt: string }): boolean {
+  const start = new Date(e.startsAt);
+  const end = new Date(e.endsAt);
+  const atMidnight = (d: Date) => atTime(dayKey(d), 0).getTime() === d.getTime();
+  return end > start && atMidnight(start) && atMidnight(end);
+}
+
+/** The events that overlap one day key — a two-day event on both of its days (ADR-80's rule). A
+ * zero-length event counts on the day its instant falls on. */
+export function eventsCovering<T extends { startsAt: string; endsAt: string }>(events: T[], key: string): T[] {
+  const dayStart = atTime(key, 0);
+  const dayEnd = atTime(addDays(key, 1), 0);
+  return events.filter((e) => {
+    const start = new Date(e.startsAt);
+    const end = new Date(e.endsAt);
+    return start < dayEnd && (end > dayStart || (end.getTime() === start.getTime() && start >= dayStart));
+  });
 }

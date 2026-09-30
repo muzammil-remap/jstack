@@ -16,8 +16,9 @@ import {
 } from "@/lib/time";
 import {
   HOUR_LINE_STEP, HOUR_START, HOUR_END, PX_PER_HOUR, TRACK_HEIGHT,
-  daysFor, eventsOn, gridPosition,
+  daysFor, eventsCovering, eventsOn, gridPosition, isAllDay,
 } from "@/lib/timeGrid";
+import { AllDayStrip, allDayStripHeight, useAllDayRows } from "@/components/today/AllDayStrip";
 import { radius, space } from "@/theme/tokens";
 import { useTokens } from "@/theme/ThemeProvider";
 import type { CalendarView, CalEvent } from "@/data/types";
@@ -71,16 +72,17 @@ function EventBlock({ e }: { e: CalEvent }) {
   );
 }
 
-function DayColumn({ date, isToday }: { date: string; isToday: boolean }) {
+function DayColumn({ date, isToday, rows }: { date: string; isToday: boolean; rows: number }) {
   const c = useTokens();
   const allEvents = useTodayStore((s) => s.calendar.events);
-  const events = eventsOn(allEvents, date);
+  const events = eventsOn(allEvents, date).filter((e) => !isAllDay(e)); // all-day ones sit in the strip
   const clockOffsetMs = useSessionStore((s) => s.clockOffsetMs);
   const nowTop = (hourOfDay(new Date(Date.now() + clockOffsetMs)) - HOUR_START) * PX_PER_HOUR;
   const label = `${isToday ? "TODAY · " : ""}${DAY_ABBR[mondayIndex(date)]} ${Number(date.slice(8, 10))}`;
   return (
     <View style={{ flex: 1 }} testID={`cal-day-${date}`}>
       <Txt kind="gridLabel" style={{ marginBottom: 4, color: isToday ? c.accentInk : c.muted }}>{label}</Txt>
+      <AllDayStrip date={date} rows={rows} />
       <View
         testID={`cal-track-${date}`}
         style={{
@@ -117,9 +119,10 @@ function DayColumn({ date, isToday }: { date: string; isToday: boolean }) {
 
 function TimeGrid({ view, anchor, todayStr }: { view: CalendarView; anchor: string; todayStr: string }) {
   const days = daysFor(view, anchor);
+  const rows = useAllDayRows(days);
   return (
     <View style={{ flexDirection: "row", gap: 6 }}>
-      <View style={{ width: 24, marginTop: 17 }}>
+      <View style={{ width: 24, marginTop: 17 + allDayStripHeight(rows) }}>
         {[6, 8, 10, 12, 14, 16, 18, 20].map((h) => (
           <Txt key={h} kind="gridMicro" style={{ position: "absolute", top: (h - HOUR_START) * PX_PER_HOUR - 5 }}>
             {h}
@@ -128,7 +131,7 @@ function TimeGrid({ view, anchor, todayStr }: { view: CalendarView; anchor: stri
       </View>
       <View style={{ flex: 1, flexDirection: "row", gap: 4 }}>
         {days.map((d) => (
-          <DayColumn key={d} date={d} isToday={d === todayStr} />
+          <DayColumn key={d} date={d} isToday={d === todayStr} rows={rows} />
         ))}
       </View>
     </View>
@@ -144,7 +147,7 @@ function MonthGrid({ anchor, todayStr }: { anchor: string; todayStr: string }) {
     <View testID="cal-month" style={{ flexDirection: "row", flexWrap: "wrap" }}>
       {days.map((d) => {
         const inMonth = Number(d.slice(5, 7)) === monthNum;
-        const dots = Math.min(2, eventsOn(events, d).length);
+        const dots = Math.min(2, eventsCovering(events, d).length); // every day an event covers
         return (
           <View key={d} style={{ width: `${100 / 7}%`, paddingVertical: 6 }}>
             {inMonth && (
