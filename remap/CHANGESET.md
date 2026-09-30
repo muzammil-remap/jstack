@@ -4,6 +4,20 @@ One line per file. Newest phase first. Josh's own files are named with what was 
 
 **Generated files** are marked **regenerate in the target repo, don't port**: `jstack-mock-v15.html` (re-packaged from the source) and `REMAP_HANDOVER.html` (never committed changed; `remap/codemap.sh` restores it). Port the source and rebuild them there.
 
+## Phase 5 follow-ups — a locked app gets nothing (30 Sep 2026)
+
+| File | Change | Why |
+|---|---|---|
+| `jstack-app/data/transport/n8n.ts` | a `Gate` beside `report`: while it is shut every call but the `whileLocked` ones waits | ADR-83 |
+| `jstack-app/data/provider.ts` | **edit to an existing file (Josh's):** passes the session's `locked` to the n8n transport as its gate | ADR-83; mock and http untouched |
+| `jstack-app/tests/unit/n8nLocked.test.ts` | new | locked → 0 calls, unlocked → one per workflow, the mock unchanged |
+| `jstack-app/tests/unit/n8nReachability.test.ts` | its helper passes the gate (`locked: false`) before driving the provider | precondition made explicit, as `n8nConfig.test.ts` does |
+| `jstack-app/CODEMAP.md` | §4 row for the new test; maps regenerated | a guard is named in §4 |
+| `DECISIONS.md` | ADR-83 | the decision |
+| `KNOWN_GAPS.md` | N8N-1 rewritten for the hold; N8N-9 marked must-fix | Checkpoint 5 answers |
+| `jstack-mock-v15.html` | re-packaged (own commit). **Generated — regenerate in the target repo, don't port** | QA-06 |
+| `remap/PROGRESS.md` | the must-fix row 3; the follow-ups section | Checkpoint 5 answers |
+
 ## Phase 5 — the Today composite, live (30 Sep 2026)
 
 | File | Change | Why |

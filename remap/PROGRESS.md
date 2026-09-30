@@ -8,6 +8,7 @@ _(the coding agent fills this in from Phase 0)_
 |---|---|---|---|
 | 1 | The Agents tab and the rail claim health with no source: "all healthy · $0.00", 0 runs, 100%, "Nothing failing", "The Librarian runs again at 2:00" | `KNOWN_GAPS.md` N8N-2 | the agent-stats / agent-health workflows (`remap/WORKFLOWS-NEEDED.md` 2.13, 2.14); if they are not live by then, per-section loading in `stores/agents.ts` and `stores/brain.ts` |
 | 2 | The month grid drops the last day of a six-row month — 30 November 2026 is the first, then 31 May 2027 | `KNOWN_GAPS.md` N8N-4 | a 42-day grid in `lib/time.ts` `monthGrid` (Josh's code; the calendar adapter already follows the grid's length) |
+| 3 | At 820 px the Today Calendar card's heading runs into its links ("CALENDAR" over "today · 3 days · google"); the mock does the same | `KNOWN_GAPS.md` N8N-9 | Josh's layout (`components/today/CalendarList.tsx`); no change for now |
 
 ## Open decisions for Josh
 
@@ -757,3 +758,43 @@ applies there.
 At 820 px the Calendar card's heading and its links overlap ("CALENDAR" / "today · 3 days ·
 google"). The packaged mock does the same at that width, so it's the layout: `KNOWN_GAPS.md` N8N-9,
 Josh's.
+
+## Phase 5 follow-ups — a locked app gets nothing (30 Sep 2026)
+
+**Decided (ADR-83):** on the n8n build, every call made while the session is locked waits for the
+unlock; nothing reaches the proxy before it. The unlocking routes (`whileLocked` in
+`data/routes.ts`: the nonce, the ceremony, recovery, the emergency lock) go through. Built in
+`data/transport/n8n.ts` (a `Gate` beside `report`) and `data/provider.ts` (the session's
+`locked`); `lib/lockGate.ts` and every UI file are untouched.
+
+**Why it waits rather than answering 401**, which is what Josh's server answers (`CONTRACT.md`
+§4). How the app treats a refused read, checked before building:
+
+| | What happens |
+|---|---|
+| Boot | `lib/boot.ts` loads settings (focuses, layout, capabilities, sections), parameters and the rail's agents once, under the lock; the mounted tab loads on mount (`app/(tabs)/*.tsx`) |
+| Unlock | only the outbox replay (`lib/syncInstall.ts`) and `GET /session` (`stores/session.ts`) run again |
+| A 401 on a read | fails that call: `recordLoad` keeps the error and shows an offline copy if there is one (`lib/loadError.ts`); only `401 { reason: "reuse" }` relocks (`lib/authTokens.ts`); "any other 401 does not lock yet: that relock is REMAP's" (`lib/autoLock.ts`, WPF-13); `signedOut` comes only from a server event |
+
+So refused, the focus chips would have stayed empty (`settings.focuses` `[]`), every settings save
+would say "Settings haven't loaded", and Today would say it could not load until tapped. Waiting,
+the loads the shell already made are the ones that go out. Josh's real server will need the
+re-run-on-unlock (WPF-13); `KNOWN_GAPS.md` N8N-1 says so.
+
+**Proved** — `tests/unit/n8nLocked.test.ts` (5), and live against a second proxy on 8788 (one cold
+load, Chromium at 1440; `remap/screens/private/checkpoint-5b/`):
+
+| | Proxy log | Browser requests to `/n8n/` | App |
+|---|---|---|---|
+| Locked, 10 s | none | none | settings not loaded, no Today |
+| Unlocked | `tasks → 200 1111ms`, `calendar → 200 1448ms` | — | Josh signed in; settings loaded, focuses all/personal/family/work; Today 3 tasks, no load error |
+| Then the Tasks tab | none (the list shares the unlock's call) | — | 6 rows, 2 waiting, no load error |
+
+Console: 0 messages.
+
+`tests/unit/n8nReachability.test.ts` drives the provider without passing the gate; its helper now
+sets `locked: false` first, as `n8nConfig.test.ts`'s already did — the precondition made
+explicit, not an expectation changed.
+
+Also from Checkpoint 5: the overdue row is under **Open decisions for Josh** (Josh's spec, no change
+from us), and N8N-9, the 820 px Calendar heading, is on the must-fix list, unchanged for now.
