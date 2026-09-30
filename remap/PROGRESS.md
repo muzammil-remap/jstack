@@ -820,6 +820,8 @@ The table was empty before the test (no open cards, no history): the EA has writ
 | `dashtest-p6-curl` | 30 Sep 06:15 UTC, `op: "put"` by curl | Never (06:15), undone, Never again (06:15) — answered |
 | `dashtest-p6-ui` | 30 Sep 06:15 UTC, put again at 06:16 with its title's UTF-8 intact | Never in the app (06:22), undone, Never again (06:22) — answered |
 | `dashtest-p6-undo12` | 30 Sep 07:48 UTC, `op: "put"` (the N8N-11 re-check) | Never (07:48); the undo 11.6 s later was refused — answered |
+| `dashtest-p6-email-1` | 30 Sep 08:55 UTC, `op: "put"` by script (item 3, kind `quote`) | **Approve** in the app (08:56, the one approve item 3 authorised) — answered, Gmail draft made |
+| `dashtest-p6-undo12b` | 30 Sep 09:02 UTC, `op: "put"` (the second N8N-11 re-check) | Never (09:02); the undo 11 s later was refused — answered |
 
 
 `dashtest-p6-missing` was only ever ASKED for (the 404 and the 422) — there is no row. No other
@@ -909,6 +911,14 @@ live**: a new test card (`dashtest-p6-undo12`) answered Never at 07:48:50 UTC ca
 (`UNDO_EXPIRED`). The deployed Decide node still answers 10 s — the change needs saving (and the
 workflow re-activating) in n8n. Nothing in the app depends on it; re-checked before the final
 report.
+
+**Re-checked 30 Sep 09:02 UTC, after the re-export: still 10 s live.** A new card
+(`dashtest-p6-undo12b`) answered Never came back with `at` 09:02:21.032Z and `undoUntil`
+09:02:31.032Z — ten seconds — and the undo sent 11 s later was refused (`UNDO_EXPIRED`). The
+export in `remap/n8n/JSTACK-DASH-actions.json` says `UNDO_SECONDS = 12`, so the running version is
+not the exported one: the change is saved in the editor but not published (n8n runs the published
+version). (This machine's clock is 8 s behind; the store stamps both ends with its own, so it does
+not change the result.)
 
 ## Phase 6 · `calendar-edit` — nothing to wire yet (30 Sep 2026)
 
