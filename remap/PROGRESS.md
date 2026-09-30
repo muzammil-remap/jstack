@@ -476,3 +476,75 @@ subtasks.
 Housekeeping the same day: the raw unredacted replies were deleted from the session scratchpad
 (re-fetch through the proxy when needed); `remap/n8n/reference/` and `remap/screens/private/`
 (screenshots of the app on real data) are in `.gitignore`.
+
+## Phase 3 — the calendar, live (30 Sep 2026)
+
+`GET /calendar` answers from the `calendar` webhook through `data/n8n/adapters/calendar.ts`,
+mock-exact: `rangeFor`'s window (local midnight to local midnight: 1, 3 or 7 days or a calendar
+month from the anchor; `maxResults` 500 for the month, 250 otherwise), start-in-window,
+`inFocus`, and `gapsFor` for `today` only — copied from `data/mock/handlers/calendar.ts` because
+`data/n8n/` may not import the mock (CT-03). Each event: `id`, `title`, `startsAt`/`endsAt` (timed:
+the instant; all-day: local midnight of each date, Google's end exclusive; no end: +30 min),
+`source` = `N8N_CALENDAR_SOURCE` (`personal`), `labels` `{ personal:josh, [], source }`, `focus`
+`personal` (what the mock gives a personal event), `setAt` = `updated`, `googleUrl` = `htmlLink`,
+`protectedByEa` only when true, no `prep`. Anything else in the reply is the section's 502.
+`data/n8n/focus.ts` now holds the owner's silos and the four focuses, which the defaults use too.
+
+Tests: `tests/unit/n8nCalendar.test.ts` (26, both zones, literal instants per zone; a planted
+one-day-short week turned two red), and the sweep now stubs each wired key with its redacted
+sample and asserts per route that only a wired row with an adapter reaches a webhook, through its
+own key (an expectation changed on purpose: calendar is the first live row). The schema loader
+moved to a helper, `tests/unit/n8nContract.ts`.
+
+### Live, against the running proxy (n8n build, Chromium in Brisbane, 30 Sep)
+
+Screenshots are in `remap/screens/private/checkpoint-3/` — **gitignored, real calendar data**. I
+could not open Google Calendar's own page (its connector is not authorised here), so "next to
+Google" is the webhook's reply for the same days, which is what Google returned.
+
+| View | Webhook calls | What the app draws | Google (the webhook) for the days drawn |
+|---|---|---|---|
+| Today (grid) | 1 | nothing on 30 Sep | nothing on 30 Sep ✅ |
+| 3 days (grid) | 1 | Fri 2: the timed event in place ✅, and the all-day event — **drawn above the card** | Fri 2: 1 timed + 1 all-day (2–3 Oct) |
+| Calendar card, "3 days" | 0 (shared the grid's 3-day call) | the same two, the all-day one as a **"0:00" row** | same |
+| Week | 1 | Mon 28 – Sun 4: Fri 2 as above; **Sat 3 empty** | Fri 2 as above; the all-day event also covers Sat 3 |
+| Month | 1 | **September, no dots at all** | 22 events in October, 0 in September |
+
+Console on the run: 0 messages. Every call carried exactly the window `rangeFor` builds; the
+Calendar card's 3-day list reused the grid's call (the 30-second sharing), so four views cost four
+webhook runs.
+
+### What does not match yet
+
+1. **All-day events** (12 of 26 over 45 days) — the options below.
+2. **Week and Month ask for a different window than they draw** — a mock defect the fixtures hide.
+   `rangeFor` starts at the anchor (today), while the grid draws Monday–Sunday of the anchor's
+   week (`lib/timeGrid.ts` `daysFor` → `weekOf`) and the anchor's calendar month
+   (`monthGrid`). On Wednesday 30 Sep, Week fetches Wed 30 → Tue 6 and draws Mon 28 → Sun 4 (Mon
+   and Tue drawn but never fetched; next Mon 5 fetched and never drawn); Month fetches 30 Sep →
+   30 Oct and draws September (one day of overlap). Options: **W1** keep mock-exact (as now);
+   **W2** the adapter asks for what the grid draws — week `weekStart(anchor)` + 7 days, month the
+   35-day grid (`monthGrid(anchor)`, within the webhook's 45-day cap) — a deviation from the mock
+   handler, recorded as an ADR, the mock itself left alone. I recommend W2.
+3. **An event that began before the window** (a two-day all-day event started yesterday) is left
+   out by the mock's start-in-window rule, where Google shows it on both days.
+4. Today's Calendar card ("today") reads the `/today` composite, which is Phase 5's.
+
+### All-day rendering — options, not decided
+
+How it draws today: an all-day event is local midnight → next midnight. `lib/timeGrid.ts`
+`gridPosition` places blocks by hour from 06:00, so it gets `top` −144 px and the 12 px minimum
+height: a small pill above the day's track, over the section heading. `eventsOn` and the month dots
+count an event on its start day only, so a two-day event shows once. The Calendar card prints
+`formatTime(startsAt)`: "0:00". `gapsFor` counts the event as busy 06:00–20:00, so a day with a
+birthday or a travel day has no free gaps. `CalEvent` has no all-day flag, so the UI cannot tell.
+
+| Option | Data layer | UI | Contract | Result |
+|---|---|---|---|---|
+| **A** Leave all-day events out of `/calendar` | yes | — | — | the grid is clean; birthdays, travel and holidays (12 of 26) vanish from every view |
+| **B** Keep them; leave them out of `gaps` (and, if you like, `transparency: "transparent"` events too — Google's "free") | yes | — | — | the gaps become honest; the pill above the card, the "0:00" row and the one-day showing stay |
+| **C** B, plus the UI recognises an all-day event as one that runs local midnight to local midnight (a pure helper in `lib/timeGrid.ts`): a strip above the hours in Today/3-day/Week, a dot on every day it covers in Month, "all day" instead of "0:00" in the card, and the overlap rule for all-day events (item 3) | yes | `CalendarGrid.tsx`, `CalendarList.tsx`, `lib/timeGrid.ts` | — | Google's layout; a timed event that happens to run midnight to midnight would read as all-day |
+| **D** C, but with `allDay?: boolean` added to `CalEvent` (set by the adapter; the UI reads the flag, not a heuristic) | yes | the same | `data/types.ts`, `openapi.yaml` regenerated, `CONTRACT.md` §3 | the same result, stated rather than inferred; the one contract change in this work so far |
+
+My recommendation: **B now** (data layer only, and it stops a birthday wiping out a day's free
+time), then **D** if a contract addition is acceptable, otherwise **C**. Nothing here is built yet.

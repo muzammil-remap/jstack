@@ -4,6 +4,23 @@ One line per file. Newest phase first. Josh's own files are named with what was 
 
 **Generated files** are marked **regenerate in the target repo, don't port**: `jstack-mock-v15.html` (re-packaged from the source) and `REMAP_HANDOVER.html` (never committed changed; `remap/codemap.sh` restores it). Port the source and rebuild them there.
 
+## Phase 3 — the calendar, live (30 Sep 2026)
+
+| File | Change | Why |
+|---|---|---|
+| `jstack-app/data/n8n/adapters/calendar.ts` | new: the calendar adapter (the request, the guard, the map) | `GET /calendar` from the `calendar` webhook, mock-exact |
+| `jstack-app/data/n8n/focus.ts` | new: the owner's silos, the four focuses, `inFocus` | the mock's rule, copied (CT-03); the defaults and the adapter share it |
+| `jstack-app/data/n8n/defaults.ts` | imports the focuses and silos from `focus.ts` | one copy |
+| `jstack-app/data/n8n/registry.ts` | `getCalendar` has its adapter: the first live row | Phase 3 |
+| `jstack-app/data/config.ts`, `jstack-app/data/config.swap.ts` | `N8N_CALENDAR_SOURCE` (deferred from Phase 1) | its reader exists now |
+| `CONTRIBUTING.md` | the `EXPO_PUBLIC_N8N_CALENDAR_SOURCE` row | RM-03 |
+| `jstack-app/tests/unit/n8nCalendar.test.ts` | new | the adapter against the samples, both zones |
+| `jstack-app/tests/unit/n8nContract.ts` | new: test helper (schemas from `openapi.yaml`, the samples) | shared by the sweep and the adapter tests |
+| `jstack-app/tests/unit/n8nRoutes.test.ts` | the stub answers wired keys with their samples; per route, only a live wired row reaches a webhook | the expectation changed on purpose: calendar is live |
+| `jstack-app/CODEMAP.md` | the adapters directory row, the recipe's real paths, the new test's row; maps regenerated | a new directory family |
+| `jstack-mock-v15.html` | re-packaged (own commit) | QA-06. **Generated — regenerate in the target repo, don't port** |
+| `remap/PROGRESS.md` | Phase 3 section, the all-day and window options | Checkpoint 3 |
+
 ## Phase 2 — the real webhooks, samples and the Twenty inventory (30 Sep 2026)
 
 | File | Change | Why |
