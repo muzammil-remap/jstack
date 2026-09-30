@@ -1411,9 +1411,11 @@
         "memory-all",
         "memory-empty",
         "memory-hitrate",
+        "memory-not-connected",
         "proposal-",
         "proposal-edit-",
-        "proposal-ok-"
+        "proposal-ok-",
+        "testID"
       ],
       "acceptanceIds": [
         "BR-06",
@@ -1444,9 +1446,11 @@
         "memory-all",
         "memory-empty",
         "memory-hitrate",
+        "memory-not-connected",
         "proposal-",
         "proposal-edit-",
-        "proposal-ok-"
+        "proposal-ok-",
+        "testID"
       ],
       "acceptanceIds": [
         "BR-06",
@@ -1910,11 +1914,15 @@
         "agents-feed-section",
         "agents-issues-section",
         "feed-",
+        "feed-not-connected",
+        "feed-not-connected-row",
         "feed-renew-",
         "issue-",
         "issue-act-",
         "issues-all",
-        "issues-empty"
+        "issues-empty",
+        "issues-not-connected",
+        "testID"
       ],
       "acceptanceIds": [
         "AG-04"
@@ -1942,11 +1950,15 @@
         "agents-feed-section",
         "agents-issues-section",
         "feed-",
+        "feed-not-connected",
+        "feed-not-connected-row",
         "feed-renew-",
         "issue-",
         "issue-act-",
         "issues-all",
-        "issues-empty"
+        "issues-empty",
+        "issues-not-connected",
+        "testID"
       ],
       "acceptanceIds": [
         "AG-04"

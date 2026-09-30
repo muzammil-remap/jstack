@@ -501,7 +501,7 @@ do today) would not be found. Acceptance IDs are a best-effort text match agains
 - store actions: `brain.resolveProposal`
 - sections: `memory`
 - components: Memory
-- testIDs: `brain-memory-section`, `hitrate-fix`, `memory-all`, `memory-empty`, `memory-hitrate`, `proposal-`, `proposal-edit-`, `proposal-ok-`
+- testIDs: `brain-memory-section`, `hitrate-fix`, `memory-all`, `memory-empty`, `memory-hitrate`, `memory-not-connected`, `proposal-`, `proposal-edit-`, `proposal-ok-`, `testID`
 - acceptance IDs (lead): BR-06, BR-07, BR-08, BR-09
 
 ### `POST /memory/proposals/{id}/undo` — `undoMemoryProposal` (§4.6, A-26)
@@ -509,7 +509,7 @@ do today) would not be found. Acceptance IDs are a best-effort text match agains
 - store actions: `brain.resolveProposal`
 - sections: `memory`
 - components: Memory
-- testIDs: `brain-memory-section`, `hitrate-fix`, `memory-all`, `memory-empty`, `memory-hitrate`, `proposal-`, `proposal-edit-`, `proposal-ok-`
+- testIDs: `brain-memory-section`, `hitrate-fix`, `memory-all`, `memory-empty`, `memory-hitrate`, `memory-not-connected`, `proposal-`, `proposal-edit-`, `proposal-ok-`, `testID`
 - acceptance IDs (lead): BR-06, BR-07, BR-08, BR-09
 
 ### `GET /memory/hitrate` — `getMemoryHitRate` (§4.6)
@@ -729,7 +729,7 @@ do today) would not be found. Acceptance IDs are a best-effort text match agains
 - store actions: `agents.actIssue`
 - sections: `needseyes`, `feed`
 - components: Issues, Feed
-- testIDs: `agents-feed-section`, `agents-issues-section`, `feed-`, `feed-renew-`, `issue-`, `issue-act-`, `issues-all`, `issues-empty`
+- testIDs: `agents-feed-section`, `agents-issues-section`, `feed-`, `feed-not-connected`, `feed-not-connected-row`, `feed-renew-`, `issue-`, `issue-act-`, `issues-all`, `issues-empty`, `issues-not-connected`, `testID`
 - acceptance IDs (lead): AG-04
 
 ### `POST /agents/issues/{id}/undo` — `undoAgentIssueAction` (§4.8, A-32)
@@ -737,7 +737,7 @@ do today) would not be found. Acceptance IDs are a best-effort text match agains
 - store actions: `agents.actIssue`
 - sections: `needseyes`, `feed`
 - components: Issues, Feed
-- testIDs: `agents-feed-section`, `agents-issues-section`, `feed-`, `feed-renew-`, `issue-`, `issue-act-`, `issues-all`, `issues-empty`
+- testIDs: `agents-feed-section`, `agents-issues-section`, `feed-`, `feed-not-connected`, `feed-not-connected-row`, `feed-renew-`, `issue-`, `issue-act-`, `issues-all`, `issues-empty`, `issues-not-connected`, `testID`
 - acceptance IDs (lead): AG-04
 
 ### `GET /agents/feed` — `getAgentFeed` (§4.8)
