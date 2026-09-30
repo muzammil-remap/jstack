@@ -32,6 +32,8 @@ jstack-app/tests/lint-guard-scratch-*/
 .env
 .env.*
 !.env.example
+# the dev proxy's template has no values in it (remap/dev-proxy.mjs reads remap/.env.local)
+!remap/.env.local.example
 
 # OS / editor noise
 .DS_Store
