@@ -26,6 +26,8 @@ type Zone = {
   allDay: [string, string];
   /** 06:00 and 20:00 on 30 September */
   day: [string, string];
+  /** `calendar.cases.json`, today on 30 September: the ids that overlap the device's day */
+  casesToday: string[];
 };
 
 const ZONES: Record<string, Zone> = {
@@ -46,6 +48,7 @@ const ZONES: Record<string, Zone> = {
     midnight: ["2026-09-29T13:59:59.000Z", "2026-09-29T14:00:01.000Z"],
     allDay: ["2026-10-01T14:00:00.000Z", "2026-10-03T14:00:00.000Z"],
     day: ["2026-09-29T20:00:00.000Z", "2026-09-30T10:00:00.000Z"],
+    casesToday: ["case-before", "case-overnight", "case-allday", "case-twoday", "case-free", "case-busy"],
   },
   "America/New_York": {
     offset: "-04:00",
@@ -64,6 +67,8 @@ const ZONES: Record<string, Zone> = {
     midnight: ["2026-09-30T03:59:59.000Z", "2026-09-30T04:00:01.000Z"],
     allDay: ["2026-10-02T04:00:00.000Z", "2026-10-04T04:00:00.000Z"],
     day: ["2026-09-30T10:00:00.000Z", "2026-10-01T00:00:00.000Z"],
+    // New York's 30 September is 04:00Z to 04:00Z: the Brisbane-offset timed cases fall elsewhere
+    casesToday: ["case-before", "case-allday", "case-twoday", "case-busy", "case-tomorrow"],
   },
 };
 
@@ -155,16 +160,31 @@ const raw = (over: Record<string, unknown>) => ({ id: "e1", title: "Event", star
     });
   });
 
-  describe("the mock's rules", () => {
-    it("an event is in the window when it STARTS in it: begun the day before is out, at the end instant is out", () => {
+  describe("the window's rules", () => {
+    /** ADR-80 changed this from the mock's start-in-window rule: "before" used to be out */
+    it("an event is in the window when it OVERLAPS it: begun the day before is in; ended at the start, or begun at the end, is out", () => {
       const events = [
+        raw({ id: "ended", start: "2026-09-29", end: "2026-09-30", allDay: true }),
         raw({ id: "before", start: "2026-09-29", end: "2026-10-01", allDay: true }),
         raw({ id: "first", start: "2026-09-30", end: "2026-10-01", allDay: true }),
         raw({ id: "last", start: local("23:59:00"), end: null }),
         raw({ id: "after", start: "2026-10-01", end: "2026-10-02", allDay: true }),
       ];
       const ids = (map({ events }, { view: "today", anchor: "2026-09-30" }).json as { events: CalEvent[] }).events.map((e) => e.id);
-      expect(ids).toEqual(["first", "last"]);
+      expect(ids).toEqual(["before", "first", "last"]);
+    });
+
+    it("the live-shaped cases: yesterday's two-day event and last night's overnight one count today", () => {
+      const res = map(sample("calendar.cases").data, { view: "today", anchor: "2026-09-30" });
+      expect(contractErrors(res.json, "/calendar")).toEqual([]);
+      expect((res.json as { events: CalEvent[] }).events.map((e) => e.id)).toEqual(zone.casesToday);
+    });
+
+    it("a two-day event counts on its second day too, and a one-day event does not spill into the next", () => {
+      const ids = (map(sample("calendar.cases").data, { view: "today", anchor: "2026-10-01" }).json as { events: CalEvent[] }).events.map((e) => e.id);
+      expect(ids).toContain("case-twoday");
+      expect(ids).not.toContain("case-allday");
+      expect(ids).not.toContain("case-before");
     });
 
     it("gaps are the idle hour-plus stretches between 06:00 and 20:00, today only", () => {

@@ -1,0 +1,18 @@
+{
+  "_comment": "Constructed, not captured: the exact JSTACK-DASH-calendar-read reply shape (every field of calendar.json), filled with the edge cases the live week happened not to hold at once. The window is Brisbane's 30 September 2026.",
+  "ok": true,
+  "duration_ms": 300,
+  "data": {
+    "count": 7,
+    "window": { "timeMin": "2026-09-29T14:00:00.000Z", "timeMax": "2026-09-30T14:00:00.000Z" },
+    "events": [
+      { "id": "case-before", "title": "Event began before", "start": "2026-09-29", "end": "2026-10-01", "allDay": true, "timeZone": null, "location": null, "meet_link": null, "htmlLink": "https://www.google.com/calendar/event?eid=CASE01", "attendees_count": 0, "transparency": "opaque", "eventType": "default", "recurringEventId": null, "updated": "2026-09-20T00:00:00.000Z", "protectedByEa": false, "calendarId": "primary" },
+      { "id": "case-overnight", "title": "Event overnight", "start": "2026-09-29T22:00:00+10:00", "end": "2026-09-30T08:00:00+10:00", "allDay": false, "timeZone": "Australia/Brisbane", "location": null, "meet_link": null, "htmlLink": "https://www.google.com/calendar/event?eid=CASE02", "attendees_count": 0, "transparency": "opaque", "eventType": "default", "recurringEventId": null, "updated": "2026-09-20T00:00:00.000Z", "protectedByEa": false, "calendarId": "primary" },
+      { "id": "case-allday", "title": "Event all day", "start": "2026-09-30", "end": "2026-10-01", "allDay": true, "timeZone": null, "location": null, "meet_link": null, "htmlLink": "https://www.google.com/calendar/event?eid=CASE03", "attendees_count": 0, "transparency": "opaque", "eventType": "default", "recurringEventId": null, "updated": "2026-09-20T00:00:00.000Z", "protectedByEa": false, "calendarId": "primary" },
+      { "id": "case-twoday", "title": "Event two days", "start": "2026-09-30", "end": "2026-10-02", "allDay": true, "timeZone": null, "location": null, "meet_link": null, "htmlLink": "https://www.google.com/calendar/event?eid=CASE04", "attendees_count": 0, "transparency": "transparent", "eventType": "birthday", "recurringEventId": null, "updated": "2026-09-20T00:00:00.000Z", "protectedByEa": false, "calendarId": "primary" },
+      { "id": "case-free", "title": "Event free", "start": "2026-09-30T12:00:00+10:00", "end": "2026-09-30T13:00:00+10:00", "allDay": false, "timeZone": "Australia/Brisbane", "location": null, "meet_link": null, "htmlLink": "https://www.google.com/calendar/event?eid=CASE05", "attendees_count": 0, "transparency": "transparent", "eventType": "default", "recurringEventId": null, "updated": "2026-09-20T00:00:00.000Z", "protectedByEa": false, "calendarId": "primary" },
+      { "id": "case-busy", "title": "Event busy", "start": "2026-09-30T15:00:00+10:00", "end": "2026-09-30T16:00:00+10:00", "allDay": false, "timeZone": "Australia/Brisbane", "location": null, "meet_link": null, "htmlLink": "https://www.google.com/calendar/event?eid=CASE06", "attendees_count": 1, "transparency": "opaque", "eventType": "default", "recurringEventId": null, "updated": "2026-09-20T00:00:00.000Z", "protectedByEa": false, "calendarId": "primary" },
+      { "id": "case-tomorrow", "title": "Event tomorrow", "start": "2026-10-01T09:00:00+10:00", "end": "2026-10-01T10:00:00+10:00", "allDay": false, "timeZone": "Australia/Brisbane", "location": null, "meet_link": null, "htmlLink": "https://www.google.com/calendar/event?eid=CASE07", "attendees_count": 0, "transparency": "opaque", "eventType": "default", "recurringEventId": null, "updated": "2026-09-20T00:00:00.000Z", "protectedByEa": false, "calendarId": "primary" }
+    ]
+  }
+}

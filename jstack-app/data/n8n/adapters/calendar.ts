@@ -3,11 +3,14 @@
  * — the request built, and the reply guarded and mapped into the contract's `CalendarWindow`.
  *
  * The mock is the spec (`data/mock/handlers/calendar.ts`), and its rules are copied here rather
- * than imported, because `data/n8n/` may not import `data/mock/` (CT-03):
+ * than imported, because `data/n8n/` may not import `data/mock/` (CT-03) — with one exception:
  *
  *  - the window is `rangeFor`'s: local midnight on the anchor to local midnight after it — one day
  *    for `today`, three for `3day`, seven for `week`, a calendar month for `month`;
- *  - an event is in the window when it STARTS in it (so a two-day event begun yesterday is not);
+ *  - an event is in the window when it OVERLAPS it (ADR-80). The mock keeps only events that start
+ *    in the window, which its fixtures never tested: on real data a two-day event would vanish on
+ *    its second day, and yesterday's two-day event would be missing today. Google returns every
+ *    event that overlaps the window, so this is the adapter's rule alone;
  *  - `?focus=` narrows by silo, as `inFocus` does (`data/n8n/focus.ts`);
  *  - `gaps` exist only for `today`: `gapsFor`'s idle stretches of an hour or more, 06:00 to 20:00.
  *
@@ -71,6 +74,13 @@ function gapsFor(anchor: string, events: { startsAt: string; endsAt: string }[])
   return gaps;
 }
 
+/** ADR-80: in the window when it overlaps it; a zero-length event, when its instant is in it. */
+function overlaps(e: CalEvent, start: Date, end: Date): boolean {
+  const s = new Date(e.startsAt);
+  const en = new Date(e.endsAt);
+  return s < end && (en > start || (en.getTime() === s.getTime() && s >= start));
+}
+
 const isInstant = (v: unknown): v is string => typeof v === "string" && !Number.isNaN(Date.parse(v));
 
 function isRawEvent(e: unknown): e is RawEvent {
@@ -118,10 +128,7 @@ export const calendarAdapter: WebhookAdapter = {
 
     const { view, anchor } = asked(a);
     const { start, end } = rangeFor(view, anchor);
-    const inWindow = (events as RawEvent[]).map(toEvent).filter((e) => {
-      const s = new Date(e.startsAt);
-      return s >= start && s < end;
-    });
+    const inWindow = (events as RawEvent[]).map(toEvent).filter((e) => overlaps(e, start, end));
     const shown = inFocus(inWindow, a.req.query?.focus);
     return { status: 200, json: { events: shown, gaps: view === "today" ? gapsFor(anchor, shown) : [] } };
   },
